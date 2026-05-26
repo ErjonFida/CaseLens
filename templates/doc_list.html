@@ -1,0 +1,20 @@
+{% if documents %}
+    {% for doc in documents %}
+        <li id="doc-{{ doc | replace('.', '_') | replace(' ', '_') | replace('@', '_') }}">
+            <i class="fa-solid fa-file-invoice"></i>
+            <span title="{{ doc }}">{{ doc }}</span>
+            <button 
+                class="doc-delete-btn"
+                title="Delete document"
+                hx-delete="/documents/{{ doc | urlencode }}"
+                hx-target="#doc-{{ doc | replace('.', '_') | replace(' ', '_') | replace('@', '_') }}"
+                hx-swap="outerHTML"
+                hx-confirm="Delete '{{ doc }}' and all its indexed data? This cannot be undone."
+            >
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </li>
+    {% endfor %}
+{% else %}
+    <li class="empty-docs">No documents indexed yet</li>
+{% endif %}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Your Dedicated AI Legal Assistant</title>
+    <meta name="description" content="AI-powered Legal Assistant for semantic search across legal documents, contracts, and court transcripts."/>
+    <!-- CSRF Token for HTMX requests (issue #4) -->
+    <meta name="csrf-token" content="{{ csrf_token }}"/>
+    <!-- Premium Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="/static/style.css"/>
+    <!-- HTMX Library CDN -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <!-- Core App Event Script -->
+    <script src="/static/app.js" defer></script>
+</head>
+<body class="{% if is_light_theme %}light-theme{% endif %}" hx-headers='{"x-csrf-token": "{{ csrf_token }}"}'>
+
+    <!-- Background decorations -->
+    <div class="bg-decorations pointer-events-none">
+        <div class="bg-glow bg-glow-1"></div>
+        <div class="bg-glow bg-glow-2"></div>
+        <div class="bg-pattern"></div>
+    </div>
+
+    <!-- Floating Theme Button -->
+    <button 
+        onclick="toggleTheme()" 
+        class="theme-toggle-btn" 
+        id="theme-toggle-button"
+        title="Toggle Theme" 
+        aria-label="Toggle Theme"
+    >
+        <i class="fa-solid {% if is_light_theme %}fa-moon{% else %}fa-sun{% endif %}" id="theme-icon"></i>
+    </button>
+
+    <div id="app-root">
+    {% if not is_authenticated %}
+        {% include 'auth.html' %}
+    {% else %}
+        {% include 'dashboard.html' %}
+    {% endif %}
+    </div>
+
+</body>
+</html>

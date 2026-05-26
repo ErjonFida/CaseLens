@@ -1,0 +1,127 @@
+<!-- ================= MAIN DASHBOARD WORKSPACE ================= -->
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo-container">
+                <i class="fa-solid fa-scale-balanced brand-icon"></i>
+            </div>
+            <div class="brand-text">
+                <h1>Legal Assistant</h1>
+                <span class="subtext">AI Document RAG</span>
+            </div>
+        </div>
+
+        <div class="sidebar-scrollable-content">
+            <div class="section-title">Upload Documents</div>
+            <div 
+                class="upload-zone"
+                id="drop-zone"
+                onclick="document.getElementById('file-input').click()"
+            >
+                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                <p>Drag & drop legal files or <span>browse</span></p>
+                <span class="file-limits">PDF, PNG, JPG, TXT (Max 25MB)</span>
+                <input 
+                    type="file" 
+                    id="file-input" 
+                    multiple 
+                    accept=".pdf,.png,.jpg,.jpeg,.tiff,.bmp,.txt" 
+                    style="display: none;"
+                    onchange="handleFileInputChange(this)"
+                />
+            </div>
+
+            <!-- Dynamic Upload statuses -->
+            <div class="status-container" id="upload-status-container" style="display: none;">
+                <div class="section-title">Upload Status</div>
+                <ul class="status-list" id="upload-status-list">
+                    <!-- Populated dynamically via HTMX upload segments -->
+                </ul>
+            </div>
+
+            <!-- Indexed document profiles list -->
+            <div class="docs-section">
+                <div class="section-title">Indexed Documents (<span id="doc-count">{{ documents | length }}</span>)</div>
+                <ul class="docs-list" id="documents-list" hx-get="/documents" hx-trigger="load" hx-swap="innerHTML">
+                    <li class="empty-docs">Loading indexed workspace...</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-primary w-full" onclick="resetChat()">
+                <i class="fa-solid fa-plus"></i> New Consultation
+            </button>
+            <div 
+                class="sidebar-footer-link" 
+                onclick="alert('Settings panel coming soon! Integrated securely with your account.')"
+            >
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="chat-area">
+        <header class="chat-header">
+            <div class="header-info">
+                <h2>Document Assistant Chat</h2>
+                <p class="status-line">
+                    <span class="pulse-indicator"></span>
+                    <span class="status-text">Ready to answer questions based on your documents</span>
+                </p>
+            </div>
+            <div class="header-actions">
+                <div class="user-badge">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>{{ email }}</span>
+                </div>
+                <button class="btn btn-secondary" onclick="resetChat()">
+                    <i class="fa-solid fa-trash-can"></i> Clear Chat
+                </button>
+                <button class="btn btn-danger" hx-post="/logout" hx-target="body">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat message thread container -->
+        <div class="chat-messages" id="chat-messages">
+            <div class="message system-message">
+                <div class="message-content">
+                    <h3>Welcome to your AI Legal Assistant!</h3>
+                    <p>Upload your legal bills, court transcripts, contracts, or scanned documents in the sidebar. We will automatically perform OCR extraction, chunk, embed, and index them. You can then ask me any questions about their contents.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prompt input footer -->
+        <footer class="chat-footer">
+            <div class="chat-input-wrapper">
+                <form onsubmit="handleChatSubmit(event)" class="chat-form">
+                    <div class="chat-input-container">
+                        <input 
+                            type="text" 
+                            id="chat-input"
+                            placeholder="Ask a question about your indexed case documents..."
+                            required
+                        />
+                        <div class="chat-input-buttons">
+                            <button 
+                                type="submit" 
+                                class="btn btn-primary btn-icon" 
+                                id="chat-send-btn"
+                                title="Send Message"
+                            >
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <p class="chat-warning">AI can make mistakes. Verify legal citations before drafting.</p>
+            </div>
+        </footer>
+    </main>
+</div>

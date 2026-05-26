@@ -1,0 +1,33 @@
+services:
+  legal-assistant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: legal-assistant-dev:latest
+    container_name: legal-assistant-container
+    ports:
+      - "8000:8000"
+    volumes:
+      # Issue #16: Only mount persistent data directories, not the full source
+      - legal_db:/app/db
+      - legal_uploads:/app/uploads
+    environment:
+      - PYTHONUNBUFFERED=1
+      - GEMINI_API_KEY
+      - JWT_SECRET
+      - GEMINI_MODEL
+      - ALLOWED_ORIGINS
+      - ENVIRONMENT
+      - TESSERACT_CMD
+      - POPPLER_PATH
+      - SMTP_HOST
+      - SMTP_PORT
+      - SMTP_USERNAME
+      - SMTP_PASSWORD
+      - SMTP_SENDER
+    stdin_open: true
+    tty: true
+
+volumes:
+  legal_db:
+  legal_uploads:

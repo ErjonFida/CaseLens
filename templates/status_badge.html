@@ -1,0 +1,11 @@
+{% if badge == 'completed' or badge == 'error' or badge == 'unknown' %}
+<span class="status-badge badge-{{ badge }}">{{ label }}</span>
+{% else %}
+<span 
+    class="status-badge badge-{{ badge }}"
+    hx-get="/status/{{ name | urlencode }}"
+    hx-trigger="load delay:2s"
+    hx-target="this"
+    hx-swap="outerHTML"
+>{{ label }}</span>
+{% endif %}

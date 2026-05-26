@@ -1,0 +1,97 @@
+<!-- ================= AUTHENTICATION MODULE ================= -->
+<div class="auth-container">
+    <div class="auth-brand-side">
+        <div class="auth-brand-logo">
+            <i class="fa-solid fa-scale-balanced"></i>
+        </div>
+        <div class="auth-brand-text">
+            <h2>Legal Assistant</h2>
+        </div>
+        <div class="auth-quote-decor">
+            <p class="quote-latin">"Lex semper dabit remedium."</p>
+            <p class="quote-translation">— The Law will always provide a remedy.</p>
+        </div>
+    </div>
+
+    <div class="auth-form-side">
+        <div class="auth-card glass-panel">
+            <div class="auth-header">
+                <i class="fa-solid fa-scale-balanced auth-logo mobile-only-logo"></i>
+                <h2>Welcome to the Vault</h2>
+                <p>Enter your credentials to access your secure workspace</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login-btn" onclick="showAuthMode('login')">Login</button>
+                <button class="auth-tab" id="tab-register-btn" onclick="showAuthMode('register')">Register</button>
+            </div>
+
+            <form id="auth-form" hx-post="/login" hx-target="body">
+                <!-- Registration Extra Fields (hidden by default) -->
+                <div id="register-fields" style="display: none;">
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>First Name</label>
+                            <div class="input-with-icon">
+                                <i class="fa-solid fa-user"></i>
+                                <input type="text" name="first_name" placeholder="John" id="reg-firstname"/>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Last Name</label>
+                            <div class="input-with-icon">
+                                <i class="fa-solid fa-user"></i>
+                                <input type="text" name="last_name" placeholder="Doe" id="reg-lastname"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Company</label>
+                            <div class="input-with-icon">
+                                <i class="fa-solid fa-building"></i>
+                                <input type="text" name="company" placeholder="Acme Corp" id="reg-company"/>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Phone Number</label>
+                            <div class="input-with-icon">
+                                <i class="fa-solid fa-phone"></i>
+                                <input type="tel" name="phone_number" placeholder="+1 (555) 019-2834" id="reg-phone"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" required name="email" placeholder="attorney@firm.com" id="auth-email"/>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" required name="password" placeholder="Enter password..." minlength="6" id="auth-password"/>
+                    </div>
+                </div>
+
+                <div id="reg-confirm-group" style="display: none;" class="input-group">
+                    <label>Confirm Password</label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" name="confirm_password" placeholder="Retype password..." minlength="6" id="auth-confirm-password"/>
+                    </div>
+                </div>
+
+                <div id="auth-error-container"></div>
+                <div id="auth-success-container"></div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="auth-submit-btn">Login</button>
+            </form>
+        </div>
+    </div>
+</div>

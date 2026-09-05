@@ -1,0 +1,49 @@
+# Environment secrets
+.env
+.env.local
+.env*.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Database and uploads (local data)
+backend/db/
+backend/uploads/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Evaluation
+# The cache is derived data; deleting it costs only a re-embed.
+evals/.cache/
+# Corpus documents are large and may carry their own licence terms - keep them
+# out of the repo and document their sources in evals/README.md instead.
+evals/corpus/*
+!evals/corpus/.gitkeep
+# Reports ARE committed: they are the evidence for every claim about retrieval,
+# and a diff between two of them is the record of what a change actually did.
+
+# Node / frontend
+# frontend/.gitignore covers these too, but only once frontend/.git is removed -
+# a nested repo makes git skip the directory entirely, .gitignore included.
+node_modules/
+.next/
+dist/
+build/
+
+# Python tooling
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db

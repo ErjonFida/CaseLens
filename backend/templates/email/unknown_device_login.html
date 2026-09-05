@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Alert: Login from Unknown Device</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #0d0f12; color: #e2e8f0; padding: 20px; margin: 0;">
+    <div style="max-width: 600px; margin: 0 auto; background: #1e293b; padding: 30px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h2 style="color: #ef4444; margin-top: 0;">New Login Detected</h2>
+        <p>We noticed a login to your CaseLens account from a device we don't recognize:</p>
+        <table style="width: 100%; margin-top: 15px; margin-bottom: 15px; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 8px; font-weight: bold; width: 120px; color: #94a3b8; border-bottom: 1px solid rgba(255,255,255,0.05);">IP Address:</td>
+                <td style="padding: 8px; color: #e2e8f0; border-bottom: 1px solid rgba(255,255,255,0.05);">{{ ip }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; font-weight: bold; color: #94a3b8;">User Agent:</td>
+                <td style="padding: 8px; color: #e2e8f0; font-size: 13px;">{{ user_agent }}</td>
+            </tr>
+        </table>
+        <p>If this was you, you can safely ignore this email. If you did not log in, please secure your credentials immediately.</p>
+        <br>
+        <p style="font-size: 12px; color: #94a3b8; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">This is an automated system security email.</p>
+    </div>
+</body>
+</html>

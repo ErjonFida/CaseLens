@@ -1,14 +1,13 @@
 services:
-  legal-assistant:
+  caselens:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
-    image: legal-assistant-dev:latest
-    container_name: legal-assistant-container
+    image: caselens-dev:latest
+    container_name: caselens-api
     ports:
       - "8000:8000"
     volumes:
-      # Issue #16: Only mount persistent data directories, not the full source
       - legal_db:/app/db
       - legal_uploads:/app/uploads
     environment:
@@ -18,6 +17,7 @@ services:
       - GEMINI_MODEL
       - ALLOWED_ORIGINS
       - ENVIRONMENT
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
       - TESSERACT_CMD
       - POPPLER_PATH
       - SMTP_HOST
@@ -25,9 +25,37 @@ services:
       - SMTP_USERNAME
       - SMTP_PASSWORD
       - SMTP_SENDER
+      - DATABASE_URL=postgresql://legal_user:legal_password@db:5432/legal_db
+    depends_on:
+      db:
+        condition: service_healthy
     stdin_open: true
     tty: true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: caselens-db
+    environment:
+      POSTGRES_USER: legal_user
+      POSTGRES_PASSWORD: legal_password
+      POSTGRES_DB: legal_db
+    ports:
+      - "5432:5432"
+    volumes:
+      # Postgres needs a volume of its own. Sharing `legal_db` with the app put
+      # the app's files in Postgres's data directory, so initdb was skipped -
+      # and POSTGRES_PASSWORD only ever applies during initdb, which is why
+      # authentication failed.
+      - legal_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U legal_user -d legal_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
 volumes:
   legal_db:
+  legal_pgdata:
   legal_uploads:

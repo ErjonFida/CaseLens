@@ -1,7 +1,7 @@
 @echo off
-title Legal Assistant RAG App - Local Host
+title CaseLens - Local Host
 echo =======================================================
-echo     Starting Legal Assistant RAG App (Local Mode)
+echo     Starting CaseLens (Local Mode)
 echo =======================================================
 echo.
 
@@ -32,6 +32,7 @@ if not exist .env (
 
 :: Install dependencies
 echo Installing requirements...
+cd backend
 python -m pip install -r requirements.txt
 if %errorlevel% neq 0 (
     echo [ERROR] Failed to install Python dependencies.
@@ -40,7 +41,15 @@ if %errorlevel% neq 0 (
 )
 echo.
 
+:: Run Alembic migrations
+echo Running database migrations...
+alembic upgrade head
+if %errorlevel% neq 0 (
+    echo [WARNING] Migration failed - database may not be available yet.
+)
+echo.
+
 :: Launch FastAPI App
 echo Launching server at http://localhost:8000 ...
-python main.py
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 pause

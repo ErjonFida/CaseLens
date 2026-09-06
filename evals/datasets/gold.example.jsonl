@@ -1,0 +1,25 @@
+// Gold set format. One JSON object per line; lines starting with // are ignored.
+//
+// Ground truth is (filename, page) - never a chunk id. Pages survive re-chunking,
+// re-embedding and a change of retriever; chunk ids do not, and labelling by them
+// means your first chunk-size sweep silently invalidates the whole dataset.
+//
+// Categories:
+//   exact_term     citations, party names, dates, clause numbers. Dense retrieval
+//                  is weakest here, so these are the questions that will justify
+//                  adding full-text search.
+//   semantic       paraphrased, little lexical overlap with the source.
+//   multi_document answering needs evidence from more than one document.
+//   unanswerable   nothing in the corpus answers this. No evidence, excluded from
+//                  recall and MRR, scored in the answer phase as correct refusal.
+//
+// Aim for ~60 questions to start and grow to ~100. Write them by reading real
+// pages of your own corpus: open a page, ask what a person would actually come
+// looking for, record the page. Questions invented without looking at a page tend
+// to reuse its vocabulary, which flatters dense retrieval and hides the gap that
+// hybrid search exists to close.
+
+{"id": "q001", "question": "What is the notice period for terminating the agreement?", "category": "semantic", "relevant": [{"filename": "example_lease.pdf", "page": 4}], "note": "Source says 'ninety days written notice'; question avoids that wording on purpose."}
+{"id": "q002", "question": "What was the case number in Person A v Southampton Local Authority?", "category": "exact_term", "relevant": [{"filename": "Transcript-of-proceedings-Person-A-v-Southampton-Local-Authority.pdf", "page": 1}]}
+{"id": "q003", "question": "Which clause governs late payment, and what does the schedule say the fee is?", "category": "multi_document", "relevant": [{"filename": "example_lease.pdf", "page": 4}, {"filename": "example_lease_schedule.pdf", "page": 2}]}
+{"id": "q004", "question": "What is the maximum penalty for breach of contract under Albanian law?", "category": "unanswerable", "relevant": [], "note": "No Albanian statute in the corpus. Correct behaviour is refusal, not a plausible guess."}

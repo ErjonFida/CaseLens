@@ -1,0 +1,814 @@
+{
+  "label": "baseline-dense-nomic",
+  "generated_at": "2026-09-04T12:57:31.895694+00:00",
+  "retriever": "dense/nomic-embed-text",
+  "config": {
+    "embedding_model": "nomic-embed-text",
+    "dimensions": 768,
+    "corpus_documents": 69,
+    "corpus_chunks": 5574,
+    "corpus_fingerprint": "7c8e13097890b324",
+    "dataset": "gold.jsonl",
+    "questions": 100,
+    "categories": {
+      "exact_term": 31,
+      "semantic": 43,
+      "multi_document": 12,
+      "unanswerable": 14
+    }
+  },
+  "metrics": {
+    "overall": {
+      "questions": 86,
+      "recall@1": 0.1858,
+      "hit@1": 0.2093,
+      "recall@3": 0.2803,
+      "hit@3": 0.3605,
+      "recall@5": 0.3403,
+      "hit@5": 0.4186,
+      "recall@10": 0.3965,
+      "hit@10": 0.4651,
+      "mrr": 0.2984,
+      "p50_latency_ms": 113.04,
+      "p95_latency_ms": 161.48
+    },
+    "by_category": {
+      "exact_term": {
+        "questions": 31,
+        "recall@1": 0.2903,
+        "hit@1": 0.2903,
+        "recall@3": 0.3871,
+        "hit@3": 0.3871,
+        "recall@5": 0.4194,
+        "hit@5": 0.4194,
+        "recall@10": 0.5161,
+        "hit@10": 0.5161,
+        "mrr": 0.3616,
+        "p50_latency_ms": 113.56,
+        "p95_latency_ms": 161.48
+      },
+      "multi_document": {
+        "questions": 12,
+        "recall@1": 0.0536,
+        "hit@1": 0.1667,
+        "recall@3": 0.1905,
+        "hit@3": 0.5,
+        "recall@5": 0.2044,
+        "hit@5": 0.5,
+        "recall@10": 0.3294,
+        "hit@10": 0.5833,
+        "mrr": 0.3194,
+        "p50_latency_ms": 92.21,
+        "p95_latency_ms": 100.19
+      },
+      "semantic": {
+        "questions": 43,
+        "recall@1": 0.1473,
+        "hit@1": 0.1628,
+        "recall@3": 0.2283,
+        "hit@3": 0.3023,
+        "recall@5": 0.3213,
+        "hit@5": 0.3953,
+        "recall@10": 0.3291,
+        "hit@10": 0.3953,
+        "mrr": 0.2469,
+        "p50_latency_ms": 117.7,
+        "p95_latency_ms": 161.47
+      }
+    },
+    "unanswerable_questions": 14,
+    "scored_questions": 86
+  },
+  "failures_at_5": [
+    {
+      "question_id": "q001",
+      "category": "exact_term",
+      "expected": [
+        "hubeiminkangpharmaceuticalltd_09_19_2006-ex-10.1-outsourcing agreement.pdf:p5"
+      ],
+      "retrieved": [
+        "theravancebiopharma,inc_05_08_2020-ex-10.2-service agreement.pdf:p2",
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p2",
+        "armstrongflooring,inc_01_07_2019-ex-10.2-intellectual property agreement.pdf:p1",
+        "theravancebiopharma,inc_05_08_2020-ex-10.2-service agreement.pdf:p1",
+        "oasysmobile,inc_07_05_2001-ex-10.17-outsourcing agreement.pdf:p11"
+      ]
+    },
+    {
+      "question_id": "q002",
+      "category": "semantic",
+      "expected": [
+        "operaltd_04_30_2020-ex-4.14-service agreement.pdf:p3",
+        "operaltd_04_30_2020-ex-4.14-service agreement.pdf:p5"
+      ],
+      "retrieved": [
+        "neoformainc_19991202_s-1a_ex-10.26_5224521_ex-10.26_co-branding agreement.pdf:p12",
+        "oaktreecapitalgroup,llc_03_02_2020-ex-10.8-services agreement.pdf:p5",
+        "americanphysicianscapitalinc_03_31_2003-ex-10.26-agency agreement.pdf:p2",
+        "sightlife surgical, inc. - strategic sales _ marketing agreement.pdf:p4",
+        "alamogordofinancialcorp_12_16_1999-ex-1-agency agreement.pdf:p22"
+      ]
+    },
+    {
+      "question_id": "q003",
+      "category": "semantic",
+      "expected": [
+        "alliancebancorpincofpennsylvania_10_18_2006-ex-1.2-agency agreement.pdf:p39"
+      ],
+      "retrieved": [
+        "alliancebancorpincofpennsylvania_10_18_2006-ex-1.2-agency agreement.pdf:p1",
+        "alliancebancorpincofpennsylvania_10_18_2006-ex-1.2-agency agreement.pdf:p41",
+        "leadersonlineinc_20000427_s-1a_ex-10.8_4991089_ex-10.8_co-branding agreement.pdf:p8",
+        "alliancebancorpincofpennsylvania_10_18_2006-ex-1.2-agency agreement.pdf:p30",
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p9"
+      ]
+    },
+    {
+      "question_id": "q004",
+      "category": "exact_term",
+      "expected": [
+        "scoutcaminc_05_12_2020-ex-10.22-services agreement.pdf:p1"
+      ],
+      "retrieved": [
+        "oasysmobile,inc_07_05_2001-ex-10.17-outsourcing agreement.pdf:p11",
+        "oaktreecapitalgroup,llc_03_02_2020-ex-10.8-services agreement.pdf:p2",
+        "abilityinc_06_15_2020-ex-4.25-services agreement.pdf:p1",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p2",
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p1"
+      ]
+    },
+    {
+      "question_id": "q005",
+      "category": "exact_term",
+      "expected": [
+        "gsitechnologyinc_11_16_2009-ex-10.2-intellectual property agreement between sony electronics inc. and gsi technology, inc..pdf:p10"
+      ],
+      "retrieved": [
+        "gsitechnologyinc_11_16_2009-ex-10.2-intellectual property agreement between sony electronics inc. and gsi technology, inc..pdf:p1",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p21",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p17",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p9",
+        "herimports_20161018_8-ka_ex-10.14_9765707_ex-10.14_maintenance agreement.pdf:p1"
+      ]
+    },
+    {
+      "question_id": "q006",
+      "category": "exact_term",
+      "expected": [
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p1"
+      ],
+      "retrieved": [
+        "oaktreecapitalgroup,llc_03_02_2020-ex-10.8-services agreement.pdf:p2",
+        "oasysmobile,inc_07_05_2001-ex-10.17-outsourcing agreement.pdf:p11",
+        "abilityinc_06_15_2020-ex-4.25-services agreement.pdf:p1",
+        "jingweiinternationalltd_10_04_2007-ex-10.7-intellectual property agreement.pdf:p3",
+        "gwg holdings, inc. - orderly marketing agreement.pdf:p2"
+      ]
+    },
+    {
+      "question_id": "q008",
+      "category": "exact_term",
+      "expected": [
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p47"
+      ],
+      "retrieved": [
+        "zounds hearing, inc. - manufacturing design marketing agreement.pdf:p3",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p28",
+        "zounds hearing, inc. - manufacturing design marketing agreement.pdf:p6",
+        "oasysmobile,inc_07_05_2001-ex-10.17-outsourcing agreement.pdf:p9",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p53"
+      ]
+    },
+    {
+      "question_id": "q009",
+      "category": "semantic",
+      "expected": [
+        "loop industries, inc. - marketing agreement.pdf:p10"
+      ],
+      "retrieved": [
+        "loop industries, inc. - marketing agreement.pdf:p1",
+        "loop industries, inc. - marketing agreement.pdf:p5",
+        "loop industries, inc. - marketing agreement.pdf:p14",
+        "loop industries, inc. - marketing agreement.pdf:p16",
+        "loop industries, inc. - marketing agreement.pdf:p11"
+      ]
+    },
+    {
+      "question_id": "q010",
+      "category": "exact_term",
+      "expected": [
+        "reinsurance group of america, incorporated - a_r remarketing  agreement.pdf:p3"
+      ],
+      "retrieved": [
+        "reinsurance group of america, incorporated - a_r remarketing  agreement.pdf:p30",
+        "reinsurance group of america, incorporated - a_r remarketing  agreement.pdf:p1",
+        "reinsurance group of america, incorporated - a_r remarketing  agreement.pdf:p9",
+        "reinsurance group of america, incorporated - a_r remarketing  agreement.pdf:p32",
+        "reinsurance group of america, incorporated - a_r remarketing  agreement.pdf:p33"
+      ]
+    },
+    {
+      "question_id": "q012",
+      "category": "semantic",
+      "expected": [
+        "biopurecorp_06_30_1999-ex-10.13-agency agreement.pdf:p3"
+      ],
+      "retrieved": [
+        "biopurecorp_06_30_1999-ex-10.13-agency agreement.pdf:p1",
+        "biopurecorp_06_30_1999-ex-10.13-agency agreement.pdf:p7",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p2",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement4.pdf:p1",
+        "herimports_20161018_8-ka_ex-10.14_9765707_ex-10.14_maintenance agreement.pdf:p2"
+      ]
+    },
+    {
+      "question_id": "q013",
+      "category": "semantic",
+      "expected": [
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement1.pdf:p105",
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement1.pdf:p16",
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement1.pdf:p76"
+      ],
+      "retrieved": [
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement1.pdf:p1",
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement1.pdf:p61",
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement2.pdf:p8",
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement1.pdf:p44",
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement1.pdf:p45"
+      ]
+    },
+    {
+      "question_id": "q015",
+      "category": "semantic",
+      "expected": [
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p5",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p67",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p68",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p7",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p8"
+      ],
+      "retrieved": [
+        "zounds hearing, inc. - manufacturing design marketing agreement.pdf:p4",
+        "niceltd_06_26_2003-ex-4.5-outsourcing agreement.pdf:p25",
+        "niceltd_06_26_2003-ex-4.5-outsourcing agreement.pdf:p23",
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement1.pdf:p35",
+        "bloomenergycorp_20180321_drsa (on s-1)_ex-10_11240356_ex-10_maintenance agreement.pdf:p24"
+      ]
+    },
+    {
+      "question_id": "q017",
+      "category": "exact_term",
+      "expected": [
+        "otisworldwidecorp_04_03_2020-ex-10.4-intellectual property agreement by and among united technologies corporation, otis worldwide corporation and carrier ~1.pdf:p13"
+      ],
+      "retrieved": [
+        "otisworldwidecorp_04_03_2020-ex-10.4-intellectual property agreement by and among united technologies corporation, otis worldwide corporation and carrier ~1.pdf:p1",
+        "otisworldwidecorp_04_03_2020-ex-10.4-intellectual property agreement by and among united technologies corporation, otis worldwide corporation and carrier ~1.pdf:p4",
+        "otisworldwidecorp_04_03_2020-ex-10.4-intellectual property agreement by and among united technologies corporation, otis worldwide corporation and carrier ~1.pdf:p14",
+        "otisworldwidecorp_04_03_2020-ex-10.4-intellectual property agreement by and among united technologies corporation, otis worldwide corporation and carrier ~1.pdf:p16",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p2"
+      ]
+    },
+    {
+      "question_id": "q018",
+      "category": "exact_term",
+      "expected": [
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p1"
+      ],
+      "retrieved": [
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p10",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p2",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p21",
+        "oaktreecapitalgroup,llc_03_02_2020-ex-10.8-services agreement.pdf:p2",
+        "leadersonlineinc_20000427_s-1a_ex-10.8_4991089_ex-10.8_co-branding agreement.pdf:p5"
+      ]
+    },
+    {
+      "question_id": "q022",
+      "category": "semantic",
+      "expected": [
+        "americanphysicianscapitalinc_03_31_2003-ex-10.26-agency agreement.pdf:p4"
+      ],
+      "retrieved": [
+        "nyliacvariableannuityseparateaccountiii_04_10_2020-ex-99.8.kk-service agreement.pdf:p2",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p29",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p21",
+        "monsanto company - second a_r exclusive agency and marketing agreement .pdf:p61",
+        "otisworldwidecorp_04_03_2020-ex-10.4-intellectual property agreement by and among united technologies corporation, otis worldwide corporation and carrier ~1.pdf:p20"
+      ]
+    },
+    {
+      "question_id": "q024",
+      "category": "semantic",
+      "expected": [
+        "theravancebiopharma,inc_05_08_2020-ex-10.2-service agreement.pdf:p8"
+      ],
+      "retrieved": [
+        "theravancebiopharma,inc_05_08_2020-ex-10.2-service agreement.pdf:p1",
+        "theravancebiopharma,inc_05_08_2020-ex-10.2-service agreement.pdf:p2",
+        "niceltd_06_26_2003-ex-4.5-outsourcing agreement.pdf:p22",
+        "theravancebiopharma,inc_05_08_2020-ex-10.2-service agreement.pdf:p14",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p18"
+      ]
+    },
+    {
+      "question_id": "q025",
+      "category": "exact_term",
+      "expected": [
+        "biopurecorp_06_30_1999-ex-10.13-agency agreement.pdf:p5"
+      ],
+      "retrieved": [
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p2",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p14",
+        "biopurecorp_06_30_1999-ex-10.13-agency agreement.pdf:p1",
+        "theravancebiopharma,inc_05_08_2020-ex-10.2-service agreement.pdf:p1",
+        "biopurecorp_06_30_1999-ex-10.13-agency agreement.pdf:p7"
+      ]
+    },
+    {
+      "question_id": "q031",
+      "category": "exact_term",
+      "expected": [
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p1"
+      ],
+      "retrieved": [
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p10",
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p2",
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p3",
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p4",
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p5"
+      ]
+    },
+    {
+      "question_id": "q032",
+      "category": "semantic",
+      "expected": [
+        "nuveen - remarketing agreement.pdf:p16",
+        "nuveen - remarketing agreement.pdf:p17"
+      ],
+      "retrieved": [
+        "nuveen - remarketing agreement.pdf:p20",
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p16",
+        "nuveen - remarketing agreement.pdf:p21",
+        "hubeiminkangpharmaceuticalltd_09_19_2006-ex-10.1-outsourcing agreement.pdf:p3",
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p88"
+      ]
+    },
+    {
+      "question_id": "q037",
+      "category": "semantic",
+      "expected": [
+        "operaltd_04_30_2020-ex-4.14-service agreement.pdf:p6"
+      ],
+      "retrieved": [
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p16",
+        "otisworldwidecorp_04_03_2020-ex-10.4-intellectual property agreement by and among united technologies corporation, otis worldwide corporation and carrier ~1.pdf:p19",
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p88",
+        "leclanch\u00e9 s.a. - joint development and marketing agreement.pdf:p9",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p13"
+      ]
+    },
+    {
+      "question_id": "q038",
+      "category": "semantic",
+      "expected": [
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p29"
+      ],
+      "retrieved": [
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p9",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p1",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement3.pdf:p1",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p33",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p34"
+      ]
+    },
+    {
+      "question_id": "q039",
+      "category": "semantic",
+      "expected": [
+        "americanphysicianscapitalinc_03_31_2003-ex-10.26-agency agreement.pdf:p3"
+      ],
+      "retrieved": [
+        "afsalabancorpinc_08_01_1996-ex-1.1-agency agreement.pdf:p17",
+        "afsalabancorpinc_08_01_1996-ex-1.1-agency agreement.pdf:p2",
+        "afsalabancorpinc_08_01_1996-ex-1.1-agency agreement.pdf:p20",
+        "afsalabancorpinc_08_01_1996-ex-1.1-agency agreement.pdf:p14",
+        "afsalabancorpinc_08_01_1996-ex-1.1-agency agreement.pdf:p7"
+      ]
+    },
+    {
+      "question_id": "q041",
+      "category": "exact_term",
+      "expected": [
+        "banuestrafinancialcorp_09_08_2006-ex-10.16-agency agreement.pdf:p1"
+      ],
+      "retrieved": [
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement1.pdf:p4",
+        "abilityinc_06_15_2020-ex-4.25-services agreement.pdf:p1",
+        "bluerockresidentialgrowthreit,inc_06_01_2016-ex-1.1-agency agreement.pdf:p28",
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement2.pdf:p1",
+        "operaltd_04_30_2020-ex-4.14-service agreement.pdf:p1"
+      ]
+    },
+    {
+      "question_id": "q042",
+      "category": "semantic",
+      "expected": [
+        "meritlifeinsuranceco_06_19_2020-ex-10.(xiv)-master services agreement.pdf:p9"
+      ],
+      "retrieved": [
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p10",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p25",
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p19",
+        "americanphysicianscapitalinc_03_31_2003-ex-10.26-agency agreement.pdf:p1",
+        "metlife, inc. - remarketing agreement.pdf:p10"
+      ]
+    },
+    {
+      "question_id": "q043",
+      "category": "semantic",
+      "expected": [
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p36"
+      ],
+      "retrieved": [
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p2",
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p1",
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p81",
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p75",
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p84"
+      ]
+    },
+    {
+      "question_id": "q044",
+      "category": "exact_term",
+      "expected": [
+        "alliancebancorpincofpennsylvania_10_18_2006-ex-1.2-agency agreement.pdf:p18",
+        "alliancebancorpincofpennsylvania_10_18_2006-ex-1.2-agency agreement.pdf:p19"
+      ],
+      "retrieved": [
+        "alliancebancorpincofpennsylvania_10_18_2006-ex-1.2-agency agreement.pdf:p1",
+        "alliancebancorpincofpennsylvania_10_18_2006-ex-1.2-agency agreement.pdf:p41",
+        "alliancebancorpincofpennsylvania_10_18_2006-ex-1.2-agency agreement.pdf:p30",
+        "alliancebancorpincofpennsylvania_10_18_2006-ex-1.2-agency agreement.pdf:p6",
+        "metlife, inc. - remarketing agreement.pdf:p2"
+      ]
+    },
+    {
+      "question_id": "q045",
+      "category": "semantic",
+      "expected": [
+        "scoutcaminc_05_12_2020-ex-10.22-services agreement.pdf:p3"
+      ],
+      "retrieved": [
+        "loop industries, inc. - marketing agreement.pdf:p10",
+        "hubeiminkangpharmaceuticalltd_09_19_2006-ex-10.1-outsourcing agreement.pdf:p3",
+        "leadersonlineinc_20000427_s-1a_ex-10.8_4991089_ex-10.8_co-branding agreement.pdf:p8",
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p9",
+        "monsanto company - second a_r exclusive agency and marketing agreement .pdf:p63"
+      ]
+    },
+    {
+      "question_id": "q046",
+      "category": "semantic",
+      "expected": [
+        "americanphysicianscapitalinc_03_31_2003-ex-10.26-agency agreement.pdf:p2"
+      ],
+      "retrieved": [
+        "sightlife surgical, inc. - strategic sales _ marketing agreement.pdf:p4",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p25",
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p10",
+        "afsalabancorpinc_08_01_1996-ex-1.1-agency agreement.pdf:p17",
+        "atninternationalinc_20191108_10-q_ex-10.1_11878541_ex-10.1_maintenance agreement.pdf:p31"
+      ]
+    },
+    {
+      "question_id": "q050",
+      "category": "semantic",
+      "expected": [
+        "americanphysicianscapitalinc_03_31_2003-ex-10.26-agency agreement.pdf:p5"
+      ],
+      "retrieved": [
+        "afsalabancorpinc_08_01_1996-ex-1.1-agency agreement.pdf:p7",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p21",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p31",
+        "loop industries, inc. - marketing agreement.pdf:p5",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p9"
+      ]
+    },
+    {
+      "question_id": "q051",
+      "category": "semantic",
+      "expected": [
+        "zounds hearing, inc. - manufacturing design marketing agreement.pdf:p7"
+      ],
+      "retrieved": [
+        "zounds hearing, inc. - manufacturing design marketing agreement.pdf:p9",
+        "zounds hearing, inc. - manufacturing design marketing agreement.pdf:p1",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p21",
+        "operaltd_04_30_2020-ex-4.14-service agreement.pdf:p6",
+        "monsanto company - second a_r exclusive agency and marketing agreement .pdf:p61"
+      ]
+    },
+    {
+      "question_id": "q055",
+      "category": "semantic",
+      "expected": [
+        "zounds hearing, inc. - manufacturing design marketing agreement.pdf:p7"
+      ],
+      "retrieved": [
+        "zounds hearing, inc. - manufacturing design marketing agreement.pdf:p1",
+        "zounds hearing, inc. - manufacturing design marketing agreement.pdf:p9",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p21",
+        "alamogordofinancialcorp_12_16_1999-ex-1-agency agreement.pdf:p9",
+        "zebratechnologiescorp_04_16_2014-ex-10.1-intellectual property agreement.pdf:p36"
+      ]
+    },
+    {
+      "question_id": "q056",
+      "category": "semantic",
+      "expected": [
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p21",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p22"
+      ],
+      "retrieved": [
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p1",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement3.pdf:p1",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p9",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p25",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement4.pdf:p2"
+      ]
+    },
+    {
+      "question_id": "q057",
+      "category": "semantic",
+      "expected": [
+        "elandiainternationalinc_04_25_2007-ex-10.21-outsourcing agreement.pdf:p37"
+      ],
+      "retrieved": [
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p16",
+        "fidelitynationalinformationservices,inc_08_05_2009-ex-10.3-intellectual property agreement.pdf:p6",
+        "otisworldwidecorp_04_03_2020-ex-10.4-intellectual property agreement by and among united technologies corporation, otis worldwide corporation and carrier ~1.pdf:p20",
+        "zebratechnologiescorp_04_16_2014-ex-10.1-intellectual property agreement.pdf:p35",
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p66"
+      ]
+    },
+    {
+      "question_id": "q058",
+      "category": "semantic",
+      "expected": [
+        "monsanto company - second a_r exclusive agency and marketing agreement .pdf:p63"
+      ],
+      "retrieved": [
+        "monsanto company - second a_r exclusive agency and marketing agreement .pdf:p59",
+        "monsanto company - second a_r exclusive agency and marketing agreement .pdf:p60",
+        "monsanto company - second a_r exclusive agency and marketing agreement .pdf:p45",
+        "monsanto company - second a_r exclusive agency and marketing agreement .pdf:p62",
+        "monsanto company - second a_r exclusive agency and marketing agreement .pdf:p20"
+      ]
+    },
+    {
+      "question_id": "q059",
+      "category": "exact_term",
+      "expected": [
+        "scoutcaminc_05_12_2020-ex-10.22-services agreement.pdf:p1"
+      ],
+      "retrieved": [
+        "gsitechnologyinc_11_16_2009-ex-10.2-intellectual property agreement between sony electronics inc. and gsi technology, inc..pdf:p4",
+        "leadersonlineinc_20000427_s-1a_ex-10.8_4991089_ex-10.8_co-branding agreement.pdf:p9",
+        "operaltd_04_30_2020-ex-4.14-service agreement.pdf:p7",
+        "otisworldwidecorp_04_03_2020-ex-10.4-intellectual property agreement by and among united technologies corporation, otis worldwide corporation and carrier ~1.pdf:p23",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p22"
+      ]
+    },
+    {
+      "question_id": "q060",
+      "category": "semantic",
+      "expected": [
+        "bicycletherapeuticsplc_03_10_2020-ex-10.11-service agreement.pdf:p6",
+        "bicycletherapeuticsplc_03_10_2020-ex-10.11-service agreement.pdf:p7",
+        "bicycletherapeuticsplc_03_10_2020-ex-10.11-service agreement.pdf:p9"
+      ],
+      "retrieved": [
+        "sightlife surgical, inc. - strategic sales _ marketing agreement.pdf:p5",
+        "talcottresolutionlifeinsuranceco-separateaccounttwelve_04_30_2020-ex-99.8(l)-service agreement.pdf:p6",
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement1.pdf:p35",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p10",
+        "hubeiminkangpharmaceuticalltd_09_19_2006-ex-10.1-outsourcing agreement.pdf:p3"
+      ]
+    },
+    {
+      "question_id": "q061",
+      "category": "exact_term",
+      "expected": [
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p1"
+      ],
+      "retrieved": [
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p3",
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p4",
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p5",
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p2",
+        "paperexchangecominc_20000322_s-1a_ex-10.4_5202103_ex-10.4_co-branding agreement.pdf:p7"
+      ]
+    },
+    {
+      "question_id": "q062",
+      "category": "semantic",
+      "expected": [
+        "alamogordofinancialcorp_12_16_1999-ex-1-agency agreement.pdf:p22"
+      ],
+      "retrieved": [
+        "alamogordofinancialcorp_12_16_1999-ex-1-agency agreement.pdf:p24",
+        "pacira pharmaceuticals, inc. - a_r strategic licensing, distribution and marketing agreement .pdf:p49",
+        "alamogordofinancialcorp_12_16_1999-ex-1-agency agreement.pdf:p1",
+        "alamogordofinancialcorp_12_16_1999-ex-1-agency agreement.pdf:p16",
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p17"
+      ]
+    },
+    {
+      "question_id": "q064",
+      "category": "exact_term",
+      "expected": [
+        "elandiainternationalinc_04_25_2007-ex-10.21-outsourcing agreement.pdf:p1",
+        "elandiainternationalinc_04_25_2007-ex-10.21-outsourcing agreement.pdf:p2",
+        "elandiainternationalinc_04_25_2007-ex-10.21-outsourcing agreement.pdf:p3",
+        "elandiainternationalinc_04_25_2007-ex-10.21-outsourcing agreement.pdf:p4",
+        "elandiainternationalinc_04_25_2007-ex-10.21-outsourcing agreement.pdf:p41"
+      ],
+      "retrieved": [
+        "otisworldwidecorp_04_03_2020-ex-10.4-intellectual property agreement by and among united technologies corporation, otis worldwide corporation and carrier ~1.pdf:p4",
+        "fidelitynationalinformationservices,inc_08_05_2009-ex-10.3-intellectual property agreement.pdf:p19",
+        "abilityinc_06_15_2020-ex-4.25-services agreement.pdf:p1",
+        "atninternationalinc_20191108_10-q_ex-10.1_11878541_ex-10.1_maintenance agreement.pdf:p31",
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement1.pdf:p4"
+      ]
+    },
+    {
+      "question_id": "q067",
+      "category": "exact_term",
+      "expected": [
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p1"
+      ],
+      "retrieved": [
+        "abilityinc_06_15_2020-ex-4.25-services agreement.pdf:p1",
+        "gwg holdings, inc. - orderly marketing agreement.pdf:p2",
+        "oasysmobile,inc_07_05_2001-ex-10.17-outsourcing agreement.pdf:p11",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p16",
+        "azulsa_20170303_f-1a_ex-10.3_9943903_ex-10.3_maintenance agreement1.pdf:p4"
+      ]
+    },
+    {
+      "question_id": "q068",
+      "category": "exact_term",
+      "expected": [
+        "zebratechnologiescorp_04_16_2014-ex-10.1-intellectual property agreement.pdf:p32"
+      ],
+      "retrieved": [
+        "zebratechnologiescorp_04_16_2014-ex-10.1-intellectual property agreement.pdf:p1",
+        "zebratechnologiescorp_04_16_2014-ex-10.1-intellectual property agreement.pdf:p40",
+        "herimports_20161018_8-ka_ex-10.14_9765707_ex-10.14_maintenance agreement.pdf:p1",
+        "zebratechnologiescorp_04_16_2014-ex-10.1-intellectual property agreement.pdf:p39",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p2"
+      ]
+    },
+    {
+      "question_id": "q072",
+      "category": "semantic",
+      "expected": [
+        "gsitechnologyinc_11_16_2009-ex-10.2-intellectual property agreement between sony electronics inc. and gsi technology, inc..pdf:p6",
+        "gsitechnologyinc_11_16_2009-ex-10.2-intellectual property agreement between sony electronics inc. and gsi technology, inc..pdf:p7"
+      ],
+      "retrieved": [
+        "gsitechnologyinc_11_16_2009-ex-10.2-intellectual property agreement between sony electronics inc. and gsi technology, inc..pdf:p1",
+        "zebratechnologiescorp_04_16_2014-ex-10.1-intellectual property agreement.pdf:p31",
+        "zebratechnologiescorp_04_16_2014-ex-10.1-intellectual property agreement.pdf:p22",
+        "zebratechnologiescorp_04_16_2014-ex-10.1-intellectual property agreement.pdf:p9",
+        "msciinc_02_28_2008-ex-10.10-.pdf:p2"
+      ]
+    },
+    {
+      "question_id": "q073",
+      "category": "semantic",
+      "expected": [
+        "scoutcaminc_05_12_2020-ex-10.22-services agreement.pdf:p2"
+      ],
+      "retrieved": [
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p21",
+        "gsitechnologyinc_11_16_2009-ex-10.2-intellectual property agreement between sony electronics inc. and gsi technology, inc..pdf:p7",
+        "gsitechnologyinc_11_16_2009-ex-10.2-intellectual property agreement between sony electronics inc. and gsi technology, inc..pdf:p9",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p70",
+        "loop industries, inc. - marketing agreement.pdf:p4"
+      ]
+    },
+    {
+      "question_id": "q074",
+      "category": "exact_term",
+      "expected": [
+        "nexstarfinanceholdingsinc_03_27_2002-ex-10.26-outsourcing agreement.pdf:p1"
+      ],
+      "retrieved": [
+        "nexstarfinanceholdingsinc_03_27_2002-ex-10.26-outsourcing agreement.pdf:p12",
+        "nexstarfinanceholdingsinc_03_27_2002-ex-10.26-outsourcing agreement.pdf:p19",
+        "nexstarfinanceholdingsinc_03_27_2002-ex-10.26-outsourcing agreement.pdf:p8",
+        "nexstarfinanceholdingsinc_03_27_2002-ex-10.26-outsourcing agreement.pdf:p14",
+        "nexstarfinanceholdingsinc_03_27_2002-ex-10.26-outsourcing agreement.pdf:p23"
+      ]
+    },
+    {
+      "question_id": "q078",
+      "category": "multi_document",
+      "expected": [
+        "elandiainternationalinc_04_25_2007-ex-10.21-outsourcing agreement.pdf:p10",
+        "leadersonlineinc_20000427_s-1a_ex-10.8_4991089_ex-10.8_co-branding agreement.pdf:p1"
+      ],
+      "retrieved": [
+        "leadersonlineinc_20000427_s-1a_ex-10.8_4991089_ex-10.8_co-branding agreement.pdf:p6",
+        "leadersonlineinc_20000427_s-1a_ex-10.8_4991089_ex-10.8_co-branding agreement.pdf:p5",
+        "leadersonlineinc_20000427_s-1a_ex-10.8_4991089_ex-10.8_co-branding agreement.pdf:p7",
+        "leadersonlineinc_20000427_s-1a_ex-10.8_4991089_ex-10.8_co-branding agreement.pdf:p3",
+        "americanphysicianscapitalinc_03_31_2003-ex-10.26-agency agreement.pdf:p4"
+      ]
+    },
+    {
+      "question_id": "q080",
+      "category": "multi_document",
+      "expected": [
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p33",
+        "gsitechnologyinc_11_16_2009-ex-10.2-intellectual property agreement between sony electronics inc. and gsi technology, inc..pdf:p18"
+      ],
+      "retrieved": [
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p9",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p1",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p7",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement3.pdf:p1",
+        "gsitechnologyinc_11_16_2009-ex-10.2-intellectual property agreement between sony electronics inc. and gsi technology, inc..pdf:p1"
+      ]
+    },
+    {
+      "question_id": "q081",
+      "category": "multi_document",
+      "expected": [
+        "scoutcaminc_05_12_2020-ex-10.22-services agreement.pdf:p1",
+        "transmontaignepartnersllc_03_13_2020-ex-10.9-services agreement.pdf:p2"
+      ],
+      "retrieved": [
+        "elandiainternationalinc_04_25_2007-ex-10.21-outsourcing agreement.pdf:p34",
+        "transmontaignepartnersllc_03_13_2020-ex-10.9-services agreement.pdf:p4",
+        "bicycletherapeuticsplc_03_10_2020-ex-10.11-service agreement.pdf:p14",
+        "monsanto company - second a_r exclusive agency and marketing agreement .pdf:p49",
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p7"
+      ]
+    },
+    {
+      "question_id": "q082",
+      "category": "multi_document",
+      "expected": [
+        "leclanch\u00e9 s.a. - joint development and marketing agreement.pdf:p9",
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p15"
+      ],
+      "retrieved": [
+        "leclanch\u00e9 s.a. - joint development and marketing agreement.pdf:p1",
+        "atninternationalinc_20191108_10-q_ex-10.1_11878541_ex-10.1_maintenance agreement.pdf:p7",
+        "leclanch\u00e9 s.a. - joint development and marketing agreement.pdf:p2",
+        "leclanch\u00e9 s.a. - joint development and marketing agreement.pdf:p8",
+        "leclanch\u00e9 s.a. - joint development and marketing agreement.pdf:p4"
+      ]
+    },
+    {
+      "question_id": "q084",
+      "category": "multi_document",
+      "expected": [
+        "biopurecorp_06_30_1999-ex-10.13-agency agreement.pdf:p4",
+        "biopurecorp_06_30_1999-ex-10.13-agency agreement.pdf:p6",
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p4",
+        "ofgbancorp_03_28_2007-ex-10.23-outsourcing agreement.pdf:p9"
+      ],
+      "retrieved": [
+        "biopurecorp_06_30_1999-ex-10.13-agency agreement.pdf:p1",
+        "musclepharmcorp_20170208_10-ka_ex-10.38_9893581_ex-10.38_co-branding agreement.pdf:p25",
+        "biopurecorp_06_30_1999-ex-10.13-agency agreement.pdf:p7",
+        "theravancebiopharma,inc_05_08_2020-ex-10.2-service agreement.pdf:p2",
+        "cardlyticsinc_20180112_s-1_ex-10.16_11002987_ex-10.16_maintenance agreement1.pdf:p21"
+      ]
+    },
+    {
+      "question_id": "q086",
+      "category": "multi_document",
+      "expected": [
+        "bluerockresidentialgrowthreit,inc_06_01_2016-ex-1.1-agency agreement.pdf:p21",
+        "manufacturersservicesltd_06_05_2000-ex-10.14-outsourcing agreement.pdf:p51"
+      ],
+      "retrieved": [
+        "bluerockresidentialgrowthreit,inc_06_01_2016-ex-1.1-agency agreement.pdf:p17",
+        "bluehillsbancorp,inc_05_20_2014-ex-1.1-agency agreement.pdf:p11",
+        "bluerockresidentialgrowthreit,inc_06_01_2016-ex-1.1-agency agreement.pdf:p1",
+        "bluehillsbancorp,inc_05_20_2014-ex-1.1-agency agreement.pdf:p2",
+        "bluerockresidentialgrowthreit,inc_06_01_2016-ex-1.1-agency agreement.pdf:p42"
+      ]
+    }
+  ],
+  "cache": {
+    "hits": 0,
+    "misses": 0,
+    "hit_rate": 0.0
+  }
+}

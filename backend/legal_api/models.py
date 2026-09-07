@@ -42,6 +42,31 @@ class KnownDevice(Base):
         return f"{self.user_id} - {self.device_hash[:12]}"
 
 
+class RateLimit(Base):
+    """Fixed-window request counter, shared across workers."""
+
+    __tablename__ = "rate_limits"
+
+    key = Column(String(255), primary_key=True)
+    window_start = Column(DateTime(timezone=True), nullable=False)
+    count = Column(Integer, nullable=False, default=0)
+
+    def __repr__(self):
+        return f"{self.key}: {self.count}"
+
+
+class UploadStatus(Base):
+    __tablename__ = "upload_status"
+
+    user_id = Column(BigInteger, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    filename = Column(String(512), primary_key=True)
+    status = Column(String(255), nullable=False)
+    updated_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+
+    def __repr__(self):
+        return f"{self.filename}: {self.status}"
+
+
 class Document(Base):
     __tablename__ = "documents"
     

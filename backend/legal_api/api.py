@@ -8,7 +8,7 @@ import threading
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
 from fastapi.responses import JSONResponse, StreamingResponse
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import bcrypt
@@ -49,25 +49,36 @@ def read_root():
     }
 
 
-# Rate Limiter 
+_RATE_SQL = text("""
+INSERT INTO rate_limits (key, window_start, count)
+VALUES (:key, now(), 1)
+ON CONFLICT (key) DO UPDATE SET
+    count = CASE
+        WHEN rate_limits.window_start < now() - make_interval(secs => :window)
+        THEN 1 ELSE rate_limits.count + 1 END,
+    window_start = CASE
+        WHEN rate_limits.window_start < now() - make_interval(secs => :window)
+        THEN now() ELSE rate_limits.window_start END
+RETURNING count
+""")
+
+
 class RateLimiter:
     def __init__(self, max_req: int = 10, window: int = 60):
         self.max_req, self.window = max_req, window
-        self._reqs: dict[str, list[float]] = {}
-        self._lock = threading.Lock()
 
     def check(self, key: str):
-        now = time.time()
-        with self._lock:
-            # Evict stale keys to prevent unbounded memory growth
-            stale = [k for k, ts in self._reqs.items() if ts and now - ts[-1] > self.window]
-            for k in stale:
-                del self._reqs[k]
-            ts = [t for t in self._reqs.get(key, []) if now - t < self.window]
-            if len(ts) >= self.max_req:
-                raise RateLimitExceeded()
-            ts.append(now)
-            self._reqs[key] = ts
+
+        session = SyncSessionLocal()
+        try:
+            count = session.execute(
+                _RATE_SQL, {"key": f"{self.max_req}:{self.window}:{key}", "window": self.window}
+            ).scalar_one()
+            session.commit()
+        finally:
+            session.close()
+        if count > self.max_req:
+            raise RateLimitExceeded()
 
 
 class RateLimitExceeded(Exception):
@@ -87,38 +98,54 @@ def _client_ip(request: Request) -> str:
     return "127.0.0.1"
 
 
-_status_store: dict[str, dict] = {}
-_status_lock = threading.Lock()
 _STATUS_TTL = 3600
 
+_STATUS_SET_SQL = text("""
+INSERT INTO upload_status (user_id, filename, status, updated_at)
+VALUES (:uid, :fn, :st, now())
+ON CONFLICT (user_id, filename) DO UPDATE SET status = :st, updated_at = now()
+""")
 
-def _set_status(key: str, status: str):
-    now = time.time()
-    with _status_lock:
-        for k in [k for k, v in list(_status_store.items()) if now - v["t"] > _STATUS_TTL]:
-            del _status_store[k]
-        _status_store[key] = {"s": status, "t": now}
+_STATUS_GET_SQL = text("""
+SELECT status FROM upload_status
+WHERE user_id = :uid AND filename = :fn
+  AND updated_at > now() - make_interval(secs => :ttl)
+""")
 
 
-def _get_status(key: str) -> str:
-    with _status_lock:
-        e = _status_store.get(key)
-        if not e or time.time() - e["t"] > _STATUS_TTL:
-            _status_store.pop(key, None)
-            return "unknown"
-        return e["s"]
+def _set_status(user_id: int, filename: str, status: str, session=None):
+    """Record indexing progress. Pass `session` from the background thread,
+    which already holds one; otherwise a short-lived session is used."""
+    own = session is None
+    session = session or SyncSessionLocal()
+    try:
+        session.execute(_STATUS_SET_SQL, {"uid": user_id, "fn": filename, "st": status[:255]})
+        session.commit()
+    finally:
+        if own:
+            session.close()
+
+
+def _get_status(user_id: int, filename: str) -> str:
+    session = SyncSessionLocal()
+    try:
+        row = session.execute(
+            _STATUS_GET_SQL, {"uid": user_id, "fn": filename, "ttl": _STATUS_TTL}
+        ).scalar_one_or_none()
+        return row or "unknown"
+    finally:
+        session.close()
 
 
 def process_document_task(file_path: str, filename: str, user_email: str, user_id: int):
-    status_key = f"{user_email}:{filename}"
     session = SyncSessionLocal()
     try:
-        _set_status(status_key, "extracting_text")
+        _set_status(user_id, filename, "extracting_text", session)
         logger.info(f"Processing started: {filename} (owner: {user_email})")
         pages = extract_document_pages(file_path)
         if not any(p["text"].strip() for p in pages):
             raise ValueError("No text could be extracted from the document.")
-        _set_status(status_key, "indexing")
+        _set_status(user_id, filename, "indexing", session)
 
         user = session.execute(select(User).where(User.id == user_id))
         user = user.scalar_one_or_none()
@@ -127,13 +154,13 @@ def process_document_task(file_path: str, filename: str, user_email: str, user_i
         else:
             logger.error("User not found in background task.")
 
-        _set_status(status_key, "completed")
+        _set_status(user_id, filename, "completed", session)
         logger.info(f"Processing completed: {filename} (owner: {user_email})")
     except ValueError as e:
-        _set_status(status_key, f"error: {e}")
+        _set_status(user_id, filename, f"error: {e}", session)
         logger.warning(f"Could not process {filename} for {user_email}: {e}")
     except Exception:
-        _set_status(status_key, "error: processing failed")
+        _set_status(user_id, filename, "error: processing failed", session)
         logger.exception(f"Error processing {filename} for {user_email}")
     finally:
         session.close()
@@ -226,25 +253,15 @@ async def login(request: Request, payload: LoginRequest, db: AsyncSession = Depe
 
     token = create_access_token({"sub": user.email})
 
-    response = JSONResponse(
+    return JSONResponse(
         content={"access_token": token, "token_type": "bearer", "email": user.email}
     )
-    response.set_cookie(
-        key="access_token",
-        value=token,
-        httponly=True,
-        secure=settings.IS_PRODUCTION,
-        max_age=36000,
-        samesite="lax",
-    )
-    return response
 
 
 @router.post("/api/logout")
 async def logout():
-    response = JSONResponse(content={"message": "Logged out successfully"})
-    response.delete_cookie("access_token")
-    return response
+    # Stateless JWT: the client drops the token. Nothing server-side to clear.
+    return JSONResponse(content={"message": "Logged out successfully"})
 
 
 @router.get("/api/me")
@@ -299,7 +316,7 @@ async def upload_document(
     finally:
         sync_session.close()
 
-    _set_status(f"{current_user.email}:{filename}", "queued")
+    _set_status(current_user.id, filename, "queued")
 
     # Process in background thread
     threading.Thread(
@@ -313,7 +330,7 @@ async def upload_document(
 
 @router.get("/api/status/{filename}")
 async def get_processing_status(filename: str, current_user: User = Depends(get_current_user)):
-    status = _get_status(f"{current_user.email}:{filename}")
+    status = _get_status(current_user.id, filename)
     return {"filename": filename, "status": status}
 
 
@@ -350,8 +367,15 @@ async def delete_document(filename: str, current_user: User = Depends(get_curren
     if os.path.exists(path):
         os.remove(path)
 
-    with _status_lock:
-        _status_store.pop(f"{current_user.email}:{filename}", None)
+    sync_session = SyncSessionLocal()
+    try:
+        sync_session.execute(
+            text("DELETE FROM upload_status WHERE user_id = :uid AND filename = :fn"),
+            {"uid": current_user.id, "fn": filename},
+        )
+        sync_session.commit()
+    finally:
+        sync_session.close()
 
     return {"message": f"Document '{filename}' deleted", "deleted_chunks": deleted}
 

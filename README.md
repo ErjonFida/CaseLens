@@ -67,15 +67,7 @@ page nobody read. `is_impossible` annotations supply expert-verified
 | multi_document | 0.204 |
 | latency p50 / p95 | 113ms / 161ms |
 
-0.34 is a starting point, not a good score. Two
-diagnostics say where the headroom is:
-
-- **recall@50 is 0.636 against recall@5 of 0.340.** The correct page is usually
-  in the candidate pool and ranked too low — a ranking problem, not a retrieval
-  one. Reranking is the largest available win.
-- **72% of questions retrieve the right contract; 34% retrieve the right
-  contract but the wrong page.** The embedding identifies the agreement and fails
-  to localise within it, which points at chunk granularity.
+0.34 is a starting point, not a good score.
 
 Anything claimed as an improvement will be measured against the committed
 baseline report, one change at a time.
@@ -185,29 +177,21 @@ See [Known limitations](#known-limitations) for what this does **not** do.
 
 Specific and current.
 
-1. **No CSRF protection.** Session cookies rely on `SameSite=Lax` alone. That
-   blocks the common cross-site POST, but there is no double-submit token, and
-   any endpoint reachable by a top-level navigation is unprotected.
 
-2. **Rate limits and upload status live in process memory.** Both break under
-   more than one worker: limits become per-worker, and a status poll routed to a
-   different worker reports `unknown`. Single-worker only until they move to
-   Redis.
-
-3. **`X-Forwarded-For` is trusted unconditionally.** Without a proxy allowlist,
+1. **`X-Forwarded-For` is trusted unconditionally.** Without a proxy allowlist,
    any client can set the header and reset its own rate-limit bucket.
 
-4. **Uploads are read fully into memory before the size check**, so the 25 MB cap
+2. **Uploads are read fully into memory before the size check**, so the 25 MB cap
    does not prevent a large upload from allocating first.
 
-5. **CORS allows all origins outside production**, with credentials enabled.
+3. **CORS allows all origins outside production**, with credentials enabled.
    Fine locally; would be a hole if a non-production build were ever exposed.
 
-6. **No vector index.** Retrieval is an exact scan — correct and fast enough at
+4. **No vector index.** Retrieval is an exact scan — correct and fast enough at
    5,574 chunks (~113ms p50), but it will not scale. An HNSW index is worth
    adding once there is a latency number to improve on.
 
-7. **Retrieval is dense-only.** No hybrid search, no reranking, no query
+5. **Retrieval is dense-only.** No hybrid search, no reranking, no query
    rewriting. The baseline above is what that costs.
 
 

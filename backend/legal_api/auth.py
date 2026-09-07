@@ -34,9 +34,6 @@ async def get_current_user(
         token = auth_header[7:]
 
     if not token:
-        token = request.cookies.get("access_token")
-
-    if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
     try:

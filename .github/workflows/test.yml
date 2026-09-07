@@ -1,0 +1,43 @@
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: legal_user
+          POSTGRES_PASSWORD: legal_password
+          POSTGRES_DB: legal_db
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U legal_user -d legal_db"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+
+    env:
+      DATABASE_URL: postgresql://legal_user:legal_password@localhost:5432/legal_db
+      JWT_SECRET: ci-not-a-real-secret
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      # httpx is not a runtime dep; starlette's TestClient needs it.
+      - run: pip install -r backend/requirements.txt httpx
+
+      # Doubles as the migration check: a broken revision chain fails here.
+      - run: alembic upgrade head
+        working-directory: backend
+
+      - run: python test_csrf.py
+        working-directory: backend
+
+      - run: python test_shared_state.py
+        working-directory: backend

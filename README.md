@@ -13,7 +13,7 @@ than asserting that it works.
 |---|---|
 | **Live demo** | _not yet deployed_ |
 | **Evaluation suite** | [evals/README.md](evals/README.md) |
-| **Current baseline** | recall@5 **0.340**, MRR **0.298** ([report](evals/reports/baseline-dense-nomic.json)) |
+| **Current baseline** | recall@5 **0.536**, MRR **0.437** ([report](evals/reports/name-scoped.json)) |
 | **Local setup** | [Running it](#running-it) |
 
 ---
@@ -55,19 +55,39 @@ found by locating each annotated span in the document, so no label points at a
 page nobody read. `is_impossible` annotations supply expert-verified
 `unanswerable` questions.
 
-**Baseline** — dense retrieval, `nomic-embed-text`, 1000/150 chunking:
+`nomic-embed-text`, 1000/150 chunking. Name-scoped is what the API serves;
+dense is kept as the comparison point every change is measured against.
 
-| Metric | Result |
-|---|---:|
-| recall@5 | 0.340 |
-| recall@10 | 0.397 |
-| MRR | 0.298 |
-| exact_term | 0.419 |
-| semantic | 0.321 |
-| multi_document | 0.204 |
-| latency p50 / p95 | 113ms / 161ms |
+| Metric | Dense | Name-scoped |
+|---|---:|---:|
+| recall@5 | 0.340 | **0.536** |
+| recall@10 | 0.397 | 0.601 |
+| MRR | 0.298 | **0.437** |
+| exact_term | 0.419 | 0.716 |
+| semantic | 0.321 | 0.500 |
+| multi_document | 0.204 | 0.204 |
+| latency p50 / p95 | 113ms / 161ms | 104ms / 160ms |
 
-0.34 is a starting point, not a good score.
+**Name-scoping** resolves the contract from the question before searching, in
+`query_scoped_context`, which both API endpoints call. A
+question that says "the {party} agreement" is matched against filenames with
+prefix terms — the stemmer reduces "Hubeiminkangpharmaceutical" and
+"HUBEIMINKANGPHARMACEUTICALLTD" to different lexemes, so only a prefix match
+connects them — and when one document clearly wins, the vector search is
+restricted to it. 44 of 100 questions scope; the rest fall back to
+unrestricted dense search, so nothing regresses when a query names no
+document. Scoping is also marginally faster, because the scan is smaller.
+
+The gold set is templated from CUAD
+categories, so every question names its contract by construction. Real queries
+often do not, and those take the dense path and the dense number.
+
+**Hybrid retrieval was tried and rejected.** A `tsvector` channel fused with
+the vector channel by reciprocal rank scored recall@5 0.126, well under the
+dense baseline. Lexical alone scored 0.051 — near chance — because once the
+party name is removed the remaining terms ("date", "agreement", "governing
+law") appear in all contracts, and the party name is absent from the chunk
+bodies: it lives in the filename.
 
 Anything claimed as an improvement will be measured against the committed
 baseline report, one change at a time.
@@ -184,15 +204,13 @@ Specific and current.
 2. **Uploads are read fully into memory before the size check**, so the 25 MB cap
    does not prevent a large upload from allocating first.
 
-3. **CORS allows all origins outside production**, with credentials enabled.
-   Fine locally; would be a hole if a non-production build were ever exposed.
-
-4. **No vector index.** Retrieval is an exact scan — correct and fast enough at
+3. **No vector index.** Retrieval is an exact scan — correct and fast enough at
    5,574 chunks (~113ms p50), but it will not scale. An HNSW index is worth
    adding once there is a latency number to improve on.
 
-5. **Retrieval is dense-only.** No hybrid search, no reranking, no query
-   rewriting. The baseline above is what that costs.
+4. **No reranking or query rewriting.** Retrieval is vector search, optionally
+   scoped to one document by name. Hybrid lexical search was measured and
+   rejected (above).
 
 
 ---
@@ -201,12 +219,10 @@ Specific and current.
 
 In order:
 
-1. Chunking sweep against the committed baseline.
-2. Cross-encoder reranking over a wider candidate pool — the measured headroom is
-   0.340 to a 0.636 ceiling.
-3. Hybrid retrieval: `tsvector` and GIN index alongside the vector channel, fused
-   by reciprocal rank.
-4. Close limitations 2 through 5, which are the ones that matter before any
+1. Cross-encoder reranking, aimed at the 56 questions that do not scope — the
+   scoped path is close to exhausted at recall@10 0.601 against a 0.636 pool.
+2. Chunking sweep against the committed baseline.
+3. Close limitations 1 through 4, which are the ones that matter before any
    deployment.
 
 ## Licence

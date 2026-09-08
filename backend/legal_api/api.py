@@ -390,7 +390,7 @@ async def search_documents(
     query_limiter.check(_client_ip(request))
     sync_session = SyncSessionLocal()
     try:
-        contexts = _get_store().query_similar_context(payload.query, current_user, sync_session, top_k=5)
+        contexts = _get_store().query_scoped_context(payload.query, current_user, sync_session, top_k=5)
         return {"contexts": contexts}
     finally:
         sync_session.close()
@@ -413,7 +413,7 @@ async def chat_stream(
 
     sync_session = SyncSessionLocal()
     try:
-        contexts = _get_store().query_similar_context(latest_msg, current_user, sync_session, top_k=5)
+        contexts = _get_store().query_scoped_context(latest_msg, current_user, sync_session, top_k=5)
     finally:
         sync_session.close()
 

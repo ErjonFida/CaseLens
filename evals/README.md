@@ -1,9 +1,5 @@
 # Retrieval evaluation
 
-Measures the retriever the application actually ships: `DenseRetriever` calls the
-same `query_similar_context` the API calls, so these numbers describe the running
-system rather than a reimplementation of it.
-
 Runs offline. Embeddings come from a local Ollama model and are cached by content
 hash, so re-running costs nothing and a chunking sweep only re-embeds what changed.
 
@@ -12,7 +8,10 @@ hash, so re-running costs nothing and a chunking sweep only re-embeds what chang
 ```bash
 python -m evals.corpus                       # index evals/corpus/ (destructive)
 python -m evals.run --label my-experiment    # writes evals/reports/my-experiment.json
+python -m evals.run --label scoped --retriever scoped
 ```
+
+`--retriever` selects `dense` (default) or `scoped`.
 
 Sweeping chunk parameters:
 
@@ -61,9 +60,28 @@ A gold entry naming a document outside the corpus fails the run rather than scor
 zero: a mistyped filename and a real retrieval failure are indistinguishable once
 averaged.
 
+## Results so far
+
+| Retriever | recall@5 | MRR |
+|---|---:|---:|
+| `dense` | 0.340 | 0.298 |
+| `scoped` | 0.536 | 0.437 |
+
+Read `scoped` with its caveat: `cuad_import` templates every question as
+"the {party} agreement", so all 100 name their contract by construction. 44 of
+them match a filename confidently enough to scope; the rest fall back to dense.
+Real queries name a document less often, so this gap overstates what users
+would see.
+
+**Hybrid retrieval was measured and rejected.** A `tsvector` channel fused by
+reciprocal rank scored recall@5 0.126; lexical alone scored 0.051. Once the
+party name is removed the remaining terms appear in all 69 contracts, and the
+party name is not in the chunk bodies — it is in the filename. Fusing noise
+with signal at equal weight halves the signal. Name-scoping came out of that
+failure, which is the argument for measuring each step separately.
+
 ## Next
 
-`HybridRetriever` in `retrievers.py` is a stub. The plan is a `tsvector` column and
-GIN index alongside the vector channel, fused by reciprocal rank, then reranked.
-Measure each step separately — the interesting claim is not "hybrid is better" but
-which categories move.
+Cross-encoder reranking, aimed at the 56 questions that do not scope. The
+scoped path is close to exhausted — recall@10 0.601 against a 0.636 pool
+ceiling — so the remaining headroom is in the queries that name no document.

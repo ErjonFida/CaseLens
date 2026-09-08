@@ -1,10 +1,23 @@
 import logging
-from sqlalchemy import select, delete, func
+from sqlalchemy import select, delete, desc, func, text
 from sqlalchemy.orm import Session
 
 from embeddings import get_embedder
 
 logger = logging.getLogger("vector_store")
+
+_NAME_RANK_SQL = text("""
+SELECT d.id AS id,
+       ts_rank_cd(
+           to_tsvector('english', replace(d.filename, '_', ' ')),
+           to_tsquery('english', nullif(array_to_string(
+               ARRAY(SELECT l || ':*' FROM unnest(tsvector_to_array(
+                     to_tsvector('english', :q))) AS l), ' | '), ''))
+       ) AS rank
+FROM documents d
+WHERE d.user_id = :uid
+ORDER BY rank DESC
+""")
 
 
 class LegalVectorStore:
@@ -99,7 +112,18 @@ class LegalVectorStore:
                 logger.error(f"Error cleaning up document {filename} record: {cleanup_err}")
             raise e
 
-    def query_similar_context(self, query: str, user, session: Session, top_k: int = 5) -> list[dict]:
+    def match_documents_by_name(self, query: str, user, session: Session) -> list[tuple[int, float]]:
+
+        from legal_api.models import Document
+
+        if not query:
+            return []
+
+        rows = session.execute(_NAME_RANK_SQL, {"q": query, "uid": user.id}).all()
+        return [(row.id, float(row.rank)) for row in rows if row.rank and row.rank > 0]
+
+    def query_similar_context(self, query: str, user, session: Session, top_k: int = 5,
+                              document_ids: list[int] | None = None) -> list[dict]:
 
         from legal_api.models import Document, DocumentChunk
 
@@ -120,6 +144,11 @@ class LegalVectorStore:
             .join(Document, DocumentChunk.document_id == Document.id)
             .filter(Document.user_id == user.id)
             .filter(DocumentChunk.embedding_model == self.embedder.name)
+        )
+        if document_ids:
+            results = results.filter(Document.id.in_(document_ids))
+        results = (
+            results
             .order_by("distance")
             .limit(top_k)
             .all()
@@ -138,6 +167,27 @@ class LegalVectorStore:
             }
             for row in results
         ]
+
+    def query_scoped_context(self, query: str, user, session: Session, top_k: int = 5,
+                             margin: float = 1.5) -> list[dict]:
+        """Resolve the contract the query names, then rank pages inside it.
+
+        A question like "what does the Acme MSA say about termination" is two
+        questions: which document, and which page of it. Answering the first by
+        name turns the second into a ranking problem over one document's pages
+        instead of every chunk in the corpus.
+
+        The scope is applied only when one document beats the next by `margin`.
+        An ambiguous match - or a query naming no document at all, which is the
+        common case for questions like "what does section 2 say" - falls back to
+        unrestricted search rather than confidently searching the wrong file.
+        """
+        matches = self.match_documents_by_name(query, user, session)
+        scope = None
+        if matches and (len(matches) == 1 or matches[0][1] >= matches[1][1] * margin):
+            scope = [matches[0][0]]
+            logger.info(f"Query scoped to document id={scope[0]} by name match")
+        return self.query_similar_context(query, user, session, top_k=top_k, document_ids=scope)
 
     def list_documents(self, user, session: Session) -> list[str]:
 

@@ -13,7 +13,7 @@ from . import dataset as gold
 from . import metrics
 from .corpus import build_embedder, corpus_fingerprint, CORPUS_DIR
 from .metrics import QuestionResult
-from .retrievers import DenseRetriever, TimedRetriever
+from .retrievers import DenseRetriever, NameScopedRetriever, TimedRetriever
 
 logger = logging.getLogger("evals.run")
 
@@ -21,7 +21,7 @@ MAX_K = max(metrics.K_VALUES)
 
 
 def _suggest(wanted: str, known: dict[str, str]) -> str:
-    "Propose a filename only when the evidence is strong."
+
 
     def tokens(name: str) -> set[str]:
         parts = re.split(r"[^a-z0-9]+", gold.normalize_filename(name))
@@ -47,7 +47,6 @@ def _suggest(wanted: str, known: dict[str, str]) -> str:
 
 
 def verify_labels(questions, indexed_names: list[str]) -> None:
-    "Refuse to score a gold set that points at documents the corpus lacks."
 
     known = {gold.normalize_filename(n): n for n in indexed_names}
     problems: list[str] = []
@@ -70,7 +69,7 @@ def verify_labels(questions, indexed_names: list[str]) -> None:
         )
 
 
-def run(dataset_path: Path, label: str) -> dict:
+def run(dataset_path: Path, label: str, retriever_name: str = "dense") -> dict:
     
     questions = gold.load(dataset_path)
     logger.info(f"Loaded {len(questions)} questions: {gold.summarise(questions)}")
@@ -101,7 +100,8 @@ def run(dataset_path: Path, label: str) -> dict:
 
         verify_labels(questions, indexed_names)
 
-        retriever = TimedRetriever(DenseRetriever(store, user, session))
+        build = NameScopedRetriever if retriever_name == "scoped" else DenseRetriever
+        retriever = TimedRetriever(build(store, user, session))
 
         results: list[QuestionResult] = []
         for q in questions:
@@ -173,6 +173,7 @@ def main() -> None:
     parser.add_argument("--dataset", type=Path, default=DATASET_DIR / "gold.jsonl")
     parser.add_argument("--label", default="dense-baseline")
     parser.add_argument("--out", type=Path, default=None)
+    parser.add_argument("--retriever", choices=("dense", "scoped"), default="dense")
     args = parser.parse_args()
 
     if not args.dataset.exists():
@@ -181,7 +182,7 @@ def main() -> None:
             f"{DATASET_DIR / 'gold.example.jsonl'} and write your own."
         )
 
-    report = run(args.dataset, args.label)
+    report = run(args.dataset, args.label, args.retriever)
     print_report(report)
 
     REPORT_DIR.mkdir(parents=True, exist_ok=True)

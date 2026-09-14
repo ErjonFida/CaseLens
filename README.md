@@ -198,17 +198,11 @@ See [Known limitations](#known-limitations) for what this does **not** do.
 Specific and current.
 
 
-1. **`X-Forwarded-For` is trusted unconditionally.** Without a proxy allowlist,
-   any client can set the header and reset its own rate-limit bucket.
-
-2. **Uploads are read fully into memory before the size check**, so the 25 MB cap
-   does not prevent a large upload from allocating first.
-
-3. **No vector index.** Retrieval is an exact scan — correct and fast enough at
+1. **No vector index.** Retrieval is an exact scan — correct and fast enough at
    5,574 chunks (~113ms p50), but it will not scale. An HNSW index is worth
    adding once there is a latency number to improve on.
 
-4. **No reranking or query rewriting.** Retrieval is vector search, optionally
+2. **No reranking or query rewriting.** Retrieval is vector search, optionally
    scoped to one document by name. Hybrid lexical search was measured and
    rejected (above).
 
@@ -222,8 +216,7 @@ In order:
 1. Cross-encoder reranking, aimed at the 56 questions that do not scope — the
    scoped path is close to exhausted at recall@10 0.601 against a 0.636 pool.
 2. Chunking sweep against the committed baseline.
-3. Close limitations 1 through 4, which are the ones that matter before any
-   deployment.
+3. Close limitations 1 and 2.
 
 ## Licence
 

@@ -41,3 +41,6 @@ jobs:
 
       - run: python test_shared_state.py
         working-directory: backend
+
+      - run: python test_limits.py
+        working-directory: backend

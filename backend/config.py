@@ -53,6 +53,12 @@ class Settings(BaseSettings):
 
     ALLOWED_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000"
 
+    TRUSTED_PROXIES: str = ""
+
+    @property
+    def trusted_proxies(self) -> set[str]:
+        return {p.strip() for p in self.TRUSTED_PROXIES.split(",") if p.strip()}
+
     @property
     def cors_origins(self) -> list[str]:
         return [o.strip() for o in self.ALLOWED_ORIGINS.split(",") if o.strip()]
@@ -61,10 +67,6 @@ class Settings(BaseSettings):
     EMBEDDING_PROVIDER: str = "ollama"
     EMBEDDING_MODEL: str = "nomic-embed-text"
     EMBEDDING_DIMENSIONS: int = 768
-
-    # Answer generation. Separate from the embedding provider on purpose: the
-    # two are independent choices, and a local generator is useful long before
-    # a local embedder would be worth re-indexing the corpus for.
     LLM_PROVIDER: str = "gemini"
     LLM_MODEL: str = ""
 

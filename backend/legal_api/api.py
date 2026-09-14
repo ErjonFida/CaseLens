@@ -90,12 +90,13 @@ query_limiter = RateLimiter(30, 60)
 
 
 def _client_ip(request: Request) -> str:
-    x_forwarded_for = request.headers.get("x-forwarded-for")
-    if x_forwarded_for:
-        return x_forwarded_for.split(",")[0].strip()
-    if request.client:
-        return request.client.host
-    return "127.0.0.1"
+    peer = request.client.host if request.client else "127.0.0.1"
+    if peer not in settings.trusted_proxies:
+        return peer
+    # The rightmost entry is the one our proxy appended; anything left of it
+    # was sent by the client and can say whatever it likes.
+    forwarded = request.headers.get("x-forwarded-for", "")
+    return forwarded.rsplit(",", 1)[-1].strip() or peer
 
 
 _STATUS_TTL = 3600
@@ -114,8 +115,7 @@ WHERE user_id = :uid AND filename = :fn
 
 
 def _set_status(user_id: int, filename: str, status: str, session=None):
-    """Record indexing progress. Pass `session` from the background thread,
-    which already holds one; otherwise a short-lived session is used."""
+
     own = session is None
     session = session or SyncSessionLocal()
     try:
@@ -289,23 +289,30 @@ async def upload_document(
             detail=f"Unsupported file type '{ext}'. Allowed: {', '.join(sorted(settings.ALLOWED_FILE_EXTENSIONS))}",
         )
 
-    contents = await file.read()
-    if len(contents) > settings.MAX_FILE_SIZE_BYTES:
-        raise HTTPException(
-            status_code=400,
-            detail=f"File too large. Maximum: {settings.MAX_FILE_SIZE_BYTES // (1024*1024)}MB",
-        )
-
     safe_email = re.sub(r'[^a-zA-Z0-9_.-]', '_', current_user.email)
     user_dir = os.path.join(settings.UPLOAD_DIR, safe_email)
     os.makedirs(user_dir, exist_ok=True)
     file_path = os.path.join(user_dir, filename)
-
+    tmp_path = file_path + ".part"
+    received = 0
     try:
-        with open(file_path, "wb") as f:
-            f.write(contents)
+        with open(tmp_path, "wb") as f:
+            while chunk := await file.read(1024 * 1024):
+                received += len(chunk)
+                if received > settings.MAX_FILE_SIZE_BYTES:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"File too large. Maximum: {settings.MAX_FILE_SIZE_BYTES // (1024*1024)}MB",
+                    )
+                f.write(chunk)
+        os.replace(tmp_path, file_path)
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Could not save file: {e}")
+    finally:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
 
     # Delete existing chunks if re-uploading (sync session for vector store)
     sync_session = SyncSessionLocal()

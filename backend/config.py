@@ -69,10 +69,10 @@ class Settings(BaseSettings):
     EMBEDDING_DIMENSIONS: int = 768
     LLM_PROVIDER: str = "gemini"
     LLM_MODEL: str = ""
+    LLM_NUM_CTX: int = 8192
 
     @property
     def llm_model_name(self) -> str:
-        """Resolve the generation model, defaulting per provider."""
         if self.LLM_MODEL:
             return self.LLM_MODEL
         if self.LLM_PROVIDER.lower() == "ollama":

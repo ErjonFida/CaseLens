@@ -93,8 +93,7 @@ def _client_ip(request: Request) -> str:
     peer = request.client.host if request.client else "127.0.0.1"
     if peer not in settings.trusted_proxies:
         return peer
-    # The rightmost entry is the one our proxy appended; anything left of it
-    # was sent by the client and can say whatever it likes.
+        
     forwarded = request.headers.get("x-forwarded-for", "")
     return forwarded.rsplit(",", 1)[-1].strip() or peer
 
@@ -451,7 +450,12 @@ async def chat_stream(
             messages.append({"role": "user", "content": latest_msg})
 
             try:
-                for chunk in ollama.chat(model=model_name, messages=messages, stream=True):
+                for chunk in ollama.chat(
+                    model=model_name,
+                    messages=messages,
+                    stream=True,
+                    options={"num_ctx": settings.LLM_NUM_CTX},
+                ):
                     text = chunk["message"]["content"]
                     if text:
                         yield text

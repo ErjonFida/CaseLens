@@ -3,7 +3,7 @@ import time
 import requests
 
 BASE_URL = "http://localhost:8000"
-EMAIL_LOG_PATH = "./db/emails.log"
+EMAIL_LOG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "db", "emails.log")
 
 def register_user(email, password, first_name="Alice", last_name="Smith", company="ACME Legal", phone_number="+1 (555) 019-2834"):
     res = requests.post(

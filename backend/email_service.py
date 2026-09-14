@@ -9,6 +9,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 logger = logging.getLogger("email_service")
 
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
+EMAIL_LOG_PATH = Path(__file__).resolve().parent / "db" / "emails.log"
 jinja_env = Environment(
     loader=FileSystemLoader(TEMPLATES_DIR),
     autoescape=select_autoescape(["html", "xml"])
@@ -43,8 +44,8 @@ def send_email(to_email: str, subject: str, html_content: str) -> bool:
         logger.info("--------------------------------------------------")
         
         try:
-            os.makedirs("./db", exist_ok=True)
-            log_path = "./db/emails.log"
+            EMAIL_LOG_PATH.parent.mkdir(exist_ok=True)
+            log_path = str(EMAIL_LOG_PATH)
             # Rotate log if it exceeds 10MB
             if os.path.exists(log_path) and os.path.getsize(log_path) > 10 * 1024 * 1024:
                 rotated = log_path + ".old"

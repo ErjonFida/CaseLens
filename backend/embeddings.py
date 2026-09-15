@@ -17,6 +17,14 @@ class EmbeddingProvider(Protocol):
     def embed_query(self, text: str) -> list[float]:
         ...
 
+_PREFIXES = {
+    "nomic-embed-text": ("search_document: ", "search_query: "),
+    "qwen3-embedding": (
+        "",
+        "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery: ",
+    ),
+}
+
 
 class OllamaEmbedder:
 
@@ -24,6 +32,10 @@ class OllamaEmbedder:
         self.name = model
         self.dimensions = dimensions
         self.batch_size = batch_size
+        family = model.split(":")[0]
+        if family not in _PREFIXES:
+            logger.warning(f"No prefix convention known for '{model}'; embedding without task prefixes")
+        self._doc_prefix, self._query_prefix = _PREFIXES.get(family, ("", ""))
 
     def _embed(self, inputs: list[str]) -> list[list[float]]:
         
@@ -50,10 +62,10 @@ class OllamaEmbedder:
         return all_vectors
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
-        return self._embed([f"search_document: {t}" for t in texts])
+        return self._embed([self._doc_prefix + t for t in texts])
 
     def embed_query(self, text: str) -> list[float]:
-        return self._embed([f"search_query: {text}"])[0]
+        return self._embed([self._query_prefix + text])[0]
 
 
 class GeminiEmbedder:

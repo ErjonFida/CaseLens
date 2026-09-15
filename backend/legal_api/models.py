@@ -94,7 +94,7 @@ class DocumentChunk(Base):
     page = Column(Integer, nullable=False)
     chunk_index = Column(Integer, nullable=False)
     text = Column(Text, nullable=False)
-    embedding = Column(Vector(768))
+    embedding = Column(Vector())
     embedding_model = Column(String(128), nullable=False, server_default="gemini-embedding-001", index=True)
 
     document = relationship("Document", back_populates="chunks")

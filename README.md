@@ -202,9 +202,10 @@ Specific and current.
    5,574 chunks (~113ms p50), but it will not scale. An HNSW index is worth
    adding once there is a latency number to improve on.
 
-2. **No reranking or query rewriting.** Retrieval is vector search, optionally
-   scoped to one document by name. Hybrid lexical search was measured and
-   rejected (above).
+2. **No query rewriting.** Retrieval is vector search, optionally scoped to one
+   document by name. Hybrid lexical search, cross-encoder reranking, and two
+   Qwen3 embedding models were each measured and rejected — see
+   [evals/README.md](evals/README.md).
 
 
 ---
@@ -213,9 +214,10 @@ Specific and current.
 
 In order:
 
-1. Cross-encoder reranking, aimed at the 56 questions that do not scope — the
-   scoped path is close to exhausted at recall@10 0.601 against a 0.636 pool.
-2. Chunking sweep against the committed baseline.
+1. Query rewriting toward clause language, for the questions that name no
+   document. Reranking and an embedding model swap were both measured and
+   rejected first — see [evals/README.md](evals/README.md).
+2. Chunking sweep.
 3. Close limitations 1 and 2.
 
 ## Licence

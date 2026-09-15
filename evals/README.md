@@ -76,12 +76,59 @@ would see.
 **Hybrid retrieval was measured and rejected.** A `tsvector` channel fused by
 reciprocal rank scored recall@5 0.126; lexical alone scored 0.051. Once the
 party name is removed the remaining terms appear in all 69 contracts, and the
-party name is not in the chunk bodies — it is in the filename. Fusing noise
-with signal at equal weight halves the signal. Name-scoping came out of that
+party name is not in the chunk bodies — it is in the filename. Name-scoping came out of that
 failure, which is the argument for measuring each step separately.
+
+**Cross-encoder reranking was measured and rejected.** Two off-the-shelf
+rerankers rescored the top-50 dense candidates from the scoped path:
+
+| | scoped | + `ms-marco-MiniLM-L-6-v2` | + `mxbai-rerank-base-v1` |
+|---|---:|---:|---:|
+| recall@5 | **0.536** | 0.509 | 0.515 |
+| MRR | 0.437 | 0.412 | **0.466** |
+| exact_term | 0.716 | 0.806 | 0.645 |
+| semantic | 0.500 | 0.383 | 0.494 |
+| p50 latency | 99ms | 809ms | 5,970ms |
+
+Neither beats name-scoping on recall@5, and they move the categories in
+opposite directions — one lifts `exact_term` and sinks `semantic`, the other
+the reverse. Two models trained on the same web-passage data disagreeing that
+sharply might be domain mismatch. mxbai has MRR gain
+but costs sixty times the latency on CPU.
+
+The premise was that the 0.536 → 0.636 gap (recall@5 to recall@50) was an
+ordering problem a reranker could close. It is not: for the 44 scoped
+questions the pool already holds the whole document, and dense distance
+orders those pages better than either cross-encoder did. The gap lives in the
+56 unscoped questions, whose correct page is not in the pool at all — and a
+reranker cannot add what retrieval missed.
+
+**The embedding model swap was measured and rejected.** Two Qwen3 models
+against the same scoped path, each with its own query instruction:
+
+| scoped | `nomic-embed-text` | `qwen3-embedding:0.6b` @768 | `qwen3-embedding:4b` @2560 |
+|---|---:|---:|---:|
+| recall@5 | **0.536** | 0.512 | 0.517 |
+| MRR | **0.437** | 0.377 | 0.410 |
+| exact_term | 0.716 | 0.742 | **0.755** |
+| semantic | **0.500** | 0.428 | 0.428 |
+| p50 latency | 99ms | 232ms | 341ms |
+
+Unlike the rerankers, the two Qwen models agree: better on `exact_term`,
+identically worse on `semantic`. Going from 0.6b to 4b at native width bought
+MRR and nothing on the paraphrase questions, which are 43 of the 100. The
+loss is a property of the model family on these questions, not of size.
+
+Reproducible by config — `EMBEDDING_MODEL` and `EMBEDDING_DIMENSIONS`, then
+`python -m evals.corpus` — so both reports are committed. Migration 005 made
+the column width-agnostic for this; a further model comparison needs no
+schema change.
 
 ## Next
 
-Cross-encoder reranking, aimed at the 56 questions that do not scope. The
-scoped path is close to exhausted — recall@10 0.601 against a 0.636 pool
-ceiling — so the remaining headroom is in the queries that name no document.
+Query rewriting toward clause language, for the 56 questions that name no
+document. Three levers have now been measured against the unscoped set —
+lexical fusion, cross-encoder reranking, and embedding models — and none
+moved it. The remaining hypothesis is that the *questions* are the problem:
+conversational phrasing embeds far from the clause that answers it, and
+rewriting closes that distance without touching the corpus.

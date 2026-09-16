@@ -6,16 +6,27 @@ from embeddings import get_embedder
 
 logger = logging.getLogger("vector_store")
 
+
 _NAME_RANK_SQL = text("""
-SELECT d.id AS id,
-       ts_rank_cd(
-           to_tsvector('english', replace(d.filename, '_', ' ')),
-           to_tsquery('english', nullif(array_to_string(
-               ARRAY(SELECT l || ':*' FROM unnest(tsvector_to_array(
-                     to_tsvector('english', :q))) AS l), ' | '), ''))
-       ) AS rank
-FROM documents d
-WHERE d.user_id = :uid
+WITH word AS (
+    SELECT DISTINCT regexp_replace(lex, '[^a-z0-9]', '', 'g') AS w
+    FROM unnest(tsvector_to_array(to_tsvector('simple', :q))) AS lex
+    WHERE ts_lexize('english_stem', lex) <> '{}'
+      AND length(regexp_replace(lex, '[^a-z0-9]', '', 'g')) >= 3
+),
+doc AS (
+    SELECT id, lower(regexp_replace(filename, '[^A-Za-z0-9]', '', 'g')) AS name
+    FROM documents WHERE user_id = :uid
+),
+hit AS (
+    SELECT doc.id, word.w FROM doc JOIN word ON position(word.w IN doc.name) > 0
+),
+df AS (
+    SELECT w, count(*) AS n FROM hit GROUP BY w
+)
+SELECT hit.id AS id, sum(1.0 / df.n) AS rank
+FROM hit JOIN df USING (w)
+GROUP BY hit.id
 ORDER BY rank DESC
 """)
 
@@ -184,7 +195,7 @@ class LegalVectorStore:
         """
         matches = self.match_documents_by_name(query, user, session)
         scope = None
-        if matches and (len(matches) == 1 or matches[0][1] >= matches[1][1] * margin):
+        if matches and (len(matches) == 1 or matches[0][1] > matches[1][1] * margin - 1e-9):
             scope = [matches[0][0]]
             logger.info(f"Query scoped to document id={scope[0]} by name match")
         return self.query_similar_context(query, user, session, top_k=top_k, document_ids=scope)

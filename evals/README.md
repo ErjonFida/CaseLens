@@ -65,13 +65,21 @@ averaged.
 | Retriever | recall@5 | MRR |
 |---|---:|---:|
 | `dense` | 0.340 | 0.298 |
-| `scoped` | 0.536 | 0.437 |
+| `scoped` | 0.632 | 0.509 |
 
 Read `scoped` with its caveat: `cuad_import` templates every question as
-"the {party} agreement", so all 100 name their contract by construction. 44 of
-them match a filename confidently enough to scope; the rest fall back to dense.
-Real queries name a document less often, so this gap overstates what users
-would see.
+"the {party} agreement", so all 100 name their contract by construction. 67 of
+the 74 single-document questions scope, none wrongly; the 7 that abstain name
+a party with several contracts in the corpus. Real queries name a document
+less often, so this gap overstates what users would see.
+
+**Scoping went from 40 to 67 correct without touching a model.** After
+hybrid, reranking, and two embedding models had all failed to move the
+`semantic` category, a one-minute diagnostic showed 34 of 74 questions were
+*abstaining* from scoping on a tie: `ts_rank_cd` weighted "agreement" (in all
+69 filenames) equally with the party name (in one). IDF-weighting the match
+and dropping the stemmer took `semantic` from 0.500 to 0.644 — more than every
+model experiment combined.
 
 **Hybrid retrieval was measured and rejected.** A `tsvector` channel fused by
 reciprocal rank scored recall@5 0.126; lexical alone scored 0.051. Once the

@@ -13,7 +13,7 @@ than asserting that it works.
 |---|---|
 | **Live demo** | _not yet deployed_ |
 | **Evaluation suite** | [evals/README.md](evals/README.md) |
-| **Current baseline** | recall@5 **0.536**, MRR **0.437** ([report](evals/reports/name-scoped.json)) |
+| **Current baseline** | recall@5 **0.632**, MRR **0.509** ([report](evals/reports/name-scoped.json)) |
 | **Local setup** | [Running it](#running-it) |
 
 ---
@@ -60,23 +60,31 @@ dense is kept as the comparison point every change is measured against.
 
 | Metric | Dense | Name-scoped |
 |---|---:|---:|
-| recall@5 | 0.340 | **0.536** |
-| recall@10 | 0.397 | 0.601 |
-| MRR | 0.298 | **0.437** |
-| exact_term | 0.419 | 0.716 |
-| semantic | 0.321 | 0.500 |
-| multi_document | 0.204 | 0.204 |
-| latency p50 / p95 | 113ms / 161ms | 104ms / 160ms |
+| recall@5 | 0.340 | **0.632** |
+| recall@10 | 0.397 | 0.699 |
+| MRR | 0.298 | **0.509** |
+| exact_term | 0.419 | 0.748 |
+| semantic | 0.321 | 0.644 |
+| multi_document | 0.204 | 0.288 |
+| latency p50 / p95 | 113ms / 161ms | 81ms / 97ms |
 
 **Name-scoping** resolves the contract from the question before searching, in
 `query_scoped_context`, which both API endpoints call. A
-question that says "the {party} agreement" is matched against filenames with
-prefix terms — the stemmer reduces "Hubeiminkangpharmaceutical" and
-"HUBEIMINKANGPHARMACEUTICALLTD" to different lexemes, so only a prefix match
-connects them — and when one document clearly wins, the vector search is
-restricted to it. 44 of 100 questions scope; the rest fall back to
-unrestricted dense search, so nothing regresses when a query names no
-document. Scoping is also marginally faster, because the scan is smaller.
+question that says "the {party} agreement" is matched against filenames, and
+when one document clearly wins, the vector search is restricted to it. Each
+question word is worth 1 / (number of filenames containing it), so the party
+name that appears in one filename outweighs "agreement", which appears in all
+69 — equal weighting had let any two "... Services Agreement" files tie with
+the one being asked about. Matching is substring containment on a
+punctuation-stripped filename rather than token matching, because the corpus
+mixes "MERITLIFEINSURANCECO_..." with "Principal Life Insurance Company - ...",
+and because stemming breaks names ("BloomEnergy" stems to "bloomenergi").
+
+67 of the 74 single-document questions scope, none to the wrong contract; the
+7 that abstain name a party with several contracts in the corpus, where a tie
+is the right answer. Everything else falls back to unrestricted dense search,
+so nothing regresses when a query names no document. Scoping is also faster,
+because the scan is smaller.
 
 The gold set is templated from CUAD
 categories, so every question names its contract by construction. Real queries
@@ -197,7 +205,6 @@ See [Known limitations](#known-limitations) for what this does **not** do.
 
 Specific and current.
 
-
 1. **No vector index.** Retrieval is an exact scan — correct and fast enough at
    5,574 chunks (~113ms p50), but it will not scale. An HNSW index is worth
    adding once there is a latency number to improve on.
@@ -206,7 +213,6 @@ Specific and current.
    document by name. Hybrid lexical search, cross-encoder reranking, and two
    Qwen3 embedding models were each measured and rejected — see
    [evals/README.md](evals/README.md).
-
 
 ---
 

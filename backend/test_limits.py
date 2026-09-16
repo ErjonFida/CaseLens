@@ -1,4 +1,5 @@
 import os
+import shutil
 import uuid
 
 import jwt
@@ -40,6 +41,7 @@ def test_oversized_upload_refused_and_nothing_left_on_disk():
     token = jwt.encode({"sub": email}, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
     original_cap = settings.MAX_FILE_SIZE_BYTES
     settings.MAX_FILE_SIZE_BYTES = 1024
+    user_dir = os.path.join(settings.UPLOAD_DIR, email.replace("@", "_"))
     try:
         r = TestClient(app).post(
             "/api/upload",
@@ -48,11 +50,13 @@ def test_oversized_upload_refused_and_nothing_left_on_disk():
         )
         assert r.status_code == 400, r.text
         assert "too large" in r.json()["detail"].lower()
-        user_dir = os.path.join(settings.UPLOAD_DIR, email.replace("@", "_"))
         leftovers = os.listdir(user_dir) if os.path.isdir(user_dir) else []
         assert not leftovers, f"partial upload left behind: {leftovers}"
     finally:
         settings.MAX_FILE_SIZE_BYTES = original_cap
+        # The endpoint creates the user's upload directory before the size
+        # check runs; deleting the user row does not remove it.
+        shutil.rmtree(user_dir, ignore_errors=True)
         session = SyncSessionLocal()
         session.execute(text("DELETE FROM users WHERE email = :e"), {"e": email})
         session.commit()

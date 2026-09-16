@@ -65,7 +65,7 @@ averaged.
 | Retriever | recall@5 | MRR |
 |---|---:|---:|
 | `dense` | 0.340 | 0.298 |
-| `scoped` | 0.632 | 0.509 |
+| `scoped` | 0.702 | 0.562 |
 
 Read `scoped` with its caveat: `cuad_import` templates every question as
 "the {party} agreement", so all 100 name their contract by construction. 67 of
@@ -79,7 +79,24 @@ hybrid, reranking, and two embedding models had all failed to move the
 *abstaining* from scoping on a tie: `ts_rank_cd` weighted "agreement" (in all
 69 filenames) equally with the party name (in one). IDF-weighting the match
 and dropping the stemmer took `semantic` from 0.500 to 0.644 — more than every
-model experiment combined.
+model experiment combined. A second diagnostic over the 17 remaining
+single-document misses found page 1 in the top 5 for 10 of them: the party
+name in the question was pulling the cover page in. Removing the title span
+from the query before embedding took `semantic` to 0.750 and recall@5 to
+0.702. Two more general-looking rules were tried on the way - strip only words
+rare in document bodies, then also words common in filenames - and both
+scored 0.66: multi-word names are built from ordinary words, so name-ness is
+a property of the phrase, not the word. The span rule scores the same as
+stripping everything and keeps a topic word's own mention. The lesson is the order of operations: read which questions fail and
+why before reaching for a bigger model.
+
+**The labels were checked, not assumed.** The same 17 misses were tested
+against the CUAD answer spans to see whether the retrieved page also held the
+clause. Two did — spans straddling a page boundary, labelled with the page
+they start on. That is 0.02 against a noise floor of about ±0.03 on 100
+questions, so the labels are left alone and the artifact is noted here rather
+than tuned away. Every other miss is a genuine ranking failure within the
+right document.
 
 **Hybrid retrieval was measured and rejected.** A `tsvector` channel fused by
 reciprocal rank scored recall@5 0.126; lexical alone scored 0.051. Once the

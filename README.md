@@ -13,7 +13,7 @@ than asserting that it works.
 |---|---|
 | **Live demo** | _not yet deployed_ |
 | **Evaluation suite** | [evals/README.md](evals/README.md) |
-| **Current baseline** | recall@5 **0.632**, MRR **0.509** ([report](evals/reports/name-scoped.json)) |
+| **Current baseline** | recall@5 **0.702**, MRR **0.562** ([report](evals/reports/name-scoped.json)) |
 | **Local setup** | [Running it](#running-it) |
 
 ---
@@ -60,13 +60,13 @@ dense is kept as the comparison point every change is measured against.
 
 | Metric | Dense | Name-scoped |
 |---|---:|---:|
-| recall@5 | 0.340 | **0.632** |
-| recall@10 | 0.397 | 0.699 |
-| MRR | 0.298 | **0.509** |
-| exact_term | 0.419 | 0.748 |
-| semantic | 0.321 | 0.644 |
-| multi_document | 0.204 | 0.288 |
-| latency p50 / p95 | 113ms / 161ms | 81ms / 97ms |
+| recall@5 | 0.340 | **0.702** |
+| recall@10 | 0.397 | 0.730 |
+| MRR | 0.298 | **0.562** |
+| exact_term | 0.419 | 0.790 |
+| semantic | 0.321 | 0.750 |
+| multi_document | 0.204 | 0.300 |
+| latency p50 / p95 | 113ms / 161ms | 88ms / 108ms |
 
 **Name-scoping** resolves the contract from the question before searching, in
 `query_scoped_context`, which both API endpoints call. A
@@ -79,6 +79,18 @@ the one being asked about. Matching is substring containment on a
 punctuation-stripped filename rather than token matching, because the corpus
 mixes "MERITLIFEINSURANCECO_..." with "Principal Life Insurance Company - ...",
 and because stemming breaks names ("BloomEnergy" stems to "bloomenergi").
+
+Once a document is resolved, its title is removed from the query before it is
+embedded. Those words have done their job, and left in they pull the cover
+page — where the party name and "AGREEMENT" sit in large type — into slots the
+clause should have; page 1 was in the top 5 for 10 of 17 right-document
+misses. "When does the Scoutcam agreement become effective?" is searched
+within the Scoutcam contract as "When does the become effective?", which reads
+badly and embeds well: inside one document, the clause is the only thing left
+to find. Only the title *span* goes — the contiguous run of matched words
+ending at the last one — so a topic word that also sits in a filename keeps
+its own mention: "the termination terms in the Acme Termination Agreement"
+becomes "the termination terms in the".
 
 67 of the 74 single-document questions scope, none to the wrong contract; the
 7 that abstain name a party with several contracts in the corpus, where a tie
@@ -181,8 +193,7 @@ looks like a retrieval change rather than broken labels.
 
 **The eval validates its own labels.** A gold entry naming a document not in the
 corpus fails the run instead of scoring zero. A mistyped filename and a genuine
-retrieval failure are indistinguishable once averaged, and the first one masquerading
-as the second is how you end up optimising against noise.
+retrieval failure are indistinguishable once averaged.
 
 ---
 

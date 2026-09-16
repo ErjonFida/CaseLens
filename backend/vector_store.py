@@ -1,4 +1,5 @@
 import logging
+import re
 from sqlalchemy import select, delete, desc, func, text
 from sqlalchemy.orm import Session
 
@@ -24,7 +25,7 @@ hit AS (
 df AS (
     SELECT w, count(*) AS n FROM hit GROUP BY w
 )
-SELECT hit.id AS id, sum(1.0 / df.n) AS rank
+SELECT hit.id AS id, sum(1.0 / df.n) AS rank, string_agg(hit.w, ' ') AS words
 FROM hit JOIN df USING (w)
 GROUP BY hit.id
 ORDER BY rank DESC
@@ -123,7 +124,7 @@ class LegalVectorStore:
                 logger.error(f"Error cleaning up document {filename} record: {cleanup_err}")
             raise e
 
-    def match_documents_by_name(self, query: str, user, session: Session) -> list[tuple[int, float]]:
+    def match_documents_by_name(self, query: str, user, session: Session) -> list[tuple[int, float, str]]:
 
         from legal_api.models import Document
 
@@ -131,7 +132,7 @@ class LegalVectorStore:
             return []
 
         rows = session.execute(_NAME_RANK_SQL, {"q": query, "uid": user.id}).all()
-        return [(row.id, float(row.rank)) for row in rows if row.rank and row.rank > 0]
+        return [(row.id, float(row.rank), row.words) for row in rows if row.rank and row.rank > 0]
 
     def query_similar_context(self, query: str, user, session: Session, top_k: int = 5,
                               document_ids: list[int] | None = None) -> list[dict]:
@@ -179,6 +180,25 @@ class LegalVectorStore:
             for row in results
         ]
 
+    @staticmethod
+    def _strip_title(query: str, matched: set[str]) -> str:
+        tokens = query.split()
+        norm = [re.sub(r"[^a-z0-9]", "", t.lower()) for t in tokens]
+        hits = [i for i, t in enumerate(norm) if t in matched]
+        if not hits:
+            return query
+        connectors = {"of", "and", "the", "inc", "co", "llc", "ltd", "corp", "plc", "sa", "ag"}
+        end = hits[-1]
+        start = end
+        i = end - 1
+        while i >= 0 and (norm[i] in matched or norm[i] in connectors):
+            start = i
+            i -= 1
+        while start < end and norm[start] not in matched:
+            start += 1
+        residual = tokens[:start] + tokens[end + 1:]
+        return " ".join(residual) if len(residual) >= 2 else query
+
     def query_scoped_context(self, query: str, user, session: Session, top_k: int = 5,
                              margin: float = 1.5) -> list[dict]:
         """Resolve the contract the query names, then rank pages inside it.
@@ -196,8 +216,10 @@ class LegalVectorStore:
         matches = self.match_documents_by_name(query, user, session)
         scope = None
         if matches and (len(matches) == 1 or matches[0][1] > matches[1][1] * margin - 1e-9):
-            scope = [matches[0][0]]
-            logger.info(f"Query scoped to document id={scope[0]} by name match")
+            doc_id, _, words = matches[0]
+            scope = [doc_id]
+            query = self._strip_title(query, set(words.split()))
+            logger.info(f"Query scoped to document id={doc_id}; searching for: {query!r}")
         return self.query_similar_context(query, user, session, top_k=top_k, document_ids=scope)
 
     def list_documents(self, user, session: Session) -> list[str]:

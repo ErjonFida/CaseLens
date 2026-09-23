@@ -140,9 +140,7 @@ and the only job is ordering its pages.
 
 Both still lose, with `exact_term` suffering most each time. Given one
 contract and asked only to order its pages, a web-trained cross-encoder
-orders them worse than L2 distance on nomic vectors. There is no cleaner
-setting left to test in; the next candidate is a cross-encoder fine-tuned on
-CUAD pairs, which is a training project rather than a configuration.
+orders them worse than L2 distance on nomic vectors.
 
 **The embedding model swap was measured and rejected.** Two Qwen3 models
 against the same scoped path, each with its own query instruction:
@@ -171,7 +169,7 @@ contract given a short residual query, and there `qwen3-embedding:4b` is a
 trade rather than a loss: recall@5 0.688 vs 0.702, but recall@10 0.749 vs
 0.721 and MRR 0.604 vs 0.566, with `semantic` up 0.062 and `exact_term` down
 0.096 (`reports/scoped-qwen3-4b.json` now holds this run; the earlier one is in `ac84efe`). Nomic is the stronger
-literal matcher; Qwen the stronger paraphrase matcher. Neither dominates.
+exact matcher, Qwen is the stronger paraphrase matcher.
 
 **Fusing the two** by reciprocal rank inside the scoped document is the one
 combination the evidence supports — two decent signals with different
@@ -191,11 +189,85 @@ scores 0.860 (0.931 at k=10 fused). A selection is a candidate set, not a
 scope: the name match still runs inside it, and a title is never stripped
 while the scope holds more than one document.
 
-## Next
+## Answer-time faithfulness
 
-Query rewriting toward clause language, for the 56 questions that name no
-document. Three levers have now been measured against the unscoped set —
-lexical fusion, cross-encoder reranking, and embedding models — and none
-moved it. The remaining hypothesis is that the *questions* are the problem:
-conversational phrasing embeds far from the clause that answers it, and
-rewriting closes that distance without touching the corpus.
+Retrieval recall says whether the right page reached the model.
+`evals/faithfulness.py` measures what the generator does with it: whether the
+answer holds the annotated clause, whether the cited page is right, and - the
+production question - whether the model says so when the clause is absent or
+the page was not retrieved, or answers anyway.
+
+```bash
+python -m evals.faithfulness --cuad path/to/CUAD_v1.json --max-doc-tokens 6000
+python -m evals.faithfulness --cuad path/to/CUAD_v1.json --provider gemini --model gemini-3.8-flash --max-doc-tokens 40000 --conditions rag10,full
+python -m evals.faithfulness --cuad path/to/CUAD_v1.json --regrade evals/reports/faithfulness-*.json
+```
+
+Each question is answered three ways: from the chunks retrieval returns at
+k=5 (shipped) and k=10, and from the whole document with page markers. Only
+documents that fit the model's context are used, so the whole-document
+condition is measured where it is viable. `gemma4:e4b` answered the 24
+questions whose document is under 6k tokens (19 answerable, 5 where CUAD marks
+the clause absent); `gemini-3.8-flash` answered the same 24, and the 73 whose
+document is under 40k.
+
+### Graded results
+
+All 290 answers were graded outside the harness one verdict
+and a written justification each, recorded next to the question, the CUAD
+span and the answer in
+[`reports/faithfulness-grading-graded.xlsx`](reports/faithfulness-grading-graded.xlsx).
+*Good* is a correct answer or a correct decline, over all answers.
+
+| | correct | partial | wrong | declined rightly | declined wrongly | good |
+|---|---:|---:|---:|---:|---:|---:|
+| Gemma, 5 chunks | 15 | 4 | 0 | 4 | 1 | 0.792 |
+| Gemma, 10 chunks | 16 | 2 | 1 | 4 | 1 | **0.833** |
+| Gemma, whole document | 14 | 6 | 1 | 3 | 0 | 0.708 |
+| Gemini, 5 chunks | 15 | 2 | 0 | 6 | 1 | 0.875 |
+| Gemini, 10 chunks | 17 | 2 | 0 | 5 | 0 | **0.917** |
+| Gemini, whole document | 17 | 2 | 0 | 5 | 0 | **0.917** |
+| Gemini up to 40k, 10 chunks | 45 | 7 | 1 | 14 | 6 | 0.808 |
+| Gemini up to 40k, whole document | 56 | 9 | 2 | 6 | 0 | **0.849** |
+
+At 24 and 73 questions one answer moves these rates by 4 and 1.4 points, so
+differences of two or three answers are direction, not size. What holds:
+
+- **Ten chunks beat five for both models** - one more correct answer in 19
+  for Gemma, two for Gemini. The final k=5 should be k=10 regardless of
+  model.
+- **For Gemma, retrieval beats the whole document** even when it fits: 20
+  good answers to 17, the gap made of partial answers. A 4B model extracts
+  less reliably from 6k tokens of contract than from ten focused chunks.
+- **For Gemini, the whole document ties on small documents and wins on
+  larger ones.** The mechanism is refusals: from ten chunks it declined six
+  questions whose answer was in the context it was given (a date on the
+  page, both parties named) and retrieval missed the gold page for 7 of 64.
+  From the whole document, no wrongful declines.
+- **The whole document's one real error is substitution.** Asked whether
+  outsiders have rights under a contract with no such clause (q091), Gemini
+  offered the indemnification section instead. Gemma made the same kind of
+  error on q097, offering assignment restrictions for change of control. It
+  is the failure a legal tool can least afford, and a prompt problem this
+  harness can measure a fix for.
+- **Local and hosted are in the same range.** On the same 24 questions at ten
+  chunks Gemini gave 22 good answers to Gemma's 20. A 4B model on a laptop CPU is a viable offline deployment for this
+  task but it is not ahead of a hosted model.
+
+So the branch is model-relative: the whole document when
+`document_tokens <= 0.6 x context budget`, retrieval otherwise. Gemini gets
+the document, local Gemma gets retrieval, with no provider-specific code.
+
+### How far to trust the automatic grader
+
+The harness grades deterministically, content-word overlap with the CUAD
+span after stripping markdown, a regex over cited page numbers, and a phrase
+list for declining. A small judge model would share the answering
+model's blind spots. Against the graded answers:
+
+| automatic signal | precision | recall |
+|---|---:|---:|
+| overlap >= 0.5 means correct | 0.91 | 0.85 |
+| decline phrase means declined | 0.59 | 0.91 |
+
+The overlap proxy is fit for comparing conditions within one model.

@@ -1,0 +1,1189 @@
+{
+  "label": "faithfulness-gemma4-e4b",
+  "generated_at": "2026-09-16T16:20:02.698407+00:00",
+  "model": "gemma4:e4b",
+  "num_ctx": 8192,
+  "max_doc_tokens": 6000,
+  "summary": {
+    "rag5": {
+      "questions": 24,
+      "supported (overlap >= 0.5)": 0.579,
+      "cited page correct": 0.947,
+      "abstained on answerable": 0.105,
+      "abstained on unanswerable": 0.6,
+      "page missing from context": 1,
+      "answered anyway when page missing": 0.0,
+      "p50 latency ms": 45121
+    },
+    "rag10": {
+      "questions": 24,
+      "supported (overlap >= 0.5)": 0.842,
+      "cited page correct": 0.947,
+      "abstained on answerable": 0.053,
+      "abstained on unanswerable": 0.8,
+      "page missing from context": 0,
+      "answered anyway when page missing": null,
+      "p50 latency ms": 54858
+    },
+    "full": {
+      "questions": 24,
+      "supported (overlap >= 0.5)": 0.737,
+      "cited page correct": 0.895,
+      "abstained on answerable": 0.105,
+      "abstained on unanswerable": 0.6,
+      "page missing from context": 0,
+      "answered anyway when page missing": null,
+      "p50 latency ms": 52688
+    }
+  },
+  "records": [
+    {
+      "question_id": "q001",
+      "category": "exact_term",
+      "condition": "rag5",
+      "doc_tokens": 2795,
+      "prompt_tokens": 1128,
+      "latency_ms": 45121,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.25,
+      "cited_pages": [
+        5
+      ],
+      "cited_correct": true,
+      "answer": "The parties executed the Agreement on June 1, 2006, although it was effective as of the Date of Commencement (HUBEIMINKANGPHARMACEUTICALLTD_09_19_2006-EX-10.1-OUTSOURCING AGREEMENT.PDF, Page: 5)."
+    },
+    {
+      "question_id": "q001",
+      "category": "exact_term",
+      "condition": "rag10",
+      "doc_tokens": 2795,
+      "prompt_tokens": 2328,
+      "latency_ms": 47968,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.75,
+      "cited_pages": [
+        5
+      ],
+      "cited_correct": true,
+      "answer": "The parties executed the Agreement on the **1st day of JUNE, 2006**, although it was effective as of the Date of Commencement (HUBEIMINKANGPHARMACEUTICALLTD_09_19_2006-EX-10.1-OUTSOURCING AGREEMENT.PDF, Page: 5)."
+    },
+    {
+      "question_id": "q001",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 2795,
+      "prompt_tokens": 2749,
+      "latency_ms": 52688,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.75,
+      "cited_pages": [
+        5
+      ],
+      "cited_correct": true,
+      "answer": "The parties to this agreement executed it on the 1st day of JUNE, 2006 (HUBEIMINKANGPHARMACEUTICALLTD_09_19_2006-EX-10.1-OUTSOURCING AGREEMENT.PDF, Page 5)."
+    },
+    {
+      "question_id": "q002",
+      "category": "semantic",
+      "condition": "rag5",
+      "doc_tokens": 5236,
+      "prompt_tokens": 1252,
+      "latency_ms": 54074,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.42,
+      "cited_pages": [
+        5
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided context, a specific type of loss is excluded from the general limitations on liability:\n\n*   Neither party shall be liable for any indirect, incidental, or consequential costs, damages, or expenses, **except for such loss attributable to breach of confidentiality** (Chunk 3, Page 5)."
+    },
+    {
+      "question_id": "q002",
+      "category": "semantic",
+      "condition": "rag10",
+      "doc_tokens": 5236,
+      "prompt_tokens": 2408,
+      "latency_ms": 52281,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.29,
+      "cited_pages": [
+        5,
+        6
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided documents, while the total cumulative liability of neither party in connection with the agreement is capped at the aggregate amount of fees and expenses owed by PC Financial to Mobimagic for services performed under the agreement (OPERALTD\\_04\\_30\\_2020-EX-4.14-SERVICE AGREEMENT.PDF, Page: 6), one specific type of loss is excluded from this limitation.\n\nSpecifically, neither party shall be liable for any loss attributable to a **breach of confidentiality** (OPERALTD\\_04\\_30\\_2020-EX-4.14-SERVICE AGREEMENT.PDF, Page: 5)."
+    },
+    {
+      "question_id": "q002",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 5236,
+      "prompt_tokens": 4768,
+      "latency_ms": 96481,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.5,
+      "cited_pages": [
+        5,
+        6
+      ],
+      "cited_correct": true,
+      "answer": "According to Section 8.3, neither party shall be liable for indirect, incidental, or consequential costs, damages, or expenses such as loss of profit, business, or goodwill, **except for any loss attributable to a breach of confidentiality** (OPERALTD_04_30_2020-EX-4.14-SERVICE AGREEMENT.PDF, Page 5).\n\n*Note: The agreement generally caps the total cumulative liability of both parties at the aggregate amount of fees and expenses owed by PC Financial to Mobimagic for services performed under the agreement (OPERALTD_04_30_2020-EX-4.14-SERVICE AGREEMENT.PDF, Page 6).*"
+    },
+    {
+      "question_id": "q004",
+      "category": "exact_term",
+      "condition": "rag5",
+      "doc_tokens": 2075,
+      "prompt_tokens": 1195,
+      "latency_ms": 35061,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.19,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "The term of the Agreement shall commence on the date it is signed (\"the Effective Date\") (SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page: 1)."
+    },
+    {
+      "question_id": "q004",
+      "category": "exact_term",
+      "condition": "rag10",
+      "doc_tokens": 2075,
+      "prompt_tokens": 2404,
+      "latency_ms": 59824,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.5,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "According to the provided documents:\n\n*   One section states that the term of the Agreement shall commence on \"the date hereof (the 'Effective Date')\" (SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page: 1).\n*   Additionally, an exhibit references a previous agreement that was \"dated as of April 1, 2019\" (SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page: 1)."
+    },
+    {
+      "question_id": "q004",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 2075,
+      "prompt_tokens": 1911,
+      "latency_ms": 52956,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.15,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "The term of this Agreement shall commence on the date it was executed, which is referred to as the \u201cEffective Date\u201d (SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page 1)."
+    },
+    {
+      "question_id": "q022",
+      "category": "semantic",
+      "condition": "rag5",
+      "doc_tokens": 4583,
+      "prompt_tokens": 1197,
+      "latency_ms": 45001,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.92,
+      "cited_pages": [
+        4
+      ],
+      "cited_correct": true,
+      "answer": "Yes, the agreement can be assigned, but the rules differ depending on which party is assigning it.\n\n*   **MICOA's Assignment:** MICOA may assign the Agreement to its parent, affiliate, or subsidiary corporations that are licensed insurers upon providing written notice to the Agency (AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 4).\n*   **Agency's Assignment:** The Agency may not assign this Agreement without obtaining the written permission of MICOA or its successors or assigns (AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 4)."
+    },
+    {
+      "question_id": "q022",
+      "category": "semantic",
+      "condition": "rag10",
+      "doc_tokens": 4583,
+      "prompt_tokens": 2292,
+      "latency_ms": 55029,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.92,
+      "cited_pages": [
+        4
+      ],
+      "cited_correct": true,
+      "answer": "The ability to transfer or assign the agreement depends on which party is making the assignment:\n\n*   **MICOA** may assign the Agreement to its parent, affiliate, or subsidiary corporations that are licensed insurers, provided written notice is given to Agency (AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 4).\n*   **Agency** may not assign the Agreement without obtaining the written permission of MICOA or its successors or assigns (AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 4)."
+    },
+    {
+      "question_id": "q022",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 4583,
+      "prompt_tokens": 4593,
+      "latency_ms": 96292,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.92,
+      "cited_pages": [
+        4
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the ability to transfer (assign) the Agreement depends on which party is attempting the assignment:\n\n*   **MICOA's Assignment:** MICOA may assign the Agreement to its parent, affiliate, or subsidiary corporations that are licensed insurers, provided written notice is given to the Agency (AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page 4, Section I.8).\n*   **Agency's Assignment:** The Agency may **not** assign this Agreement without the written permission of MICOA or its successors or assigns (AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page 4, Section I.8)."
+    },
+    {
+      "question_id": "q030",
+      "category": "semantic",
+      "condition": "rag5",
+      "doc_tokens": 1794,
+      "prompt_tokens": 1297,
+      "latency_ms": 57209,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.92,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Yes, based on the provided context, Dragon Systems has a specified method to terminate the agreement without cause.\n\n*   Dragon may terminate the agreement without cause by giving sixty (60) days written notice to MMI (DRAGONSYSTEMSINC\\_01\\_08\\_1999-EX-10.17-OUTSOURCING AGREEMENT.PDF, Page: 2).\n\nThe document states that \"Both parties may terminate the Agreement with immediate effect\" under various conditions, but only Dragon Systems' right to terminate without cause is detailed in the provided text (DRAGONSYSTEMSINC\\_01\\_08\\_1999-EX-10.17-OUTSOURCING AGREEMENT.PDF, Page: 2)."
+    },
+    {
+      "question_id": "q030",
+      "category": "semantic",
+      "condition": "rag10",
+      "doc_tokens": 1794,
+      "prompt_tokens": 2170,
+      "latency_ms": 60305,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.92,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Yes, based on the provided context, Dragon Systems (\"Dragon\") may terminate the agreement without cause by giving sixty (60) days written notice to MMI (DRAGONSYSTEMSINC\\_01\\_08\\_1999-EX-10.17-OUTSOURCING AGREEMENT.PDF, Page: 2).\n\nThe document also states that \"Both parties may terminate the Agreement with immediate effect\" under certain conditions, but it only specifies Dragon's right to terminate without cause (DRAGONSYSTEMSINC\\_01\\_08\\_1999-EX-10.17-OUTSOURCING AGREEMENT.PDF, Page: 2)."
+    },
+    {
+      "question_id": "q030",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 1794,
+      "prompt_tokens": 1826,
+      "latency_ms": 50750,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.77,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Yes, Dragon Systems can terminate the agreement without cause by providing sixty (60) days written notice to MMI (Page 2).\n\nThe document specifies this right for Dragon Systems but does not explicitly detail whether MMI has a corresponding right to terminate without cause."
+    },
+    {
+      "question_id": "q033",
+      "category": "semantic",
+      "condition": "rag5",
+      "doc_tokens": 3753,
+      "prompt_tokens": 1274,
+      "latency_ms": 72472,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.34,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Yes, the provided contexts outline limitations on liability for the Adviser and its personnel.\n\nSpecifically, the documents state that the Adviser Employees shall generally not be subject to liability for damages or losses incurred by the Trust arising from:\n*   Any error of judgment;\n*   Mistake of law;\n*   Any act or omission in connection with services rendered or payments made under the Agreement (or any other related matter).\n\nHowever, this protection is **not absolute**. Liability *does* apply if the loss results from:\n*   Willful misfeasance;\n*   Bad faith;\n*   Gross negligence on the part of the Adviser; or\n*   Reckless disregard by the Adviser of its obligations and duties.\n\nThese limitations are stated multiple times in the context, including:\n\n*   PFSFUNDS\\_06\\_26\\_2020-EX-99.H OTH MAT CONT-SERVICES AGREEMENT.PDF, Page: 2 (Chunk 1)\n*   PFSFUNDS\\_06\\_26\\_2020-EX-99.H OTH MAT CONT-SERVICES AGREEMENT.PDF, Page: 2 (Chunk 2 and Chunk 3)"
+    },
+    {
+      "question_id": "q033",
+      "category": "semantic",
+      "condition": "rag10",
+      "doc_tokens": 3753,
+      "prompt_tokens": 2411,
+      "latency_ms": 104491,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.6,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Yes, the agreement outlines specific limitations regarding liability for the Adviser and its personnel.\n\n**Limitations on the Adviser\u2019s Liability:**\n\n*   **General Limitation:** The \"Adviser Employees\" are generally not subject to any liability, damages, expenses, or losses incurred by the Trust due to an error of judgment, mistake of law, act, or omission related to services rendered under the Agreement. This protection is lifted only in cases of willful misfeasance, bad faith, or gross negligence on the part of such persons (PFSFUNDS\\_06\\_26\\_2020-EX-99.H OTH MAT CONT-SERVICES AGREEMENT.PDF, Page: 2).\n*   **Indemnification:** The Adviser agrees to defend and indemnify the Trust, its trustees, officers, and agents against any and all liability, losses, claims, and damages that arise from the Adviser's willful misfeasance, bad faith, or gross negligence, or by reason of reckless disregard of duties (PFSFUNDS\\_06\\_26\\_2020-EX-99.H OTH MAT CONT-SERVICES AGREEMENT.PDF, Page: 2).\n\n**Other Limitations:**\n\n*   The agreement also states that neither the Adviser nor its directors, officers, employees, shareholders, agents, control persons or affiliates of any thereof (collectively, the \u201cAdviser Employees\u201d) shall be subject to liability, except as may otherwise be required by law or rules thereunder (PFSFUNDS\\_06\\_26\\_2020-EX-99.H OTH MAT CONT-SERVICES AGREEMENT.PDF, Page: 2; PFSFUNDS\\_06\\_26\\_2020-EX-99.H OTH MAT CONT-SERVICES AGREEMENT.PDF, Page: 2)."
+    },
+    {
+      "question_id": "q033",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 3753,
+      "prompt_tokens": 3274,
+      "latency_ms": 102195,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.46,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Yes, the agreement includes a section titled \"Limitation of Liability\" that outlines certain protections and exceptions regarding liability for both parties.\n\nUnder Section 7 (\"Limitation of Liability\"):\n\n*   **Protection for Adviser Personnel:** Neither the Adviser nor its directors, officers, employees, shareholders, agents, control persons, or affiliates (collectively, the \u201cAdviser Employees\u201d) shall be subject to any liability for damages, expenses, or losses incurred by the Trust due to an error of judgment, mistake of law, act, or omission.\n*   **Exceptions to Protection:** This protection does not apply if the loss is caused by **willful misfeasance, bad faith, or gross negligence** on the part of any such person, or by reason of **reckless disregard** of their obligations and duties (PFSFUNDS\\_06\\_26\\_2020-EX-99.H OTH MAT CONT-SERVICES AGREEMENT.PDF, Page 2).\n*   **Adviser Indemnification Obligations:** The Adviser agrees to defend and indemnify the Trust, its trustees, officers, and agents against liability, losses, claims, and damages arising from:\n    1.  Any inaccurate or incomplete statement provided by the Adviser (or its personnel) for inclusion in the Fund\u2019s prospectus or statement of additional information (PFSFUNDS\\_06\\_26\\_2020-EX-99.H OTH MAT CONT-SERVICES AGREEMENT.PDF, Page 2).\n    2.  Willful misfeasance, bad faith, or gross negligence on the Adviser\u2019s part or the part of its personnel in performing duties under the agreement, or by reason of reckless disregard (PFSFUNDS\\_06\\_26\\_2020-EX-99.H OTH MAT CONT-SERVICES AGREEMENT.PDF, Page 2)."
+    },
+    {
+      "question_id": "q034",
+      "category": "exact_term",
+      "condition": "rag5",
+      "doc_tokens": 2893,
+      "prompt_tokens": 985,
+      "latency_ms": 38002,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "The Intellectual Property Agreement became effective on November 20, 2007 (the \u201cEffective Date\u201d) (MSCIINC_02_28_2008-EX-10.10-.PDF, Page: 1)."
+    },
+    {
+      "question_id": "q034",
+      "category": "exact_term",
+      "condition": "rag10",
+      "doc_tokens": 2893,
+      "prompt_tokens": 1951,
+      "latency_ms": 28386,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "The Intellectual Property Agreement became effective on November 20, 2007 (the \"Effective Date\") (MSCIINC\\_02\\_28\\_2008-EX-10.10-.PDF, Page: 1)."
+    },
+    {
+      "question_id": "q034",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 2893,
+      "prompt_tokens": 2842,
+      "latency_ms": 51068,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "The Intellectual Property Agreement became effective on November 20, 2007 (the \"Effective Date\") (MSCIINC_02_28_2008-EX-10.10-.PDF, Page 1)."
+    },
+    {
+      "question_id": "q036",
+      "category": "semantic",
+      "condition": "rag5",
+      "doc_tokens": 5825,
+      "prompt_tokens": 1261,
+      "latency_ms": 75209,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.59,
+      "cited_pages": [
+        3,
+        4
+      ],
+      "cited_correct": true,
+      "answer": "Each party must maintain insurance that includes comprehensive or commercial general liability and products liability insurance (contractual liability included) [SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page: 4].\n\nThe minimum limits required for this insurance are:\n*   **Each occurrence:** one million dollars ($1,000,000) [SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page: 4]\n*   **Products/completed operations aggregate:** five million dollars ($5,000,000) [SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page: 4]\n*   **Personal and advertising injury:** one million dollars ($1,000,000) [SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page: 4]\n*   **General aggregate (commercial form only):** five million dollars ($5,000,000) [SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page: 3]\n\nFurthermore, each party must maintain this insurance for the duration of their activities under the Agreement and thereafter for as long as they customarily maintain such coverage for similar activities [SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page: 4]."
+    },
+    {
+      "question_id": "q036",
+      "category": "semantic",
+      "condition": "rag10",
+      "doc_tokens": 5825,
+      "prompt_tokens": 2428,
+      "latency_ms": 68287,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.6,
+      "cited_pages": [
+        3,
+        4
+      ],
+      "cited_correct": true,
+      "answer": "The agreement requires each party to maintain insurance, including comprehensive or commercial general liability and products liability insurance (contractual liability included), with minimum limits that are reasonable and customary in the industry.\n\nThe specific required limits are:\n*   Each occurrence: one million dollars ($1,000,000) (SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page: 4).\n*   Products/completed operations aggregate: five million dollars ($5,000,000) (SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page: 4).\n*   Personal and advertising injury: one million dollars ($1,000,000) (SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page: 4).\n*   General aggregate (commercial form only): five million dollars ($5,000,000) (SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page: 3).\n\nEach party must maintain this insurance for the duration of their activities under the Agreement and thereafter for as long as they customarily maintain such coverage for similar activities (SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page: 3)."
+    },
+    {
+      "question_id": "q036",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 5825,
+      "prompt_tokens": 5371,
+      "latency_ms": 105027,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.48,
+      "cited_pages": [
+        4
+      ],
+      "cited_correct": true,
+      "answer": "Each party must maintain insurance that includes comprehensive or commercial general liability and products liability insurance (contractual liability included) for their activities under the agreement.\n\nThe minimum limits required are:\n*   **Each occurrence:** one million dollars ($1,000,000) (SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page 4).\n*   **Products/completed operations aggregate:** five million dollars ($5,000,000) (SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page 4).\n*   **Personal and advertising injury:** one million dollars ($1,000,000) (SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page 4).\n*   **General aggregate (commercial form only):** five million dollars ($5,000,000) (SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF, Page 4)."
+    },
+    {
+      "question_id": "q037",
+      "category": "semantic",
+      "condition": "rag5",
+      "doc_tokens": 5236,
+      "prompt_tokens": 1099,
+      "latency_ms": 45185,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.47,
+      "cited_pages": [
+        6
+      ],
+      "cited_correct": true,
+      "answer": "The Agreement is to be interpreted in accordance with the laws of India, excluding any body of law that governs the conflict of laws (OPERALTD_04_30_2020-EX-4.14-SERVICE AGREEMENT.PDF, Page: 6; OPERALTD_04_30_2020-EX-4.14-SERVICE AGREEMENT.PDF, Page: 6)."
+    },
+    {
+      "question_id": "q037",
+      "category": "semantic",
+      "condition": "rag10",
+      "doc_tokens": 5236,
+      "prompt_tokens": 2117,
+      "latency_ms": 53415,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.37,
+      "cited_pages": [
+        6
+      ],
+      "cited_correct": true,
+      "answer": "The Agreement is interpreted in accordance with the laws of **India**, except for any body of law governing conflict of laws (OPERALTD_04_30_2020-EX-4.14-SERVICE AGREEMENT.PDF, Page: 6; OPERALTD_04_30_2020-EX-4.14-SERVICE AGREEMENT.PDF, Page: 6).\n\nFurthermore, the courts of New Delhi have exclusive jurisdiction to settle any dispute between the Parties (OPERALTD_04_30_2020-EX-4.14-SERVICE AGREEMENT.PDF, Page: 6)."
+    },
+    {
+      "question_id": "q037",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 5236,
+      "prompt_tokens": 4765,
+      "latency_ms": 41079,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.42,
+      "cited_pages": [
+        6
+      ],
+      "cited_correct": true,
+      "answer": "According to Section 10.3 of the Service Agreement, this Agreement shall be interpreted in accordance with the laws of **India**, excluding any body of law that governs conflict of laws (OPERALTD_04_30_2020-EX-4.14-SERVICE AGREEMENT.PDF, Page 6)."
+    },
+    {
+      "question_id": "q039",
+      "category": "semantic",
+      "condition": "rag5",
+      "doc_tokens": 4583,
+      "prompt_tokens": 1217,
+      "latency_ms": 46225,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.83,
+      "cited_pages": [
+        3
+      ],
+      "cited_correct": true,
+      "answer": "The American Physicians Capital agreement is interpreted under the laws of the State of Nevada (AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 3).\n\nSpecifically, Section 5. Applicable Law states that \"This Agreement shall be interpreted under the laws of the State of Nevada\" (AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 3)."
+    },
+    {
+      "question_id": "q039",
+      "category": "semantic",
+      "condition": "rag10",
+      "doc_tokens": 4583,
+      "prompt_tokens": 2364,
+      "latency_ms": 54917,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.83,
+      "cited_pages": [
+        3
+      ],
+      "cited_correct": true,
+      "answer": "The agreement is governed by the laws of the State of Nevada.\n\nSources confirming this include:\n*   AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page 3 (Chunk 1)\n*   AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page 3 (Chunk 2), under Section 5. Applicable Law."
+    },
+    {
+      "question_id": "q039",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 4583,
+      "prompt_tokens": 4590,
+      "latency_ms": 48744,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.83,
+      "cited_pages": [
+        4
+      ],
+      "cited_correct": false,
+      "answer": "According to Section I. MISCELLANEOUS, Clause 5 (Applicable Law), this Agreement shall be interpreted under the laws of the State of Nevada (AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page 4)."
+    },
+    {
+      "question_id": "q042",
+      "category": "semantic",
+      "condition": "rag5",
+      "doc_tokens": 5506,
+      "prompt_tokens": 1147,
+      "latency_ms": 54904,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.53,
+      "cited_pages": [
+        9
+      ],
+      "cited_correct": true,
+      "answer": "Under the Merit Life Insurance agreement, the Contractor must maintain the following insurance coverage throughout the term of the Agreement (Source: MERITLIFEINSURANCECO_06_19_2020-EX-10.(XIV)-MASTER SERVICES AGREEMENT.PDF, Page: 9):\n\n*   **Workers compensation insurance:** In the amount required by statute.\n*   **Comprehensive general liability insurance:** With coverage of at least one million dollars ($1,000,000).\n*   **Professional errors and omissions insurance:** For bodily injury, property damage or other losses, with coverage of at least one million dollars ($1,000,000)."
+    },
+    {
+      "question_id": "q042",
+      "category": "semantic",
+      "condition": "rag10",
+      "doc_tokens": 5506,
+      "prompt_tokens": 2272,
+      "latency_ms": 67773,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.55,
+      "cited_pages": [
+        9
+      ],
+      "cited_correct": true,
+      "answer": "Under the agreement, the Contractor must maintain the following types of insurance throughout the term:\n\n*   Workers compensation insurance in the amount required by statute (MERITLIFEINSURANCECO\\_06\\_19\\_2020-EX-10.(XIV)-MASTER SERVICES AGREEMENT.PDF, Page 9).\n*   Comprehensive general liability insurance with coverage of at least one million dollars ($1,000,000) (MERITLIFEINSURANCECO\\_06\\_19\\_2020-EX-10.(XIV)-MASTER SERVICES AGREEMENT.PDF, Page 9).\n*   Professional errors and omissions insurance for bodily injury, property damage or other losses with coverage of at least one million dollars ($1,000,000) (MERITLIFEINSURANCECO\\_06\\_19\\_2020-EX-10.(XIV)-MASTER SERVICES AGREEMENT.PDF, Page 9)."
+    },
+    {
+      "question_id": "q042",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 5506,
+      "prompt_tokens": 4766,
+      "latency_ms": 94862,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.59,
+      "cited_pages": [
+        9
+      ],
+      "cited_correct": true,
+      "answer": "The Contractor must maintain the following insurance coverage throughout the term of the Agreement (MERITLIFEINSURANCECO_06_19_2020-EX-10.(XIV)-MASTER SERVICES AGREEMENT.PDF, Page 9):\n\n*   **Workers Compensation Insurance:** In the amount required by statute.\n*   **Comprehensive General Liability Insurance:** With coverage of at least one million dollars ($1,000,000).\n*   **Professional Errors and Omissions Insurance:** For bodily injury, property damage, or other losses, with coverage of at least one million dollars ($1,000,000).\n\nThe Contractor must provide the Company with certificates or acceptable evidence of this insurance upon request (MERITLIFEINSURANCECO_06_19_2020-EX-10.(XIV)-MASTER SERVICES AGREEMENT.PDF, Page 9)."
+    },
+    {
+      "question_id": "q045",
+      "category": "semantic",
+      "condition": "rag5",
+      "doc_tokens": 2075,
+      "prompt_tokens": 1214,
+      "latency_ms": 39018,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.57,
+      "cited_pages": [
+        3
+      ],
+      "cited_correct": true,
+      "answer": "The agreement shall be governed by and construed in accordance with the law of the State of New York (SCOUTCAMINC\\_05\\_12\\_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page: 3)."
+    },
+    {
+      "question_id": "q045",
+      "category": "semantic",
+      "condition": "rag10",
+      "doc_tokens": 2075,
+      "prompt_tokens": 2403,
+      "latency_ms": 43460,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.57,
+      "cited_pages": [
+        3
+      ],
+      "cited_correct": true,
+      "answer": "This Agreement shall be governed by and construed in accordance with the law of the State of New York (SCOUTCAMINC\\_05\\_12\\_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page: 3).\n\nAdditionally, the parties submit to the exclusive jurisdiction of the state courts in the State of New York for any controversy arising under the agreement (SCOUTCAMINC\\_05\\_12\\_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page: 3)."
+    },
+    {
+      "question_id": "q045",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 2075,
+      "prompt_tokens": 1910,
+      "latency_ms": 34547,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.57,
+      "cited_pages": [
+        3
+      ],
+      "cited_correct": true,
+      "answer": "The agreement shall be governed by and construed in accordance with the law of the State of New York (SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page 3, Section 13)."
+    },
+    {
+      "question_id": "q046",
+      "category": "semantic",
+      "condition": "rag5",
+      "doc_tokens": 4583,
+      "prompt_tokens": 1253,
+      "latency_ms": 49776,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.47,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "The Agency must maintain the following insurance policies:\n\n*   Valid errors and omissions insurance, with a minimum limit of $1,000,000 per incident (AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 2).\n*   A fidelity and electronic crime policy through an insurer (AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 2)."
+    },
+    {
+      "question_id": "q046",
+      "category": "semantic",
+      "condition": "rag10",
+      "doc_tokens": 4583,
+      "prompt_tokens": 2369,
+      "latency_ms": 63874,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.7,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "The Agency must maintain the following types of insurance:\n\n*   **Errors and Omissions Insurance:** With minimum limits of $1,000,000 per incident (AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 2; AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 2).\n*   **Fidelity and Electronic Crime Policy:** (AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 2; AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 2).\n\nThese policies must be obtained through an insurer and contain terms and limits of coverage acceptable to MICOA, covering the Agency's solicitors and each of its employees (AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 2)."
+    },
+    {
+      "question_id": "q046",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 4583,
+      "prompt_tokens": 4593,
+      "latency_ms": 46687,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.73,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Under Section E (\"AGENCY'S ERRORS AND OMISSION, AND FIDELITY & ELECTRONIC CRIME INSURANCE\"), the Agency must carry the following insurance policies:\n\n*   **Errors and Omissions Insurance:** Must be valid with minimum limits of $1,000,000 per incident (Page 2).\n*   **Fidelity and Electronic Crime Policy:** Must be carried through an insurer (Page 2).\n\nBoth policies must contain terms and limits of coverage acceptable to MICOA and must cover the Agency's solicitors and each of its employees (Page 2)."
+    },
+    {
+      "question_id": "q048",
+      "category": "exact_term",
+      "condition": "rag5",
+      "doc_tokens": 1794,
+      "prompt_tokens": 1264,
+      "latency_ms": 43741,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.0,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "The provided documents do not state when the agreement becomes effective. However, Section 12 (TERM AND TERMINATION) indicates that \"This Agreement shall be valid for an indefinite period\" (DRAGONSYSTEMSINC_01_08_1999-EX-10.17-OUTSOURCING AGREEMENT.PDF, Page: 2; DRAGONSYSTEMSINC_01_08_1999-EX-10.17-OUTSOURCING AGREEMENT.PDF, Page: 2)."
+    },
+    {
+      "question_id": "q048",
+      "category": "exact_term",
+      "condition": "rag10",
+      "doc_tokens": 1794,
+      "prompt_tokens": 2166,
+      "latency_ms": 33489,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": false,
+      "answer": "The document states that the agreement is \"EFFECTIVE AS OF (EFFECTIVE DATE)\" (DRAGONSYSTEMSINC_01_08_1999-EX-10.17-OUTSOURCING AGREEMENT.PDF, Page: 1), but a specific effective date is not provided in the context."
+    },
+    {
+      "question_id": "q048",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 1794,
+      "prompt_tokens": 1822,
+      "latency_ms": 46846,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.5,
+      "cited_pages": [
+        1,
+        2
+      ],
+      "cited_correct": true,
+      "answer": "The document includes a section labeled \"EFFECTIVE AS OF (EFFECTIVE DATE)\" on Page 1, but no specific date is filled in next to this label.\n\nHowever, the agreement was signed with the following dates:\n*   MMI signed on January 19, 1998 (Page 2).\n*   Dragon Systems signed on January 12, 1998 (Page 2)."
+    },
+    {
+      "question_id": "q049",
+      "category": "exact_term",
+      "condition": "rag5",
+      "doc_tokens": 1702,
+      "prompt_tokens": 1254,
+      "latency_ms": 32257,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "The Agreement is effective as of the 1st day of January, 1998 (NYLIACVARIABLEANNUITYSEPARATEACCOUNTIII_04_10_2020-EX-99.8.KK-SERVICE AGREEMENT.PDF, Page: 1)."
+    },
+    {
+      "question_id": "q049",
+      "category": "exact_term",
+      "condition": "rag10",
+      "doc_tokens": 1702,
+      "prompt_tokens": 2012,
+      "latency_ms": 29119,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "The Agreement is entered into and effective as of the 1st day of January, 1998 (NYLIACVARIABLEANNUITYSEPARATEACCOUNTIII_04_10_2020-EX-99.8.KK-SERVICE AGREEMENT.PDF, Page: 1)."
+    },
+    {
+      "question_id": "q049",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 1702,
+      "prompt_tokens": 1570,
+      "latency_ms": 37744,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "The Service Agreement became effective on the 1st day of January, 1998 (NYLIACVARIABLEANNUITYSEPARATEACCOUNTIII_04_10_2020-EX-99.8.KK-SERVICE AGREEMENT.PDF, Page 1)."
+    },
+    {
+      "question_id": "q050",
+      "category": "semantic",
+      "condition": "rag5",
+      "doc_tokens": 4583,
+      "prompt_tokens": 1068,
+      "latency_ms": 75516,
+      "context_has_page": false,
+      "abstained": true,
+      "support": 0.2,
+      "cited_pages": [
+        2,
+        3
+      ],
+      "cited_correct": false,
+      "answer": "Based on the provided documents, there is no explicit statement confirming whether any exclusivity is granted in the American Physicians Capital agreement.\n\nHowever, the document does mention:\n*   **Post-Termination Restriction:** For two years following termination, the Agency will not directly or indirectly sell professional liability insurance to individuals or entities who were MICOA insureds in Nevada at the time of termination (AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 2).\n*   **Separate Agreements:** For specific products and territories, appropriate agreements must be negotiated separately from the main agreement (AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 3)."
+    },
+    {
+      "question_id": "q050",
+      "category": "semantic",
+      "condition": "rag10",
+      "doc_tokens": 4583,
+      "prompt_tokens": 2387,
+      "latency_ms": 62485,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.95,
+      "cited_pages": [
+        5
+      ],
+      "cited_correct": true,
+      "answer": "Yes, the document mentions that an exclusive agency agreement will be negotiated for a specific purpose.\n\nAccording to one section of the agreement, \"In order to allow SC&W to expand the distribution system in Nevada with select and controlled subagents, an **exclusive agency agreement will be negotiated** which will spell out the terms and conditions of the relationship\" (AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page: 5)."
+    },
+    {
+      "question_id": "q050",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 4583,
+      "prompt_tokens": 4592,
+      "latency_ms": 63690,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.3,
+      "cited_pages": [
+        1,
+        7
+      ],
+      "cited_correct": false,
+      "answer": "Yes, exclusivity is granted within the scope of this agreement:\n\n1.  **Exclusive Appointment for Agency:** MICOA grants the Agency an **exclusive appointment** to sell its professional liability products listed in Nevada (Page 1).\n2.  **Agency Restriction:** In return for this exclusive appointment, the Agency agrees not to sell any competing professional liability products in Nevada without receiving written consent from MICOA (Page 1).\n3.  **Subagency/Expansion Agreement:** Furthermore, a separate \"exclusive agency agreement\" is mentioned as being negotiated regarding subagents and expansion of the distribution system in Nevada (AMERICANPHYSICIANSCAPITALINC\\_03\\_31\\_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page 7)."
+    },
+    {
+      "question_id": "q059",
+      "category": "exact_term",
+      "condition": "rag5",
+      "doc_tokens": 2075,
+      "prompt_tokens": 1225,
+      "latency_ms": 36879,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "The parties to the Services Agreement mentioned in the context are:\n\n*   Idan Maimon (\u201cMaimon\u201d)\n*   Intellisense Solutions, Inc., a Nevada corporation (the \u201cCompany\u201d) (SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page: 1)"
+    },
+    {
+      "question_id": "q059",
+      "category": "exact_term",
+      "condition": "rag10",
+      "doc_tokens": 2075,
+      "prompt_tokens": 2405,
+      "latency_ms": 53423,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "The parties to the Services Agreement are Idan Maimon (\u201cMaimon\u201d) and Intellisense Solutions, Inc., a Nevada corporation (the \u201cCompany\u201d) (SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page: 1)."
+    },
+    {
+      "question_id": "q059",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 2075,
+      "prompt_tokens": 1912,
+      "latency_ms": 30990,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "The parties to the Services Agreement are:\n\n*   Idan Maimon (\u201cMaimon\u201d)\n*   Intellisense Solutions, Inc., a Nevada corporation (referred to as \u201cthe Company\u201d) (SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page 1)"
+    },
+    {
+      "question_id": "q071",
+      "category": "exact_term",
+      "condition": "rag5",
+      "doc_tokens": 5027,
+      "prompt_tokens": 991,
+      "latency_ms": 40264,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.5,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "The AGREEMENT is made on April 6, 2014, which serves as the \"Effective Date\" for the agreement between Leclanch\u00e9 S.A. and Oak Ridge Energy Technologies Inc. (LECLANCH\u00c9 S.A. - JOINT DEVELOPMENT AND MARKETING AGREEMENT.PDF, Page: 2)."
+    },
+    {
+      "question_id": "q071",
+      "category": "exact_term",
+      "condition": "rag10",
+      "doc_tokens": 5027,
+      "prompt_tokens": 2105,
+      "latency_ms": 54858,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.5,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "The AGREEMENT was made on April 6, 2014, which serves as the \"Effective Date\" (LECLANCH\u00c9 S.A. - JOINT DEVELOPMENT AND MARKETING AGREEMENT.PDF, Page: 2)."
+    },
+    {
+      "question_id": "q071",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 5027,
+      "prompt_tokens": 4839,
+      "latency_ms": 73253,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "The agreement became effective on April 6, 2014 (LECLANCH\u00c9 S.A. - JOINT DEVELOPMENT AND MARKETING AGREEMENT.PDF, Page 2)."
+    },
+    {
+      "question_id": "q073",
+      "category": "semantic",
+      "condition": "rag5",
+      "doc_tokens": 2075,
+      "prompt_tokens": 1188,
+      "latency_ms": 40698,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.67,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Neither of the parties to the agreement may assign their rights without obtaining the prior written consent of the other party, and any attempted assignment made without such consent will be null and void (SCOUTCAMINC\\_05\\_12\\_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page: 2)."
+    },
+    {
+      "question_id": "q073",
+      "category": "semantic",
+      "condition": "rag10",
+      "doc_tokens": 2075,
+      "prompt_tokens": 2406,
+      "latency_ms": 51293,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.67,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "According to the provided documents, neither party to the Agreement may assign its rights without obtaining the prior written consent of the other party; any attempt at assignment without such consent is null and void and without effect (SCOUTCAMINC\\_05\\_12\\_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page: 2)."
+    },
+    {
+      "question_id": "q073",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 2075,
+      "prompt_tokens": 1913,
+      "latency_ms": 34840,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.71,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Neither party to the Agreement may assign its rights without obtaining the prior written consent of the other party; any attempted assignment without such consent is null and void (SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page 2, Section 10)."
+    },
+    {
+      "question_id": "q092",
+      "category": "unanswerable",
+      "condition": "rag5",
+      "doc_tokens": 5506,
+      "prompt_tokens": 1181,
+      "latency_ms": 42250,
+      "context_has_page": false,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [],
+      "cited_correct": null,
+      "answer": "Based strictly on the provided documents, there is no mention of source code escrow or an escrow arrangement within the agreements (MERITLIFEINSURANCECO\\_06\\_19\\_2020-EX-10.(XIV)-MASTER SERVICES AGREEMENT.PDF)."
+    },
+    {
+      "question_id": "q092",
+      "category": "unanswerable",
+      "condition": "rag10",
+      "doc_tokens": 5506,
+      "prompt_tokens": 2284,
+      "latency_ms": 44052,
+      "context_has_page": false,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [],
+      "cited_correct": null,
+      "answer": "Based on the provided documents, there is no mention of source code escrow."
+    },
+    {
+      "question_id": "q092",
+      "category": "unanswerable",
+      "condition": "full",
+      "doc_tokens": 5506,
+      "prompt_tokens": 4766,
+      "latency_ms": 51336,
+      "context_has_page": true,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [],
+      "cited_correct": null,
+      "answer": "Based strictly on the provided document, there is no mention of source code escrow provisions within the Master Services Agreement.\n\n(MERITLIFEINSURANCECO_06_19_2020-EX-10.(XIV)-MASTER SERVICES AGREEMENT.PDF, Pages 1\u201310)"
+    },
+    {
+      "question_id": "q093",
+      "category": "unanswerable",
+      "condition": "rag5",
+      "doc_tokens": 4994,
+      "prompt_tokens": 1189,
+      "latency_ms": 43453,
+      "context_has_page": false,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [],
+      "cited_correct": null,
+      "answer": "The provided documents do not state what minimum financial commitment is required by the Oaktree Capital Group agreement."
+    },
+    {
+      "question_id": "q093",
+      "category": "unanswerable",
+      "condition": "rag10",
+      "doc_tokens": 4994,
+      "prompt_tokens": 2552,
+      "latency_ms": 70366,
+      "context_has_page": false,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [
+        2,
+        3
+      ],
+      "cited_correct": null,
+      "answer": "The provided documents do not specify what a \"minimum commitment\" required by the Oaktree Capital Group agreement is. The agreements detail various duties, powers, and conditions, such as:\n\n*   The Sub-Advisor must act honestly, with due skill, care and diligence, and in the best interest of the Partnership (OAKTREECAPITALGROUP,LLC_03_02_2020-EX-10.8-Services Agreement.PDF, Page: 3).\n*   The Sub-Advisor must use reasonable endeavors to perform its obligations in accordance with Applicable Law (including FSMA and FCA Rules) (OAKTREECAPITALGROUP,LLC_03_02_2020-EX-10.8-Services Agreement.PDF, Page: 3).\n*   The Sub-Advisor's appointment is subject to certain conditions (OAKTREECAPITALGROUP,LLC_03_02_2020-EX-10.8-Services Agreement.PDF, Page: 2; OAKTREECAPITALGROUP,LLC_03_02_2020-EX-10.8-Services Agreement.PDF, Page: 3)."
+    },
+    {
+      "question_id": "q093",
+      "category": "unanswerable",
+      "condition": "full",
+      "doc_tokens": 4994,
+      "prompt_tokens": 4971,
+      "latency_ms": 88506,
+      "context_has_page": true,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [],
+      "cited_correct": null,
+      "answer": "Based on the provided document, there is no mention of a minimum financial commitment required by the Oaktree Capital Group agreement."
+    },
+    {
+      "question_id": "q095",
+      "category": "unanswerable",
+      "condition": "rag5",
+      "doc_tokens": 1226,
+      "prompt_tokens": 993,
+      "latency_ms": 35268,
+      "context_has_page": false,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [],
+      "cited_correct": null,
+      "answer": "The provided documents do not state how much notice is needed to prevent the renewal of the Verso Technologies agreement."
+    },
+    {
+      "question_id": "q095",
+      "category": "unanswerable",
+      "condition": "rag10",
+      "doc_tokens": 1226,
+      "prompt_tokens": 1683,
+      "latency_ms": 38831,
+      "context_has_page": false,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [],
+      "cited_correct": null,
+      "answer": "The provided documents do not state how much notice is needed to prevent the Verso Technologies agreement from renewing."
+    },
+    {
+      "question_id": "q095",
+      "category": "unanswerable",
+      "condition": "full",
+      "doc_tokens": 1226,
+      "prompt_tokens": 1390,
+      "latency_ms": 38649,
+      "context_has_page": true,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [],
+      "cited_correct": null,
+      "answer": "The provided document does not specify how much notice is needed to stop a Verso Technologies agreement from renewing."
+    },
+    {
+      "question_id": "q097",
+      "category": "unanswerable",
+      "condition": "rag5",
+      "doc_tokens": 1460,
+      "prompt_tokens": 905,
+      "latency_ms": 66622,
+      "context_has_page": false,
+      "abstained": false,
+      "support": null,
+      "cited_pages": [
+        2,
+        3
+      ],
+      "cited_correct": null,
+      "answer": "Based on the provided documents, if a party were to transfer its rights or obligations (which often occurs during an acquisition), the agreement stipulates that no Party has the right to assign its rights or obligations without the consent of the other Parties hereto (TRANSMONTAIGNEPARTNERSLLC_03_13_2020-EX-10.9-SERVICES AGREEMENT.PDF, Page: 2; TRANSMONTAIGNEPARTNERSLLC_03_13_2020-EX-10.9-SERVICES AGREEMENT.PDF, Page: 2).\n\nAdditionally, the agreement includes a clause for Further Assurances, which requires each signatory party to execute and deliver additional documents and perform acts necessary or appropriate to effectuate, carry out, and perform all terms and conditions of the Agreement (TRANSMONTAIGNEPARTNERSLLC_03_13_2020-EX-10.9-SERVICES AGREEMENT.PDF, Page: 3)."
+    },
+    {
+      "question_id": "q097",
+      "category": "unanswerable",
+      "condition": "rag10",
+      "doc_tokens": 1460,
+      "prompt_tokens": 1795,
+      "latency_ms": 46454,
+      "context_has_page": false,
+      "abstained": false,
+      "support": null,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": null,
+      "answer": "According to the provided documents, a Party generally cannot assign its rights or obligations under the Agreement without obtaining the consent of the other Parties (TRANSMONTAIGNEPARTNERSLLC_03_13_2020-EX-10.9-SERVICES AGREEMENT.PDF, Page: 2).\n\nHowever, there is an exception allowing either party to make a collateral assignment of the Agreement solely to secure working capital financing for that party (TRANSMONTAIGNEPARTNERSLLC_03_13_2020-EX-10.9-SERVICES AGREEMENT.PDF, Page: 2)."
+    },
+    {
+      "question_id": "q097",
+      "category": "unanswerable",
+      "condition": "full",
+      "doc_tokens": 1460,
+      "prompt_tokens": 1448,
+      "latency_ms": 60084,
+      "context_has_page": true,
+      "abstained": false,
+      "support": null,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": null,
+      "answer": "Based on the provided document, the agreement restricts the transfer of rights or obligations under the contract.\n\nSpecifically, Section 2.5 (Assignment) states that:\n*   No Party may assign its rights or obligations under this Agreement without obtaining the consent of the other Parties hereto (TRANSMONTAIGNEPARTNERSLLC_03_13_2020-EX-10.9-SERVICES AGREEMENT.PDF, Page 2).\n\nTherefore, if an acquisition is considered an assignment, the transfer would require the written consent of the non-acquiring party."
+    },
+    {
+      "question_id": "q099",
+      "category": "unanswerable",
+      "condition": "rag5",
+      "doc_tokens": 1840,
+      "prompt_tokens": 1500,
+      "latency_ms": 118564,
+      "context_has_page": false,
+      "abstained": false,
+      "support": null,
+      "cited_pages": [
+        1,
+        3
+      ],
+      "cited_correct": null,
+      "answer": "The agreement imposes detailed guidelines and restrictions primarily related to the use of the Lucent Co-Branding Logo, which govern how mPhase can market its goods using the joint branding.\n\nSpecific restrictions include:\n\n*   **Logo Usage:**\n    *   mPhase may only apply the exact logo shown on Schedule A in Approved Uses for mPhase's Goods (Source: MphaseTechnologiesInc_20030911_10-K_EX-10.15_1560667_EX-10.15_Co-Branding Agreement.pdf, Page: 1).\n    *   mPhase must abide by guidelines in Schedule B regarding dimensions, requirements, and specifications (Source: MphaseTechnologiesInc_20030911_10-K_EX-10.15_1560667_EX-10.15_Co-Branding Agreement.pdf, Page: 1).\n    *   The Lucent co-branding Art shown in Schedule A may not be altered from the form provided by Lucent Technologies (Source: MphaseTechnologiesInc_20030911_10-K_EX-10.15_1560667_EX-10.15_Co-Branding Agreement.pdf, Page: 3).\n    *   The two company logos cannot be combined to form a composite logo or suggest that the companies are part of one entity (Source: MphaseTechnologiesInc_20030911_10-K_EX-10.15_1560667_EX-10.15_Co-Branding Agreement.pdf, Page: 3).\n    *   The 'Bell Labs Innovations' cannot appear with the Lucent Logo (Source: MphaseTechnologiesInc_20030911_10-K_EX-10.15_1560667_EX-10.15_Co-Branding Agreement.pdf, Page: 3).\n*   **Quality and Compliance:**\n    *   mPhase must maintain the quality of its Goods associated with the Lucent Co-Branding Logo to a level comparable to the current quality (Source: MphaseTechnologiesInc_20030911_10-K_EX-10.15_1560667_EX-10.15_Co-Branding Agreement.pdf, Page: 1).\n    *   mPhase must allow Lucent to inspect the Approved Uses bearing the logo to ensure compliance (Source: MphaseTechnologiesInc_20030911_10-K_EX-10.15_1560667_EX-10.15_Co-Branding Agreement.pdf, Page: 1).\n*   **Unauthorized Use:**\n    *   If mPhase becomes aware of any unauthorized use of the Lucent Co-Branding Logo or other Lucent marks by third parties, mPhase must promptly notify Lucent and cooperate in enforcement (Source: MphaseTechnologiesInc_20030911_10-K_EX-10.15_1560667_EX-10.15_Co-Branding Agreement.pdf, Page: 1)."
+    },
+    {
+      "question_id": "q099",
+      "category": "unanswerable",
+      "condition": "rag10",
+      "doc_tokens": 1840,
+      "prompt_tokens": 2578,
+      "latency_ms": 143489,
+      "context_has_page": false,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [
+        1,
+        3
+      ],
+      "cited_correct": null,
+      "answer": "The agreement imposes several restrictions related to how mPhase Technologies can use and represent the Lucent Co-Branding Logo and marks, but it does not contain a general non-compete clause.\n\nSpecific restrictions include:\n\n*   **Logo Usage:**\n    *   mPhase may only apply the exact logo shown on Schedule A of the Agreement (the \"Lucent Co-Branding Logo\") in Approved Uses for mPhase's Goods (MphaseTechnologiesInc\\_20030911\\_10-K\\_EX-10.15\\_1560667\\_EX-10.15\\_Co-Branding Agreement.pdf, Page: 1; Chunk 4).\n    *   mPhase must abide by the guidelines in Schedule B regarding dimensions, requirements, and specifications (MphaseTechnologiesInc\\_20030911\\_10-K\\_EX-10.15\\_1560667\\_EX-10.15\\_Co-Branding Agreement.pdf, Page: 1; Chunk 4).\n    *   The Lucent co-branding Art shown in Schedule A may not be altered in any way (MphaseTechnologiesInc\\_20030911\\_10-K\\_EX-10.15\\_1560667\\_EX-10.15\\_Co-Branding Agreement.pdf, Page: 3; Chunk 3).\n    *   The two logos of each company cannot be combined to form a composite logo or suggest that the companies are part of one (MphaseTechnologiesInc\\_20030911\\_10-K\\_EX-10.15\\_1560667\\_EX-10.15\\_Co-Branding Agreement.pdf, Page: 3; Chunk 3).\n    *   The Lucent Co-Branding Logo must maintain a staging of 1/2 the diameter of the Innovation Ring of clearspace (MphaseTechnologiesInc\\_20030911\\_10-K\\_EX-10.15\\_1560667\\_EX-10.15\\_Co-Branding Agreement.pdf, Page: 3; Chunk 3).\n*   **Designation and Quality:**\n    *   mPhase agrees not to adopt any designation that is confusingly similar to the Lucent Co-Branding Logo or Lucent's marks (MphaseTechnologiesInc\\_20030911\\_10-K\\_EX-10.15\\_1560667\\_EX-10.15\\_Co-Branding Agreement.pdf, Page: 1; Chunk 6).\n    *   mPhase must maintain the quality of its Goods associated with the Lucent Co-Branding Logo to a level comparable to the current quality (MphaseTechnologiesInc\\_20030911\\_10-K\\_EX-10.15\\_1560667\\_EX-10.15\\_Co-Branding Agreement.pdf, Page: 1; Chunk 5).\n*   **Third-Party Use:**\n    *   If mPhase becomes aware of any unauthorized use of the Lucent Co-Branding Logo or other Lucent marks by third parties, mPhase must promptly notify Lucent and cooperate fully in enforcement (MphaseTechnologiesInc\\_20030911\\_10-K\\_EX-10.15\\_1560667\\_EX-10.15\\_Co-Branding Agreement.pdf, Page: 1; Chunk 5).\n*   **Termination Risk:** Lucent may terminate the agreement if mPhase's use of the logo is judged by Lucent to adversely affect Lucent's rights (MphaseTechnologiesInc\\_20030911\\_10-K\\_EX-10.15\\_1560667\\_EX-10.15\\_Co-Branding Agreement.pdf, Page: 1; Chunk 4)."
+    },
+    {
+      "question_id": "q099",
+      "category": "unanswerable",
+      "condition": "full",
+      "doc_tokens": 1840,
+      "prompt_tokens": 2082,
+      "latency_ms": 111134,
+      "context_has_page": true,
+      "abstained": false,
+      "support": null,
+      "cited_pages": [
+        1,
+        3
+      ],
+      "cited_correct": null,
+      "answer": "The agreement imposes several restrictions related to maintaining brand integrity, preventing confusion with Lucent's marks, and controlling how the co-branding is used.\n\n**Restrictions on Similarity and Marks:**\n\n*   **Designation Restriction:** mPhase agrees not to adopt any designation that is confusingly similar to the Lucent Co-Branding Logo or Lucent\u2019s marks (LUCENT, LUCENT TECHNOLOGIES, or LUCENT INNOVATION RING DESIGN). Failure to comply with this could lead to immediate termination of the Agreement without notice (MphaseTechnologiesInc_20030911... PDF, Page 1, Clause 5).\n*   **Logo Alteration:** mPhase must use only the exact logo shown on Schedule A (\"Lucent Co-Branding Logo\") and may not alter the Lucent co-branding Art provided by Lucent Technologies (MphaseTechnologiesInc_20030911... PDF, Page 1, Clause 1; MphaseTechnologiesInc_20030911... PDF, Page 3, Schedule B).\n*   **Composite Logos:** The two company logos cannot be combined to form a composite logo or suggest that the companies are part of one entity (MphaseTechnologiesInc_20030911... PDF, Page 3, Schedule B).\n\n**Restrictions on Use and Branding Guidelines:**\n\n*   mPhase must abide by all guidelines specified in Schedule B regarding dimensions, requirements, and specifications for using the Lucent Co-Branding Logo (MphaseTechnologiesInc_20030911... PDF, Page 1, Clause 2).\n*   Specific branding elements are restricted; for example, \"Bell Labs Innovations\" cannot appear on co-branded offers (MphaseTechnologiesInc_20030911... PDF, Page 3, Schedule B).\n\n**Obligations Regarding Unauthorized Use:**\n\n*   If mPhase becomes aware of any unauthorized use of the Lucent Co-Branding Logo or other Lucent marks by third parties, mPhase must promptly notify Lucent and cooperate fully in any enforcement of Lucent's rights against those third parties (MphaseTechnologiesInc_20030911... PDF, Page 1, Clause 10).\n\n**Other Restrictions:**\n\n*   The Agreement stipulates that mPhase acquires no rights to the Lucent Co-Branding Logo or Lucent\u2019s marks by its use; any such use benefits Lucent (MphaseTechnologiesInc_20030911... PDF, Page 1, Clause 4).\n*   Lucent may terminate the Agreement if mPhase's use of the logo is judged by Lucent to adversely affect Lucent\u2019s rights to its marks or names (MphaseTechnologiesInc_20030911... PDF, Page 1, Clause 3)."
+    }
+  ]
+}

@@ -128,6 +128,22 @@ orders those pages better than either cross-encoder did. The gap lives in the
 56 unscoped questions, whose correct page is not in the pool at all — and a
 reranker cannot add what retrieval missed.
 
+Re-tested after name-scoping reached 0.702, in the cleanest setting
+available: the gold document handed over, so the pool is the whole contract
+and the only job is ordering its pages.
+
+| document given | recall@5 | MRR | ms/query |
+|---|---:|---:|---:|
+| dense | **0.767** | 0.628 | 81 |
+| + `ms-marco-MiniLM-L-6-v2` | 0.699 | 0.642 | 778 |
+| + `mxbai-rerank-base-v1` | 0.733 | 0.609 | 5,417 |
+
+Both still lose, with `exact_term` suffering most each time. Given one
+contract and asked only to order its pages, a web-trained cross-encoder
+orders them worse than L2 distance on nomic vectors. There is no cleaner
+setting left to test in; the next candidate is a cross-encoder fine-tuned on
+CUAD pairs, which is a training project rather than a configuration.
+
 **The embedding model swap was measured and rejected.** Two Qwen3 models
 against the same scoped path, each with its own query instruction:
 
@@ -148,6 +164,32 @@ Reproducible by config — `EMBEDDING_MODEL` and `EMBEDDING_DIMENSIONS`, then
 `python -m evals.corpus` — so both reports are committed. Migration 005 made
 the column width-agnostic for this; a further model comparison needs no
 schema change.
+
+**Re-tested after name-scoping and title stripping, the result changed.**
+Under the current pipeline the embedder mostly orders pages within one
+contract given a short residual query, and there `qwen3-embedding:4b` is a
+trade rather than a loss: recall@5 0.688 vs 0.702, but recall@10 0.749 vs
+0.721 and MRR 0.604 vs 0.566, with `semantic` up 0.062 and `exact_term` down
+0.096 (`reports/scoped-qwen3-4b.json` now holds this run; the earlier one is in `ac84efe`). Nomic is the stronger
+literal matcher; Qwen the stronger paraphrase matcher. Neither dominates.
+
+**Fusing the two** by reciprocal rank inside the scoped document is the one
+combination the evidence supports — two decent signals with different
+strengths, unlike the lexical channel, which was noise. Measured ad hoc with
+both models' vectors in the same column (migration 005): flat at k=5, but
+recall@10 0.721 → 0.793 auto-scoped and 0.802 → 0.873 with the document
+given, MRR +0.07 in both. The gain is at k=10, which is what the chat path
+should send. Not shipped: it doubles index writes and adds a 2.5 GB resident
+model and ~250ms per query.
+
+**Multiple selected documents, one question each.** Simulating a picker where
+the user selects 5 documents and asks about one of them (20 seeded draws):
+searching all 5 with the title stripped scores 0.373 at k=5 — the stripped
+query no longer says which contract, and each of the 5 has the clause.
+Matching the name against the *selection* and narrowing to that one document
+scores 0.860 (0.931 at k=10 fused). A selection is a candidate set, not a
+scope: the name match still runs inside it, and a title is never stripped
+while the scope holds more than one document.
 
 ## Next
 

@@ -77,7 +77,8 @@ class Settings(BaseSettings):
             return self.LLM_MODEL
         if self.LLM_PROVIDER.lower() == "ollama":
             return "gemma4:e4b"
-        return os.environ.get("GEMINI_MODEL", "gemini-1.5-flash")
+        # An alias, not a pinned name: gemini-1.5-flash was retired and 404s.
+        return os.environ.get("GEMINI_MODEL", "gemini-flash-latest")
 
     UPLOAD_DIR: str = str(BASE_DIR / "uploads")
     ALLOWED_FILE_EXTENSIONS: set[str] = {".pdf", ".txt", ".png", ".jpg", ".jpeg", ".tiff", ".bmp"}

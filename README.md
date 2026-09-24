@@ -6,14 +6,15 @@ language; get answers that cite the filename and page they came from. Documents
 are private to the account that uploaded them.
 
 The part worth looking at is `evals/`: a 100-question evaluation suite built from
-expert clause annotations, which reports what the retriever actually finds rather
-than asserting that it works.
+expert clause annotations, which reports what the retriever actually finds and
+what the model then does with it, rather than asserting that either works.
 
 | | |
 |---|---|
 | **Live demo** | _not yet deployed_ |
 | **Evaluation suite** | [evals/README.md](evals/README.md) |
 | **Current baseline** | recall@5 **0.702**, MRR **0.562** ([report](evals/reports/name-scoped.json)) |
+| **Graded answers** | local `gemma4:e4b` 20 of 24 good, Gemini 22 of 24 ([workbook](evals/reports/faithfulness-grading-graded.xlsx)) |
 | **Local setup** | [Running it](#running-it) |
 
 ---
@@ -30,21 +31,26 @@ PostgreSQL with pgvector. Each chunk records the model that embedded it, so
 changing embedding models hides stale vectors instead of silently comparing
 across two different vector spaces.
 
-**Retrieves and answers.** A question is embedded with the query-side encoding,
-matched against the user's own chunks by vector distance, and the top matches are
-passed to Gemini, which streams an answer citing filename and page.
+**Retrieves and answers.** A question that names a document ("the Acme
+agreement") is matched against the user's filenames, and the search is
+restricted to that document with the name removed from the query. Users can
+also select the documents a question is about; a selection is searched as a
+whole unless the question names one of them. The ten nearest chunks go to the
+model, which streams an answer citing filename and page. With Gemini, a single
+scoped document under 40k tokens is sent whole instead of as chunks. Answers
+come from Gemini or from Gemma running locally through Ollama.
 
-**Isolates.** Every document and chunk belongs to a user, and both indexing and
-retrieval filter on that owner. Cross-tenant isolation has negative tests in
+**Isolates.** Every document and chunk belongs to a user, and indexing,
+retrieval and document selection all filter on that owner. Cross-tenant isolation has negative tests in
 `backend/test_e2e.py`.
 
 ---
 
 ## Evaluation
 
-To measure retrieval quality the suite runs against the same
-`query_similar_context` the API calls, so the numbers describe the shipped
-retriever rather than a reimplementation of it.
+To measure retrieval quality the suite runs the same scoping and retrieval
+code the API calls, so the numbers describe the shipped retriever rather than
+a reimplementation of it.
 
 **Corpus:** 69 commercial contracts from [CUAD](https://www.atticusprojectai.org/cuad)
 (Contract Understanding Atticus Dataset), 5,574 chunks.
@@ -52,8 +58,8 @@ retriever rather than a reimplementation of it.
 **Questions:** 100, derived from CUAD's clause annotations — labelled by law
 students under attorney supervision. Ground truth is a `(filename, page)` pair
 found by locating each annotated span in the document, so no label points at a
-page nobody read. `is_impossible` annotations supply expert-verified
-`unanswerable` questions.
+page nobody read. `is_impossible` annotations supply questions about clauses a
+contract lacks, where the right answer is that the clause is not there.
 
 `nomic-embed-text`, 1000/150 chunking. Name-scoped is what the API serves;
 dense is kept as the comparison point every change is measured against.
@@ -69,7 +75,7 @@ dense is kept as the comparison point every change is measured against.
 | latency p50 / p95 | 113ms / 161ms | 88ms / 108ms |
 
 **Name-scoping** resolves the contract from the question before searching, in
-`query_scoped_context`, which both API endpoints call. A
+`resolve_scope`, which both API endpoints call. A
 question that says "the {party} agreement" is matched against filenames, and
 when one document clearly wins, the vector search is restricted to it. Each
 question word is worth 1 / (number of filenames containing it), so the party
@@ -102,6 +108,13 @@ The gold set is templated from CUAD
 categories, so every question names its contract by construction. Real queries
 often do not, and those take the dense path and the dense number.
 
+**Selecting documents.** Users can pick the documents a question is about. In a
+simulation, five selected contracts and a question about one of them,
+searching all five scores recall@5 0.373 once the title is stripped: the
+stripped question no longer says which contract, and all five have the
+clause. Matching the name inside the selection and narrowing to that document
+scores 0.860. The picker ships with the second rule.
+
 **Hybrid retrieval was tried and rejected.** A `tsvector` channel fused with
 the vector channel by reciprocal rank scored recall@5 0.126, well under the
 dense baseline. Lexical alone scored 0.051 — near chance — because once the
@@ -109,8 +122,36 @@ party name is removed the remaining terms ("date", "agreement", "governing
 law") appear in all contracts, and the party name is absent from the chunk
 bodies: it lives in the filename.
 
+**Reranking and other embedders were measured too.** Two cross-encoder
+rerankers ordered pages worse than plain vector distance, even with the right
+document handed over. `qwen3-embedding:4b` trades literal matching for
+paraphrase; fused with nomic by reciprocal rank it lifts recall@10 by 0.07,
+and is not shipped because it means a second 2.5 GB model in memory.
+
 Anything claimed as an improvement will be measured against the committed
 baseline report, one change at a time.
+
+### Answers
+
+Recall says whether the right page reached the model;
+[`evals/faithfulness.py`](evals/faithfulness.py) measures what the model does
+with it. 290 answers, from the local `gemma4:e4b` and from Gemini, were each
+graded against the CUAD annotations:
+
+- The local 4B model is in the same range as the hosted one: 20 good answers
+  to Gemini's 22 on the same 24 questions.
+- Ten retrieved chunks beat five for both.
+- For Gemini, reading the whole document beats retrieval on contracts up to
+  40k tokens: it stops declining questions whose answer was in front of it.
+  For Gemma the whole document is worse; it extracts less reliably from a full
+  contract than from focused chunks. Both behaviours ship.
+- The failure that matters is substitution: asked about a clause the contract
+  lacks, a model sometimes answers with a nearby one. It happened once for
+  each model.
+
+The deterministic grader in the harness agrees with the graded verdicts at
+precision 0.91 on correctness, and over-counts declines at 0.59. Both numbers
+are in [evals/README.md](evals/README.md) rather than tuned away.
 
 ---
 
@@ -132,15 +173,18 @@ cd backend && uvicorn main:app --reload      # http://localhost:8000/docs
 cd frontend && npm install && npm run dev    # http://localhost:3000
 ```
 
-Embeddings run locally through Ollama by default, so indexing and the entire
-evaluation suite cost nothing and work offline. Only answer generation calls an
-API. Set `EMBEDDING_PROVIDER=gemini` to switch.
+Embeddings run locally through Ollama by default, so indexing and the
+retrieval evaluation cost nothing and work offline. Only answer generation
+calls an API; to run fully offline, `ollama pull gemma4:e4b` and set
+`LLM_PROVIDER=ollama`. Set `EMBEDDING_PROVIDER=gemini` to embed with Gemini
+instead.
 
 ### Evaluation
 
 ```bash
 python -m evals.corpus                      # index evals/corpus/
 python -m evals.run --label my-experiment   # report to evals/reports/
+python -m evals.faithfulness --cuad path/to/CUAD_v1.json   # answer-level eval
 ```
 
 See [evals/README.md](evals/README.md) for the gold-set format and how to
@@ -162,18 +206,18 @@ FastAPI  --  JWT auth - per-IP rate limits - streaming responses
       |
       +--> PostgreSQL 16 + pgvector -- chunks, embeddings, users, documents
       |
-      +--> Gemini -- streamed answer generation over retrieved context
+      +--> Answer generation -- Gemini, or Gemma locally via Ollama, streamed
 ```
 
 | Layer | Choice |
 |---|---|
 | API | FastAPI, SQLAlchemy 2.0 async, Alembic |
-| Database | PostgreSQL 16 with pgvector (`vector(768)`) |
-| Embeddings | `nomic-embed-text` via Ollama, or `gemini-embedding-001`, Qwen3-embedding will also be tested |
-| Generation | Gemma4:e4b local, Gemini, streamed |
+| Database | PostgreSQL 16 with pgvector (untyped `vector`, width per embedding model) |
+| Embeddings | `nomic-embed-text` via Ollama, or `gemini-embedding-001`; `qwen3-embedding` measured, not shipped |
+| Generation | `gemma4:e4b` via Ollama, or Gemini (`gemini-flash-latest`); streamed |
 | OCR | pdfplumber, Tesseract + pdf2image fallback |
 | Frontend | Vite, React 19, TypeScript, Tailwind, Radix |
-| Auth | bcrypt, PyJWT, HttpOnly cookies |
+| Auth | bcrypt, PyJWT, Bearer tokens |
 
 ### Decisions worth explaining
 
@@ -195,17 +239,38 @@ looks like a retrieval change rather than broken labels.
 corpus fails the run instead of scoring zero. A mistyped filename and a genuine
 retrieval failure are indistinguishable once averaged.
 
+**A selection is a candidate set, not a scope.** Searching every selected
+document with the question's title stripped scored 0.373, because the stripped
+question no longer says which contract. The name match runs inside the
+selection first, and a title is only stripped once a single document is in
+scope.
+
+**Whole-document context is a per-provider setting.** A rule of "whatever fits
+in 60% of the window" would have sent Gemma the small documents where it
+measured worse, so the limit comes from the measurements instead: off for
+Ollama, 40k tokens for Gemini.
+
+**The API and the eval share one prompt.** The system prompt and context
+formats are imported by both, so the answer-level eval measures the prompt
+that ships.
+
 ---
 
 ## Security
 
-- Passwords hashed with bcrypt; sessions are signed JWTs (HS256) in `HttpOnly`
-  cookies, `Secure` in production, `SameSite=Lax`.
-- Documents and chunks carry an owner; indexing and retrieval both filter on it.
-  Cross-tenant negative tests in `backend/test_e2e.py`.
-- Per-IP sliding-window rate limits on auth (10/min) and query (30/min).
-- Uploads are extension-allowlisted, size-capped, and filename-validated against
-  path traversal.
+- Passwords hashed with bcrypt; sessions are signed JWTs (HS256) sent as a
+  Bearer header. There is no cookie authentication, so a cross-site request
+  cannot authenticate (`backend/test_csrf.py`), and CORS is pinned to
+  `ALLOWED_ORIGINS`.
+- Documents and chunks carry an owner; indexing, retrieval and document
+  selection all filter on it. Cross-tenant negative tests in
+  `backend/test_e2e.py`.
+- Rate limits on auth (10/min) and query (30/min) are counted in PostgreSQL,
+  so they hold across workers. `X-Forwarded-For` is honoured only from
+  `TRUSTED_PROXIES`, so a client cannot choose its own bucket
+  (`backend/test_limits.py`).
+- Uploads are extension-allowlisted, filename-validated against path
+  traversal, and streamed to disk with the 25 MB cap enforced mid-stream.
 - Logins from an unrecognised device fingerprint trigger an email alert.
 
 See [Known limitations](#known-limitations) for what this does **not** do.
@@ -216,14 +281,20 @@ See [Known limitations](#known-limitations) for what this does **not** do.
 
 Specific and current.
 
-1. **No vector index.** Retrieval is an exact scan — correct and fast enough at
+1. **No vector index.** Retrieval is an exact scan, correct and fast enough at
    5,574 chunks (~113ms p50), but it will not scale. An HNSW index is worth
    adding once there is a latency number to improve on.
 
-2. **No query rewriting.** Retrieval is vector search, optionally scoped to one
-   document by name. Hybrid lexical search, cross-encoder reranking, and two
-   Qwen3 embedding models were each measured and rejected — see
-   [evals/README.md](evals/README.md).
+2. **Answers can substitute a nearby clause.** Asked about a clause a contract
+   lacks, the model sometimes answers with an adjacent one; it happened once
+   for each model in the graded set. The prompt does not guard against it yet.
+
+3. **Tokens live in `localStorage`.** That rules out CSRF entirely, and leaves
+   the token readable by any script injected into the origin.
+
+4. **The gold set is small and templated.** 100 questions, each naming its
+   contract. A change has to move four or five answers to clear the noise, and
+   questions that name no document are under-represented.
 
 ---
 
@@ -231,11 +302,12 @@ Specific and current.
 
 In order:
 
-1. Query rewriting toward clause language, for the questions that name no
-   document. Reranking and an embedding model swap were both measured and
-   rejected first — see [evals/README.md](evals/README.md).
-2. Chunking sweep.
-3. Close limitations 1 and 2.
+1. Grade clause-absent answers on whether they assert the clause, and harden
+   the prompt against substitution, measured with the answer-level eval.
+2. Deploy, with Gemini answering.
+3. Section headings carried into chunks, then query rewriting, for the
+   remaining within-document misses.
+4. A larger gold set, once retrieval stops moving.
 
 ## Licence
 

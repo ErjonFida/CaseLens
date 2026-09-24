@@ -15,10 +15,11 @@ import bcrypt
 
 from config import settings
 from database import get_db, SyncSessionLocal
-from legal_api.models import User, KnownDevice
+from legal_api.models import User, KnownDevice, Document
 from legal_api.schemas import RegisterRequest, LoginRequest, SearchRequest, ChatRequest
 from legal_api.auth import get_current_user, create_access_token
 from ocr import extract_document_pages
+from vector_store import SYSTEM_PROMPT, estimate_tokens, format_chunks, format_pages
 
 logger = logging.getLogger("main_server")
 
@@ -37,6 +38,44 @@ def _get_store():
     return _db_store
 
 router = APIRouter()
+
+# Chunks sent to the model. Ten, not five: graded in evals/README.md, ten gave
+# one more correct answer in 19 for Gemma and two for Gemini, because a clause
+# often continues into the chunk that five leaves out.
+TOP_K = 10
+
+
+def _selected_document_ids(names: list[str], user: User, session) -> list[int] | None:
+    """Resolve the user's selection to ids of their own documents."""
+    if not names:
+        return None
+    rows = session.execute(
+        select(Document.id, Document.filename).where(Document.user_id == user.id, Document.filename.in_(names))
+    ).all()
+    missing = sorted(set(names) - {r.filename for r in rows})
+    if missing:
+        raise HTTPException(status_code=404, detail=f"Selected documents not found: {', '.join(missing)}")
+    return [r.id for r in rows]
+
+
+def _whole_document(scope: list[int] | None, user: User, session) -> str | None:
+    """The scoped document's full text, when the scope is one document that fits.
+
+    Measured in evals/README.md: reading the whole document, Gemini made no
+    wrongful declines where ten chunks produced six; Gemma did better from
+    chunks. settings.whole_document_max_tokens carries that per provider.
+    """
+    limit = settings.whole_document_max_tokens
+    if not limit or not scope or len(scope) != 1:
+        return None
+    doc = session.get(Document, scope[0])
+    if not doc or doc.user_id != user.id or not doc.pages:
+        return None  # no pages: indexed before they were kept, so retrieval it is
+    tokens = estimate_tokens(doc.pages)
+    if tokens > limit:
+        return None
+    logger.info(f"Chat context: whole document '{doc.filename}' (~{tokens} tokens)")
+    return format_pages(doc.filename, doc.pages)
 
 
 @router.get("/")
@@ -396,7 +435,10 @@ async def search_documents(
     query_limiter.check(_client_ip(request))
     sync_session = SyncSessionLocal()
     try:
-        contexts = _get_store().query_scoped_context(payload.query, current_user, sync_session, top_k=5)
+        selected = _selected_document_ids(payload.documents, current_user, sync_session)
+        contexts = _get_store().query_scoped_context(
+            payload.query, current_user, sync_session, top_k=TOP_K, document_ids=selected
+        )
         return {"contexts": contexts}
     finally:
         sync_session.close()
@@ -419,20 +461,18 @@ async def chat_stream(
 
     sync_session = SyncSessionLocal()
     try:
-        contexts = _get_store().query_scoped_context(latest_msg, current_user, sync_session, top_k=5)
+        store = _get_store()
+        selected = _selected_document_ids(payload.documents, current_user, sync_session)
+        scope, query = store.resolve_scope(latest_msg, current_user, sync_session, document_ids=selected)
+        context_text = _whole_document(scope, current_user, sync_session)
+        if context_text is None:
+            hits = store.query_similar_context(query, current_user, sync_session, top_k=TOP_K, document_ids=scope)
+            context_text = format_chunks(hits)
+            logger.info(f"Chat context: {len(hits)} retrieved chunks")
     finally:
         sync_session.close()
 
-    context_text = "\n\n".join([
-        f"--- Chunk {i + 1} (Source: {c['metadata'].get('filename', '?')}, Page: {c['metadata'].get('page', 1)}) ---\n{c['text']}"
-        for i, c in enumerate(contexts)
-    ])
-
-    system_prompt = (
-        "You are a helpful and professional Legal Assistant. Answer based strictly on the provided document contexts.\n"
-        "If the answer cannot be found in the context, state so. Always reference sources (filenames and page numbers).\n\n"
-        f"CONTEXT:\n{context_text}"
-    )
+    system_prompt = SYSTEM_PROMPT.format(context=context_text)
 
     provider = settings.LLM_PROVIDER.lower()
     model_name = settings.llm_model_name

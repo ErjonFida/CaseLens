@@ -66,11 +66,12 @@ export async function deleteDocument(filename: string): Promise<void> {
   await expectOk(res, 'Failed to delete document');
 }
 
-export async function searchDocuments(query: string): Promise<SearchContext[]> {
+/** `documents` is the user's selection; empty searches all of their documents. */
+export async function searchDocuments(query: string, documents: string[] = []): Promise<SearchContext[]> {
   const res = await fetchWithAuth('/api/search', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({ query, documents }),
   });
   await expectOk(res, 'Search failed');
   const data = await res.json();
@@ -84,12 +85,13 @@ export async function searchDocuments(query: string): Promise<SearchContext[]> {
  */
 export async function openChatStream(
   messages: { role: string; content: string }[],
-  signal: AbortSignal
+  signal: AbortSignal,
+  documents: string[] = []
 ): Promise<ReadableStreamDefaultReader<Uint8Array>> {
   const res = await fetchWithAuth('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages }),
+    body: JSON.stringify({ messages, documents }),
     signal,
   });
   await expectOk(res, `Backend returned ${res.status} ${res.statusText}`);

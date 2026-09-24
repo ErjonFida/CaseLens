@@ -23,6 +23,7 @@ interface Props {
   copiedMessageId: string | null;
   userEmail: string;
   documentCount: number;
+  selectedCount: number;
   onSend: (text: string) => void;
   onStop: () => void;
   onClear: () => void;
@@ -35,6 +36,7 @@ export default function ChatPanel({
   copiedMessageId,
   userEmail,
   documentCount,
+  selectedCount,
   onSend,
   onStop,
   onClear,
@@ -181,7 +183,9 @@ export default function ChatPanel({
               placeholder={
                 documentCount === 0
                   ? 'Upload a document first, then ask questions...'
-                  : 'Ask any legal question based on your uploaded case files...'
+                  : selectedCount > 0
+                    ? `Ask about the ${selectedCount} selected ${selectedCount === 1 ? 'document' : 'documents'}...`
+                    : 'Ask any legal question based on your uploaded case files...'
               }
               disabled={isGenerating}
               className="pr-24 py-6 rounded-xl bg-card border-border shadow-inner text-sm focus-visible:ring-primary"

@@ -35,7 +35,7 @@ export function useChat() {
   const clear = useCallback(() => setMessages([]), []);
 
   const send = useCallback(
-    async (text: string) => {
+    async (text: string, documents: string[] = []) => {
       const query = text.trim();
       if (!query || isGenerating) return;
 
@@ -63,7 +63,8 @@ export function useChat() {
       try {
         const reader = await api.openChatStream(
           history.map((m) => ({ role: m.role, content: m.content })),
-          controller.signal
+          controller.signal,
+          documents
         );
         const decoder = new TextDecoder();
         let accumulated = '';

@@ -187,7 +187,9 @@ query no longer says which contract, and each of the 5 has the clause.
 Matching the name against the *selection* and narrowing to that one document
 scores 0.860 (0.931 at k=10 fused). A selection is a candidate set, not a
 scope: the name match still runs inside it, and a title is never stripped
-while the scope holds more than one document.
+while the scope holds more than one document. Shipped as the document picker
+(`resolve_scope`); through that code path the same draws score 0.860 at k=5
+and 0.876 at k=10, narrowing to one document on all 100 questions.
 
 ## Answer-time faithfulness
 
@@ -234,8 +236,7 @@ At 24 and 73 questions one answer moves these rates by 4 and 1.4 points, so
 differences of two or three answers are direction, not size. What holds:
 
 - **Ten chunks beat five for both models** - one more correct answer in 19
-  for Gemma, two for Gemini. The final k=5 should be k=10 regardless of
-  model.
+  for Gemma, two for Gemini. Shipped: chat and search now send ten.
 - **For Gemma, retrieval beats the whole document** even when it fits: 20
   good answers to 17, the gap made of partial answers. A 4B model extracts
   less reliably from 6k tokens of contract than from ten focused chunks.
@@ -254,9 +255,12 @@ differences of two or three answers are direction, not size. What holds:
   chunks Gemini gave 22 good answers to Gemma's 20. A 4B model on a laptop CPU is a viable offline deployment for this
   task but it is not ahead of a hosted model.
 
-So the branch is model-relative: the whole document when
-`document_tokens <= 0.6 x context budget`, retrieval otherwise. Gemini gets
-the document, local Gemma gets retrieval, with no provider-specific code.
+Shipped as a per-provider limit, `WHOLE_DOCUMENT_MAX_TOKENS`: off for ollama
+and 40k tokens for Gemini, the largest size tested. When the scope resolves to
+one document under the limit, chat sends its stored pages; everything else
+goes through retrieval. A limit of `0.6 x context window` was rejected: with
+Gemma's 8k window it would send every document under about 4.9k tokens whole,
+which is where Gemma measured worse.
 
 ### How far to trust the automatic grader
 

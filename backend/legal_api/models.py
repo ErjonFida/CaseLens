@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import (
-    Column, Integer, BigInteger, String, Text, DateTime, ForeignKey, UniqueConstraint
+    Column, Integer, BigInteger, String, Text, DateTime, ForeignKey, JSON, UniqueConstraint
 )
 from sqlalchemy.orm import relationship
 from pgvector.sqlalchemy import Vector
@@ -78,6 +78,9 @@ class Document(Base):
     filename = Column(String(512), nullable=False)
     user_id = Column(BigInteger, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    # Extracted page text, for whole-document chat context. NULL for documents
+    # indexed before it was kept; those fall back to retrieval.
+    pages = Column(JSON, nullable=True)
 
     user = relationship("User", back_populates="documents")
     chunks = relationship("DocumentChunk", back_populates="document", cascade="all, delete-orphan")

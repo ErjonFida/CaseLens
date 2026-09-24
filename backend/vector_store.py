@@ -32,6 +32,32 @@ ORDER BY rank DESC
 """)
 
 
+# The generator's instructions and context formats live beside the retrieval
+# that produces the context, so the API and evals/faithfulness.py send the
+# model byte-for-byte the same prompt. The eval only measures what ships if so.
+SYSTEM_PROMPT = (
+    "You are a helpful and professional Legal Assistant. Answer based strictly on the provided document contexts.\n"
+    "If the answer cannot be found in the context, state so. Always reference sources (filenames and page numbers).\n\n"
+    "CONTEXT:\n{context}"
+)
+
+
+def format_chunks(hits: list[dict]) -> str:
+    return "\n\n".join(
+        f"--- Chunk {i + 1} (Source: {h['metadata'].get('filename', '?')}, Page: {h['metadata'].get('page', 1)}) ---\n{h['text']}"
+        for i, h in enumerate(hits)
+    )
+
+
+def format_pages(filename: str, pages: list[dict]) -> str:
+    return "\n\n".join(f"--- {filename}, Page {p['page']} ---\n{p['text']}" for p in pages if p["text"].strip())
+
+
+def estimate_tokens(pages: list[dict]) -> int:
+    """Four characters a token: rough, and the estimate the eval sized documents by."""
+    return sum(len(p["text"]) for p in pages) // 4
+
+
 class LegalVectorStore:
     def __init__(self, embedder=None):
         
@@ -70,7 +96,11 @@ class LegalVectorStore:
 
         logger.info(f"Indexing document pages: {filename} for owner: {user.email}...")
         try:
-            document = Document(filename=filename, user_id=user.id)
+            document = Document(
+                filename=filename,
+                user_id=user.id,
+                pages=[{"page": p["page"], "text": p["text"]} for p in pages],
+            )
             session.add(document)
             session.flush()  # Get the document.id
 
@@ -199,27 +229,31 @@ class LegalVectorStore:
         residual = tokens[:start] + tokens[end + 1:]
         return " ".join(residual) if len(residual) >= 2 else query
 
-    def query_scoped_context(self, query: str, user, session: Session, top_k: int = 5,
-                             margin: float = 1.5) -> list[dict]:
-        """Resolve the contract the query names, then rank pages inside it.
-
-        A question like "what does the Acme MSA say about termination" is two
-        questions: which document, and which page of it. Answering the first by
-        name turns the second into a ranking problem over one document's pages
-        instead of every chunk in the corpus.
-
-        The scope is applied only when one document beats the next by `margin`.
-        An ambiguous match - or a query naming no document at all, which is the
-        common case for questions like "what does section 2 say" - falls back to
-        unrestricted search rather than confidently searching the wrong file.
-        """
-        matches = self.match_documents_by_name(query, user, session)
-        scope = None
+    @staticmethod
+    def _pick_document(matches: list[tuple[int, float, str]], candidates: list[int] | None = None,
+                       margin: float = 1.5) -> tuple[int, float, str] | None:
+        if candidates:
+            allowed = set(candidates)
+            matches = [m for m in matches if m[0] in allowed]
         if matches and (len(matches) == 1 or matches[0][1] > matches[1][1] * margin - 1e-9):
-            doc_id, _, words = matches[0]
-            scope = [doc_id]
-            query = self._strip_title(query, set(words.split()))
-            logger.info(f"Query scoped to document id={doc_id}; searching for: {query!r}")
+            return matches[0]
+        return None
+
+    def resolve_scope(self, query: str, user, session: Session, document_ids: list[int] | None = None,
+                      margin: float = 1.5) -> tuple[list[int] | None, str]:
+
+        matches = self.match_documents_by_name(query, user, session)
+        picked = self._pick_document(matches, document_ids, margin)
+        if not picked:
+            return (list(document_ids) if document_ids else None), query
+        doc_id, _, words = picked
+        query = self._strip_title(query, set(words.split()))
+        logger.info(f"Query scoped to document id={doc_id}; searching for: {query!r}")
+        return [doc_id], query
+
+    def query_scoped_context(self, query: str, user, session: Session, top_k: int = 5,
+                             margin: float = 1.5, document_ids: list[int] | None = None) -> list[dict]:
+        scope, query = self.resolve_scope(query, user, session, document_ids, margin)
         return self.query_similar_context(query, user, session, top_k=top_k, document_ids=scope)
 
     def list_documents(self, user, session: Session) -> list[str]:

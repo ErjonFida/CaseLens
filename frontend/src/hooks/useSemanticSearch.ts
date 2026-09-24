@@ -18,14 +18,14 @@ export function useSemanticSearch() {
   const [isSearching, setIsSearching] = useState(false);
   const [hasRun, setHasRun] = useState(false);
 
-  const run = useCallback(async () => {
+  const run = useCallback(async (documents: string[] = []) => {
     const q = query.trim();
     if (!q || isSearching) return;
 
     setIsSearching(true);
     setHasRun(true);
     try {
-      setResults(await api.searchDocuments(q));
+      setResults(await api.searchDocuments(q, documents));
     } catch (err: any) {
       toast.error(err?.message || 'Search failed');
       setResults([]);

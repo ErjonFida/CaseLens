@@ -13,19 +13,13 @@ from config import settings
 from database import SyncSessionLocal
 from legal_api.models import User
 from ocr import extract_document_pages
-from vector_store import LegalVectorStore
+from vector_store import SYSTEM_PROMPT, LegalVectorStore, estimate_tokens, format_chunks, format_pages
 from . import CORPUS_DIR, DATASET_DIR, EVAL_TENANT_EMAIL, REPORT_DIR
 from . import dataset as gold
 from .corpus import build_embedder
 from .cuad_import import fold_name, normalize
 
 logger = logging.getLogger("evals.faithfulness")
-
-SYSTEM = (
-    "You are a helpful and professional Legal Assistant. Answer based strictly on the provided document contexts.\n"
-    "If the answer cannot be found in the context, state so. Always reference sources (filenames and page numbers).\n\n"
-    "CONTEXT:\n{context}"
-)
 
 ABSTAIN = re.compile(
     r"(cannot|can't|could not|unable to) (be )?(find|locate|determine)|not (found|mentioned|specified|stated|provided|"
@@ -75,23 +69,12 @@ def page_texts(path: Path, cache: dict) -> list[dict]:
     return cache[path.name]
 
 
-def full_document_context(filename: str, pages: list[dict]) -> str:
-    return "\n\n".join(f"--- {filename}, Page {p['page']} ---\n{p['text']}" for p in pages if p["text"].strip())
-
-
-def chunk_context(hits: list[dict]) -> str:
-    return "\n\n".join(
-        f"--- Chunk {i + 1} (Source: {h['metadata']['filename']}, Page: {h['metadata']['page']}) ---\n{h['text']}"
-        for i, h in enumerate(hits)
-    )
-
-
 def ask_gemini(model: str, context: str, question: str) -> tuple[str, float, int]:
     import os
     import google.generativeai as genai
 
     genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-    llm = genai.GenerativeModel(model_name=model, system_instruction=SYSTEM.format(context=context))
+    llm = genai.GenerativeModel(model_name=model, system_instruction=SYSTEM_PROMPT.format(context=context))
     t0 = time.perf_counter()
     for attempt in range(6):
         try:
@@ -113,7 +96,7 @@ def ask(model: str, num_ctx: int, context: str, question: str, think: bool | Non
     t0 = time.perf_counter()
     r = ollama.chat(
         model=model,
-        messages=[{"role": "system", "content": SYSTEM.format(context=context)},
+        messages=[{"role": "system", "content": SYSTEM_PROMPT.format(context=context)},
                   {"role": "user", "content": question}],
         options={"num_ctx": num_ctx, "temperature": 0},
         # None leaves a model's default; False turns a thinking model's
@@ -153,7 +136,7 @@ def run(cuad_path: Path, model: str, num_ctx: int, max_doc_tokens: int, conditio
         if not path:
             continue
         pages = page_texts(path, pages_cache)
-        tokens = sum(len(p["text"]) for p in pages) // 4
+        tokens = estimate_tokens(pages)
         if tokens <= max_doc_tokens:
             selected.append((q, filename, path, pages, tokens))
     logger.info(f"{len(selected)} questions on documents <= {max_doc_tokens} tokens")
@@ -164,11 +147,11 @@ def run(cuad_path: Path, model: str, num_ctx: int, max_doc_tokens: int, conditio
         gold_pages = {e.page for e in q.relevant}
         for cond in conditions:
             if cond == "full":
-                context, has_page = full_document_context(filename, pages), True
+                context, has_page = format_pages(filename, pages), True
             else:
                 k = int(cond[3:])
                 hits = store.query_scoped_context(q.question, user, session, top_k=k)
-                context = chunk_context(hits)
+                context = format_chunks(hits)
                 has_page = any(
                     h["metadata"]["page"] in gold_pages
                     and gold.normalize_filename(h["metadata"]["filename"]) == gold.normalize_filename(filename)

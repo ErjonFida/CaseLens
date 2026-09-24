@@ -1,4 +1,12 @@
+from typing import Annotated
+
 from pydantic import BaseModel, Field, EmailStr
+
+# Filenames the user selected to ask about. Empty means all of their documents.
+SelectedDocuments = Annotated[
+    list[Annotated[str, Field(min_length=1, max_length=512)]],
+    Field(default_factory=list, max_length=200),
+]
 
 
 class RegisterRequest(BaseModel):
@@ -18,6 +26,7 @@ class LoginRequest(BaseModel):
 
 class SearchRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=5000)
+    documents: SelectedDocuments
 
 
 class ChatMessage(BaseModel):
@@ -27,4 +36,5 @@ class ChatMessage(BaseModel):
 
 class ChatRequest(BaseModel):
     messages: list[ChatMessage]
+    documents: SelectedDocuments
 

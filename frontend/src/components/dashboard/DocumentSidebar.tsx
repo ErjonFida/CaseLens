@@ -19,6 +19,9 @@ interface Props {
   onUpload: (file: File) => void;
   onRefresh: () => void;
   onRequestDelete: (filename: string) => void;
+  selected: string[];
+  onToggleSelect: (filename: string) => void;
+  onClearSelection: () => void;
 }
 
 export default function DocumentSidebar({
@@ -29,6 +32,9 @@ export default function DocumentSidebar({
   onUpload,
   onRefresh,
   onRequestDelete,
+  selected,
+  onToggleSelect,
+  onClearSelection,
 }: Props) {
   // The filter is nobody else's business, so it stays here rather than being
   // lifted into the dashboard's state.
@@ -104,6 +110,20 @@ export default function DocumentSidebar({
             className="pl-8 h-8 text-xs bg-background/50"
           />
         </div>
+        {selected.length > 0 && (
+          <div className="mt-2 flex items-center justify-between text-[11px] text-primary px-1">
+            <span>
+              Answering from {selected.length} selected {selected.length === 1 ? 'document' : 'documents'}
+            </span>
+            <button
+              type="button"
+              onClick={onClearSelection}
+              className="underline decoration-dotted hover:text-foreground cursor-pointer"
+            >
+              Clear
+            </button>
+          </div>
+        )}
       </div>
 
       <ScrollArea className="flex-1 p-3">
@@ -111,9 +131,20 @@ export default function DocumentSidebar({
           {visible.map((doc) => (
             <div
               key={doc}
-              className="group relative flex items-center justify-between p-2.5 rounded-lg border border-border/40 bg-card/40 hover:bg-accent/40 hover:border-border transition-all"
+              className={`group relative flex items-center justify-between p-2.5 rounded-lg border transition-all ${
+                selected.includes(doc)
+                  ? 'border-primary/50 bg-primary/5'
+                  : 'border-border/40 bg-card/40 hover:bg-accent/40 hover:border-border'
+              }`}
             >
               <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                <input
+                  type="checkbox"
+                  checked={selected.includes(doc)}
+                  onChange={() => onToggleSelect(doc)}
+                  aria-label={`Ask about ${doc}`}
+                  className="shrink-0 h-3.5 w-3.5 cursor-pointer accent-primary"
+                />
                 <div className="shrink-0">
                   <DocumentIcon filename={doc} />
                 </div>

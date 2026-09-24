@@ -32,12 +32,22 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<DashboardTab>('chat');
   const [docToDelete, setDocToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  // Documents the user chose to ask about; empty means all of them. Filtered
+  // against the live list, so a document deleted anywhere drops out.
+  const [selected, setSelected] = useState<string[]>([]);
 
   const docs = useDocuments();
   const chat = useChat();
   const search = useSemanticSearch();
 
   const { load: loadDocuments } = docs;
+  const selection = selected.filter((d) => docs.documents.includes(d));
+
+  const toggleSelected = useCallback(
+    (filename: string) =>
+      setSelected((prev) => (prev.includes(filename) ? prev.filter((d) => d !== filename) : [...prev, filename])),
+    []
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -80,6 +90,7 @@ export default function Dashboard() {
     setIsDeleting(true);
     try {
       await docs.remove(docToDelete);
+      setSelected((prev) => prev.filter((d) => d !== docToDelete));
     } catch (err: any) {
       toast.error(err?.message || 'Error deleting document');
     } finally {
@@ -93,7 +104,8 @@ export default function Dashboard() {
     (result: SearchContext) => {
       setActiveTab('chat');
       chat.send(
-        `Based on "${result.metadata?.filename}" (Page ${result.metadata?.page}):\n\n"${result.text.slice(0, 200)}..."\n\nPlease analyze this clause in detail.`
+        `Based on "${result.metadata?.filename}" (Page ${result.metadata?.page}):\n\n"${result.text.slice(0, 200)}..."\n\nPlease analyze this clause in detail.`,
+        [result.metadata.filename]
       );
     },
     [chat]
@@ -118,6 +130,9 @@ export default function Dashboard() {
         onUpload={docs.upload}
         onRefresh={docs.refresh}
         onRequestDelete={setDocToDelete}
+        selected={selection}
+        onToggleSelect={toggleSelected}
+        onClearSelection={() => setSelected([])}
       />
 
       <div className="flex-1 flex flex-col bg-background min-w-0">
@@ -135,7 +150,8 @@ export default function Dashboard() {
             copiedMessageId={chat.copiedMessageId}
             userEmail={userEmail}
             documentCount={docs.documents.length}
-            onSend={chat.send}
+            selectedCount={selection.length}
+            onSend={(text) => chat.send(text, selection)}
             onStop={chat.stop}
             onClear={chat.clear}
             onCopy={chat.copyMessage}
@@ -149,7 +165,7 @@ export default function Dashboard() {
             results={search.results}
             isSearching={search.isSearching}
             hasRun={search.hasRun}
-            onSearch={search.run}
+            onSearch={() => search.run(selection)}
             onAnalyse={handleAnalyse}
           />
         )}

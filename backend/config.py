@@ -71,6 +71,25 @@ class Settings(BaseSettings):
     LLM_MODEL: str = ""
     LLM_NUM_CTX: int = 8192
 
+    # Largest document, in estimated tokens, that chat reads whole instead of
+    # through retrieved chunks. Measured in evals/README.md: gemma4:e4b answered
+    # worse from whole documents than from ten chunks even when they fit, while
+    # gemini-3.8-flash tied on small documents and won up to 40k tokens, the
+    # largest size tested. So unset means off for ollama and 40k for gemini.
+    WHOLE_DOCUMENT_MAX_TOKENS: int | None = None
+
+    @property
+    def whole_document_max_tokens(self) -> int:
+        provider = self.LLM_PROVIDER.lower()
+        limit = self.WHOLE_DOCUMENT_MAX_TOKENS
+        if limit is None:
+            limit = 40_000 if provider == "gemini" else 0
+        if provider == "ollama":
+            # Never more than the window holds with room for the prompt:
+            # ollama truncates silently, from the front.
+            limit = min(limit, int(self.LLM_NUM_CTX * 0.6))
+        return limit
+
     @property
     def llm_model_name(self) -> str:
         if self.LLM_MODEL:

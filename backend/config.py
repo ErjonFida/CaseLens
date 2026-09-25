@@ -23,7 +23,9 @@ def _normalize_db_url(url: str, async_driver: bool) -> str:
 
     if async_driver:
         return f"postgresql+asyncpg://{base}"
-    return f"postgresql://{base}"
+    # Named, not left to the dialect default: SQLAlchemy 2.1 changed the default
+    # for postgresql:// from psycopg2 to psycopg 3, which is not installed.
+    return f"postgresql+psycopg2://{base}"
 
 
 class Settings(BaseSettings):

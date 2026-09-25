@@ -14,7 +14,7 @@
       "exact_term": 31,
       "semantic": 43,
       "multi_document": 12,
-      "unanswerable": 14
+      "clause_absent": 14
     }
   },
   "metrics": {
@@ -76,7 +76,7 @@
         "p95_latency_ms": 144.34
       }
     },
-    "unanswerable_questions": 14,
+    "clause_absent_questions": 14,
     "scored_questions": 86
   },
   "failures_at_5": [

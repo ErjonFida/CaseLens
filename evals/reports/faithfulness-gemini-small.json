@@ -12,7 +12,7 @@
       "supported (overlap >= 0.5)": 0.632,
       "cited page correct": 0.947,
       "abstained on answerable": 0.316,
-      "abstained on unanswerable": 0.8,
+      "abstained, clause absent": 0.8,
       "page missing from context": 1,
       "answered anyway when page missing": 0.0,
       "p50 latency ms": 2957
@@ -22,7 +22,7 @@
       "supported (overlap >= 0.5)": 0.895,
       "cited page correct": 1.0,
       "abstained on answerable": 0.105,
-      "abstained on unanswerable": 0.8,
+      "abstained, clause absent": 0.8,
       "page missing from context": 0,
       "answered anyway when page missing": null,
       "p50 latency ms": 2958
@@ -32,7 +32,7 @@
       "supported (overlap >= 0.5)": 0.789,
       "cited page correct": 1.0,
       "abstained on answerable": 0.105,
-      "abstained on unanswerable": 1.0,
+      "abstained, clause absent": 1.0,
       "page missing from context": 0,
       "answered anyway when page missing": null,
       "p50 latency ms": 2809
@@ -963,7 +963,7 @@
     },
     {
       "question_id": "q092",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "rag5",
       "doc_tokens": 5506,
       "prompt_tokens": 1165,
@@ -977,7 +977,7 @@
     },
     {
       "question_id": "q092",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "rag10",
       "doc_tokens": 5506,
       "prompt_tokens": 2268,
@@ -991,7 +991,7 @@
     },
     {
       "question_id": "q092",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "full",
       "doc_tokens": 5506,
       "prompt_tokens": 4750,
@@ -1005,7 +1005,7 @@
     },
     {
       "question_id": "q093",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "rag5",
       "doc_tokens": 4994,
       "prompt_tokens": 1173,
@@ -1019,7 +1019,7 @@
     },
     {
       "question_id": "q093",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "rag10",
       "doc_tokens": 4994,
       "prompt_tokens": 2536,
@@ -1033,7 +1033,7 @@
     },
     {
       "question_id": "q093",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "full",
       "doc_tokens": 4994,
       "prompt_tokens": 4955,
@@ -1047,7 +1047,7 @@
     },
     {
       "question_id": "q095",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "rag5",
       "doc_tokens": 1226,
       "prompt_tokens": 977,
@@ -1061,7 +1061,7 @@
     },
     {
       "question_id": "q095",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "rag10",
       "doc_tokens": 1226,
       "prompt_tokens": 1667,
@@ -1075,7 +1075,7 @@
     },
     {
       "question_id": "q095",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "full",
       "doc_tokens": 1226,
       "prompt_tokens": 1374,
@@ -1089,7 +1089,7 @@
     },
     {
       "question_id": "q097",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "rag5",
       "doc_tokens": 1460,
       "prompt_tokens": 889,
@@ -1105,7 +1105,7 @@
     },
     {
       "question_id": "q097",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "rag10",
       "doc_tokens": 1460,
       "prompt_tokens": 1779,
@@ -1121,7 +1121,7 @@
     },
     {
       "question_id": "q097",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "full",
       "doc_tokens": 1460,
       "prompt_tokens": 1432,
@@ -1137,7 +1137,7 @@
     },
     {
       "question_id": "q099",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "rag5",
       "doc_tokens": 1840,
       "prompt_tokens": 1484,
@@ -1151,7 +1151,7 @@
     },
     {
       "question_id": "q099",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "rag10",
       "doc_tokens": 1840,
       "prompt_tokens": 2562,
@@ -1165,7 +1165,7 @@
     },
     {
       "question_id": "q099",
-      "category": "unanswerable",
+      "category": "clause_absent",
       "condition": "full",
       "doc_tokens": 1840,
       "prompt_tokens": 2066,

@@ -6,7 +6,7 @@ CATEGORIES = (
     "exact_term",
     "semantic",        
     "multi_document", 
-    "unanswerable",    
+    "clause_absent",
 )
 
 
@@ -35,7 +35,7 @@ class GoldQuestion:
 
     @property
     def is_answerable(self) -> bool:
-        return self.category != "unanswerable" and bool(self.relevant)
+        return self.category != "clause_absent" and bool(self.relevant)
 
     def relevant_keys(self) -> set[tuple[str, int]]:
         return {e.key() for e in self.relevant}
@@ -99,11 +99,11 @@ def load(path: Path) -> list[GoldQuestion]:
 
             evidence = tuple(_parse_evidence(raw.get("relevant", []), path.name, line_no))
             
-            if category == "unanswerable" and evidence:
+            if category == "clause_absent" and evidence:
                 raise ValueError(
-                    f"{path.name}:{line_no} is marked unanswerable but lists evidence"
+                    f"{path.name}:{line_no} is marked clause_absent but lists evidence"
                 )
-            if category != "unanswerable" and not evidence:
+            if category != "clause_absent" and not evidence:
                 raise ValueError(
                     f"{path.name}:{line_no} is answerable but lists no evidence"
                 )

@@ -133,7 +133,7 @@ def build(cuad_path: Path, corpus_dir: Path, limit: int, seed: int) -> tuple[lis
                 impossible.append(
                     {
                         "question": question,
-                        "category": "unanswerable",
+                        "category": "clause_absent",
                         "relevant": [],
                         "note": f"CUAD marks '{clause}' absent from this contract",
                     }
@@ -157,14 +157,14 @@ def build(cuad_path: Path, corpus_dir: Path, limit: int, seed: int) -> tuple[lis
     rng.shuffle(answerable)
     rng.shuffle(impossible)
 
-    n_unanswerable = max(1, limit // 7)
+    n_absent = max(1, limit // 7)
     n_multi = max(1, limit // 8)
-    n_single = limit - n_unanswerable - n_multi
+    n_single = limit - n_absent - n_multi
 
     selected = answerable[:n_single]
     multi = build_multi(answerable[n_single:], n_multi)
     selected.extend(multi)
-    selected.extend(impossible[:n_unanswerable])
+    selected.extend(impossible[:n_absent])
 
     for index, item in enumerate(selected, start=1):
         item["id"] = f"q{index:03d}"
@@ -172,7 +172,7 @@ def build(cuad_path: Path, corpus_dir: Path, limit: int, seed: int) -> tuple[lis
     stats = {
         "documents_with_annotations": len(usable),
         "answerable_candidates": len(answerable),
-        "unanswerable_candidates": len(impossible),
+        "clause_absent_candidates": len(impossible),
         "spans_not_locatable": unlocatable,
         "emitted": len(selected),
     }

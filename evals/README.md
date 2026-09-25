@@ -44,7 +44,7 @@ Questions are generated per contract rather than copied from CUAD — its prompt
 are identical across all 510 contracts, so reused verbatim they could not identify
 which document is meant. Ground-truth pages are found by locating each annotated
 span in the document, not from CUAD's character offsets, which index a different
-text extraction. `is_impossible` annotations supply the `unanswerable` questions.
+text extraction. `is_impossible` annotations supply the `clause_absent` questions.
 
 ## Two rules that are not obvious
 

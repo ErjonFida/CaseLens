@@ -125,7 +125,7 @@ def run(cuad_path: Path, model: str, num_ctx: int, max_doc_tokens: int, conditio
     for q in gold.load(DATASET_DIR / "gold.jsonl"):
         if q.category in ("exact_term", "semantic"):
             filename = q.relevant[0].filename
-        elif q.category == "unanswerable":
+        elif q.category == "clause_absent":
             matches = store.match_documents_by_name(q.question, user, session)
             if not matches or (len(matches) > 1 and matches[0][1] <= matches[1][1] * 1.5):
                 continue
@@ -188,15 +188,15 @@ def summarise(records: list[dict], conditions: list[str]) -> dict:
     summary = {}
     for cond in conditions:
         rows = [r for r in records if r["condition"] == cond]
-        answerable = [r for r in rows if r["category"] != "unanswerable"]
-        unanswerable = [r for r in rows if r["category"] == "unanswerable"]
+        answerable = [r for r in rows if r["category"] != "clause_absent"]
+        absent = [r for r in rows if r["category"] == "clause_absent"]
         missing = [r for r in answerable if not r["context_has_page"]]
         summary[cond] = {
             "questions": len(rows),
             "supported (overlap >= 0.5)": rate([dict(r, s=(r["support"] or 0) >= 0.5) for r in answerable], "s"),
             "cited page correct": rate(answerable, "cited_correct"),
             "abstained on answerable": rate(answerable, "abstained"),
-            "abstained on unanswerable": rate(unanswerable, "abstained") if unanswerable else None,
+            "abstained, clause absent": rate(absent, "abstained") if absent else None,
             "page missing from context": len(missing),
             "answered anyway when page missing": rate([dict(r, a=not r["abstained"]) for r in missing], "a") if missing else None,
             "p50 latency ms": sorted(r["latency_ms"] for r in rows)[len(rows) // 2] if rows else None,

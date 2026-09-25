@@ -64,12 +64,12 @@ def aggregate(results: list[QuestionResult]) -> dict:
         if rows:
             by_category[category] = block(rows)
 
-    unanswerable = [r for r in results if not r.scored]
+    absent = [r for r in results if not r.scored]
 
     return {
         "overall": block(scored),
         "by_category": by_category,
-        "unanswerable_questions": len(unanswerable),
+        "clause_absent_questions": len(absent),
         "scored_questions": len(scored),
     }
 

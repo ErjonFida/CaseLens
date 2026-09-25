@@ -146,12 +146,14 @@ graded against the CUAD annotations:
   For Gemma the whole document is worse; it extracts less reliably from a full
   contract than from focused chunks. Both behaviours ship.
 - The failure that matters is substitution: asked about a clause the contract
-  lacks, a model sometimes answers with a nearby one. It happened once for
-  each model.
+  lacks, a model answers with a nearby one. One line in the system prompt
+  removed it from both shipped paths (Gemini 2 to 0, Gemma 1 to 0) without
+  adding a wrongful decline.
 
-The deterministic grader in the harness agrees with the graded verdicts at
-precision 0.91 on correctness, and over-counts declines at 0.59. Both numbers
-are in [evals/README.md](evals/README.md) rather than tuned away.
+Grading is deterministic where it can be and a model judge where it cannot:
+no regex tells a supported "no" from an assertion. The judge agrees with the
+graded answers on 94% of good/not-good calls, and its calibration, including
+where it disagrees, is in [evals/README.md](evals/README.md).
 
 ---
 
@@ -285,9 +287,10 @@ Specific and current.
    5,574 chunks (~113ms p50), but it will not scale. An HNSW index is worth
    adding once there is a latency number to improve on.
 
-2. **Answers can substitute a nearby clause.** Asked about a clause a contract
-   lacks, the model sometimes answers with an adjacent one; it happened once
-   for each model in the graded set. The prompt does not guard against it yet.
+2. **Substitution is reduced, not ruled out.** A prompt line removed it from
+   both shipped paths in the eval, but for the local model the fix is
+   probabilistic: a second sample of the same question led with the adjacent
+   clause again.
 
 3. **Tokens live in `localStorage`.** That rules out CSRF entirely, and leaves
    the token readable by any script injected into the origin.
@@ -302,12 +305,10 @@ Specific and current.
 
 In order:
 
-1. Grade clause-absent answers on whether they assert the clause, and harden
-   the prompt against substitution, measured with the answer-level eval.
-2. Deploy, with Gemini answering.
-3. Section headings carried into chunks, then query rewriting, for the
+1. Deploy, with Gemini answering.
+2. Section headings carried into chunks, then query rewriting, for the
    remaining within-document misses.
-4. A larger gold set, once retrieval stops moving.
+3. A larger gold set, once retrieval stops moving.
 
 ## Licence
 

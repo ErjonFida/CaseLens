@@ -249,8 +249,8 @@ differences of two or three answers are direction, not size. What holds:
   outsiders have rights under a contract with no such clause (q091), Gemini
   offered the indemnification section instead. Gemma made the same kind of
   error on q097, offering assignment restrictions for change of control. It
-  is the failure a legal tool can least afford, and a prompt problem this
-  harness can measure a fix for.
+  is the failure a legal tool can least afford, and a prompt problem: see
+  *Hardening the prompt against substitution* below.
 - **Local and hosted are in the same range.** On the same 24 questions at ten
   chunks Gemini gave 22 good answers to Gemma's 20. A 4B model on a laptop CPU is a viable offline deployment for this
   task but it is not ahead of a hosted model.
@@ -266,12 +266,62 @@ which is where Gemma measured worse.
 
 The harness grades deterministically, content-word overlap with the CUAD
 span after stripping markdown, a regex over cited page numbers, and a phrase
-list for declining. A small judge model would share the answering
-model's blind spots. Against the graded answers:
+list for declining. Where a regex cannot decide, a calibrated model judge
+grades instead (below). Against the graded answers:
 
 | automatic signal | precision | recall |
 |---|---:|---:|
 | overlap >= 0.5 means correct | 0.91 | 0.85 |
 | decline phrase means declined | 0.59 | 0.91 |
 
-The overlap proxy is fit for comparing conditions within one model.
+The overlap proxy is fit for comparing conditions within one model. The
+decline phrase list is not, and cannot be fixed as a regex: requiring that a
+decline cites no page lifts its precision to 0.93 and drops recall to 0.50,
+because the prompt asks for sources and genuine declines cite them. Nor can a
+regex tell a supported "no" from an assertion, which is the distinction that
+matters when the clause is absent.
+
+### The model judge
+
+`evals/judge.py` grades each answer against a fixed rubric. A question about a
+clause the contract lacks is answered correctly by a decline, or by a "no"
+that quotes the provision ruling the clause out.
+`--calibrate` measures the judge against the graded workbook:
+
+| judge | answers | good / not good agreement | clause absent | wrong: graded / judged / both |
+|---|---:|---:|---:|---|
+| `gemini-3.7-flash` | 290 | 0.941 | 1.00 | 3 / 7 / 2 |
+| `gemini-3.1-pro-preview` | 187 | 0.920 | 1.00 | 3 / 3 / 3 |
+
+On the 187 answers both judged, they agree with the grades equally (0.92)
+and with each other on 97% of good/not-good calls. The flash model is the
+default. The flash judge did not write any of the answers, and it
+agrees with the grades about equally on both models' (0.945 Gemini, 0.931
+Gemma), so self-preference does not show. Four of its five extra *wrong* calls
+are substitutions the workbook graded partial - assignment offered for change
+of control, logo rules for non-compete - which is the stricter rule applied as
+written. Its one miss is a misread exception it called partial.
+
+`--judge` grades a run or a saved report. Verdicts are cached, so re-grading
+costs nothing, and every verdict is stored with its reason.
+
+### Hardening the prompt against substitution
+
+Judged under that rule, substitution was more frequent than the workbook
+recorded: Gemma offered an adjacent clause five times across its three
+conditions, Gemini twice with whole documents. The system prompt, shared by
+the API and the eval, gained one line: when the context contains no such
+provision, say so first, and label anything related as related. On the two
+paths that ship:
+
+| judged | good | clause absent | wrong | declined wrongly |
+|---|---:|---:|---:|---:|
+| Gemini, whole document, before | 64 / 73 | 7 / 9 | 2 | 0 |
+| after | **70 / 73** | **9 / 9** | **0** | 0 |
+| Gemma, 10 chunks, before | 20 / 24 | 4 / 5 | 1 | 1 |
+| after | **21 / 24** | **5 / 5** | **0** | 1 |
+
+All three substitutions on the shipped paths are gone, and no wrongful decline
+was added. The changes on answerable questions are not claimed: every answer's
+wording changed, and they split five better and one worse for Gemini and one
+each way for Gemma, which is run-to-run variation. 

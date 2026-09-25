@@ -18,6 +18,7 @@ from . import CORPUS_DIR, DATASET_DIR, EVAL_TENANT_EMAIL, REPORT_DIR
 from . import dataset as gold
 from .corpus import build_embedder
 from .cuad_import import fold_name, normalize
+from .judge import GOOD, JUDGE_MODEL, judge_many
 
 logger = logging.getLogger("evals.faithfulness")
 
@@ -111,8 +112,28 @@ def clause_of(note: str) -> str:
     return m.group(1).strip() if m else ""
 
 
+def judge_records(records: list[dict], spans: dict, files: dict, model: str) -> None:
+    questions = {q.id: q for q in gold.load(DATASET_DIR / "gold.jsonl")}
+    cases = []
+    for r in records:
+        q = questions[r["question_id"]]
+        absent = q.category == "clause_absent"
+        path = None if absent else files.get(fold_name(Path(q.relevant[0].filename).stem))
+        cases.append({
+            "question": q.question,
+            "clause_absent": absent,
+            "spans": [] if absent or not path else spans.get((fold_name(path.stem), clause_of(q.note)), []),
+            "pages": "" if absent else ", ".join(str(e.page) for e in q.relevant),
+            "context_has_page": bool(r["context_has_page"]),
+            "answer": r["answer"].strip(),
+        })
+    for r, verdict in zip(records, judge_many(cases, model)):
+        r["judge"] = verdict
+
+
 def run(cuad_path: Path, model: str, num_ctx: int, max_doc_tokens: int, conditions: list[str], label: str,
-        think: bool | None = None, provider: str = "ollama") -> dict:
+        think: bool | None = None, provider: str = "ollama", judge_model: str | None = None,
+        only: set[str] | None = None) -> dict:
     spans = load_spans(cuad_path)
     session = SyncSessionLocal()
     embedder, cache = build_embedder()
@@ -123,6 +144,8 @@ def run(cuad_path: Path, model: str, num_ctx: int, max_doc_tokens: int, conditio
 
     selected = []
     for q in gold.load(DATASET_DIR / "gold.jsonl"):
+        if only and q.id not in only:
+            continue
         if q.category in ("exact_term", "semantic"):
             filename = q.relevant[0].filename
         elif q.category == "clause_absent":
@@ -173,11 +196,13 @@ def run(cuad_path: Path, model: str, num_ctx: int, max_doc_tokens: int, conditio
     session.close()
     cache.close()
 
+    if judge_model:
+        judge_records(records, spans, files, judge_model)
     summary = summarise(records, conditions)
     return {
         "label": label, "generated_at": datetime.now(timezone.utc).isoformat(),
         "provider": provider, "model": model, "num_ctx": num_ctx, "max_doc_tokens": max_doc_tokens, "think": think,
-        "summary": summary, "records": records,
+        "system_prompt": SYSTEM_PROMPT, "summary": summary, "records": records,
     }
 
 
@@ -201,12 +226,21 @@ def summarise(records: list[dict], conditions: list[str]) -> dict:
             "answered anyway when page missing": rate([dict(r, a=not r["abstained"]) for r in missing], "a") if missing else None,
             "p50 latency ms": sorted(r["latency_ms"] for r in rows)[len(rows) // 2] if rows else None,
         }
+        judged = [r for r in rows if r.get("judge")]
+        if judged:
+            good = lambda rs: round(sum(r["judge"]["grade"] in GOOD for r in rs) / len(rs), 3) if rs else None
+            summary[cond]["judged good"] = good(judged)
+            summary[cond]["judged good, clause absent"] = good([r for r in judged if r["category"] == "clause_absent"])
+            summary[cond]["judged wrong"] = sum(r["judge"]["grade"] == "wrong" for r in judged)
+            summary[cond]["judged declined wrongly"] = sum(r["judge"]["grade"] == "abstain-wrong" for r in judged)
     return summary
 
 
-def regrade(path: Path, cuad_path: Path | None = None) -> dict:
+def regrade(path: Path, cuad_path: Path | None = None, judge_model: str | None = None) -> dict:
     report = json.loads(path.read_text(encoding="utf-8"))
     spans = load_spans(cuad_path) if cuad_path and cuad_path.exists() else None
+    if judge_model and spans is None:
+        raise SystemExit("--judge needs --cuad pointing at CUAD_v1.json, for the annotated spans")
     questions = {q.id: q for q in gold.load(DATASET_DIR / "gold.jsonl")}
     files = {fold_name(p.stem): p for p in CORPUS_DIR.iterdir() if p.is_file()}
     for r in report["records"]:
@@ -217,6 +251,8 @@ def regrade(path: Path, cuad_path: Path | None = None) -> dict:
             path_ = files.get(fold_name(Path(q.relevant[0].filename).stem))
             gold_spans = spans.get((fold_name(path_.stem), clause_of(q.note)), []) if path_ else []
             r["support"] = round(supported(r["answer"], gold_spans), 2) if gold_spans else r["support"]
+    if judge_model:
+        judge_records(report["records"], spans, files, judge_model)
     report["summary"] = summarise(report["records"], list(report["summary"]))
     path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     return report
@@ -245,15 +281,19 @@ def main() -> None:
     parser.add_argument("--no-think", action="store_true", help="Disable a thinking model's reasoning pass")
     parser.add_argument("--provider", choices=("ollama", "gemini"), default="ollama")
     parser.add_argument("--regrade", type=Path, nargs="*", help="Re-score saved reports with the current grader, then exit")
+    parser.add_argument("--judge", nargs="?", const=JUDGE_MODEL, default=None,
+                        help=f"Also grade with the calibrated model judge (default {JUDGE_MODEL})")
+    parser.add_argument("--only", default="", help="Comma-separated question ids, for a targeted run")
     args = parser.parse_args()
 
     if args.regrade:
         for path in args.regrade:
-            print_summary(regrade(path, args.cuad))
+            print_summary(regrade(path, args.cuad, args.judge))
         return
 
     report = run(args.cuad, args.model, args.num_ctx, args.max_doc_tokens, args.conditions.split(","), args.label,
-                 think=False if args.no_think else None, provider=args.provider)
+                 think=False if args.no_think else None, provider=args.provider, judge_model=args.judge,
+                 only={q.strip() for q in args.only.split(",") if q.strip()} or None)
     print_summary(report)
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     out = REPORT_DIR / f"{args.label}.json"

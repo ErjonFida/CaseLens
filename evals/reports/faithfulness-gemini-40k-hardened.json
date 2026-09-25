@@ -1,0 +1,1613 @@
+{
+  "label": "faithfulness-gemini-40k-hardened",
+  "generated_at": "2026-09-24T15:37:01.417763+00:00",
+  "provider": "gemini",
+  "model": "gemini-3.8-flash",
+  "num_ctx": 8192,
+  "max_doc_tokens": 40000,
+  "think": null,
+  "system_prompt": "You are a helpful and professional Legal Assistant. Answer based strictly on the provided document contexts.\nIf the answer cannot be found in the context, state so. Always reference sources (filenames and page numbers).\nIf the question asks about a specific provision and the context contains none, say that first. You may then mention related provisions, labelled as related, but never present one as the answer or infer the missing provision from it.\n\nCONTEXT:\n{context}",
+  "summary": {
+    "full": {
+      "questions": 73,
+      "supported (overlap >= 0.5)": 0.812,
+      "cited page correct": 0.875,
+      "abstained on answerable": 0.266,
+      "abstained, clause absent": 0.889,
+      "page missing from context": 0,
+      "answered anyway when page missing": null,
+      "p50 latency ms": 4632,
+      "judged good": 0.959,
+      "judged good, clause absent": 1.0,
+      "judged wrong": 0,
+      "judged declined wrongly": 0
+    }
+  },
+  "records": [
+    {
+      "question_id": "q001",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 2795,
+      "prompt_tokens": 2778,
+      "latency_ms": 3397,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.75,
+      "cited_pages": [
+        5
+      ],
+      "cited_correct": true,
+      "answer": "Based on the agreement, the document was executed on **June 1, 2006** (\"1st day of JUNE , 2006\"), but states that it is \"effective as of the Date of Commencement\" (*HUBEIMINKANGPHARMACEUTICALLTD_09_19_2006-EX-10.1-OUTSOURCING AGREEMENT.PDF*, Page 5).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states the execution date of June 1, 2006, from page 5 as annotated."
+      }
+    },
+    {
+      "question_id": "q002",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 5236,
+      "prompt_tokens": 4797,
+      "latency_ms": 5670,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.92,
+      "cited_pages": [
+        5,
+        6
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, there is **no specific provision stating that any liabilities are uncapped**. \n\nUnder Section 10.2, the agreement provides a blanket limitation on liability capping both parties' exposure:\n> *\"NEITHER PARTIES\u2019 TOTAL CUMULATIVE LIABILITY IN CONNECTION WITH THIS AGREEMENT, WHETHER IN AGREEMENT OR TORT OR OTHERWISE, WILL NOT EXCEED THE AGGREGATE AMOUNT OF FEES AND EXPENSES OWED BY PC FINANCIAL TO MOBIMAGIC FOR SERVICES PERFORMED UNDER THIS AGREEMENT.\"* (Page 6)\n\n---\n\n### Related Provisions\n\n*   **Exclusion of Indirect/Consequential Damages and Carve-Out (Section 8.3, Page 5):** While not stating liability is uncapped, the agreement carves out breaches of confidentiality from the waiver of lost profits and indirect damages:\n    > *\"Neither Party shall be liable to the other Party in contract, tort or otherwise, whatever the cause, for any loss of profit, business or goodwill or any indirect, incidental or consequential costs, damages or expenses of any kind, except for such loss attributable to breach of confidentiality.\"*\n*   **Indemnification Obligations (Sections 8.1 and 8.2, Page 5):** PC Financial indemnifies Mobimagic against third-party actions relating to PC Financial's breach of the agreement, and Mobimagic indemnifies PC Financial and its affiliates against costs, penalties, losses, or damages arising out of or related to the Services, breach of the agreement, or breach of applicable law. However, the agreement does not explicitly state that these indemnities are uncapped or excluded from Section 10.2.",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "partial",
+        "reason": "The assistant mentions the confidentiality breach carve-out from the indirect damages waiver on page 5, but incorrectly asserts upfront that no liabilities are uncapped."
+      }
+    },
+    {
+      "question_id": "q003",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 32419,
+      "prompt_tokens": 28745,
+      "latency_ms": 2614,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.83,
+      "cited_pages": [
+        39
+      ],
+      "cited_correct": true,
+      "answer": "Based on Section 13 (\"Governing Law and Time\") of the Agency Agreement, the agreement is governed by and construed in accordance with the **laws of the State of New York** applicable to agreements made and to be performed in that state, without regard to its conflicts of laws provisions.\n\n**Source:** \n* ALLIANCEBANCORPINCOFPENNSYLVANIA_10_18_2006-EX-1.2-AGENCY AGREEMENT.PDF, Page 39, Section 13",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately identifies that New York law governs the agreement, matching the annotated clause and page."
+      }
+    },
+    {
+      "question_id": "q004",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 2075,
+      "prompt_tokens": 1940,
+      "latency_ms": 2619,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the agreement becomes effective on **April 1, 2019**. \n\nSpecifically:\n* The preamble states that the agreement is \"dated as of April 1, 2019\" (*SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page 1*).\n* Section 3 (\"Term\") provides that the term of the agreement \"shall commence on the date hereof (the \u201cEffective Date\u201d)\" (*SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page 1*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly identifies April 1, 2019 as the effective date based on the commencement clause and preamble on page 1."
+      }
+    },
+    {
+      "question_id": "q005",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 8809,
+      "prompt_tokens": 9596,
+      "latency_ms": 3006,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.78,
+      "cited_pages": [
+        10
+      ],
+      "cited_correct": true,
+      "answer": "Based on Section 7.1 of the Intellectual Property Agreement, unless earlier terminated, the agreement **\"shall extend until the last date of expiration of the SRAM Intellectual Property rights licensed under this IP Agreement.\"** \n\n*(Source: GSITECHNOLOGYINC_11_16_2009-EX-10.2-INTELLECTUAL PROPERTY AGREEMENT between SONY ELECTRONICS INC. and GSI TECHNOLOGY, INC..PDF, Page 10)*\n\n*(Related note: The agreement may terminate earlier under Section 7.2 upon written notice for uncured material breach or patent/intellectual property claim assertions, or under Section 7.3 upon insolvency. Source: Page 10).*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant accurately states the substance and quotes the annotated clause regarding the agreement's expiration date from the correct page."
+      }
+    },
+    {
+      "question_id": "q006",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 39257,
+      "prompt_tokens": 34825,
+      "latency_ms": 2896,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.33,
+      "cited_pages": [
+        1,
+        19
+      ],
+      "cited_correct": true,
+      "answer": "Based on the agreement, it becomes effective as of **January 26, 2007** (defined as the \"Effective Date\").\n\n**Source:**\n* OFGBANCORP_03_28_2007-EX-10.23-OUTSOURCING AGREEMENT.PDF, Page 1 (Preamble and Term); Page 19 (Section 18.Q).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately identifies January 26, 2007 as the effective date based on page 1 of the agreement."
+      }
+    },
+    {
+      "question_id": "q007",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 35318,
+      "prompt_tokens": 34989,
+      "latency_ms": 6748,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.86,
+      "cited_pages": [
+        5,
+        18,
+        28,
+        63
+      ],
+      "cited_correct": true,
+      "answer": "Based on the Amended and Restated Strategic Licensing, Distribution and Marketing Agreement, the agreement imposes the following restrictions regarding competition:\n\n### 1. Restrictions on Pacira Pharmaceuticals, Inc. (PPI)\nUnder **Section 3.13 (Exclusivity)**, during the Term, PPI and its Affiliates shall not:\n* File for Marketing Authorization with respect to any Competing Product in any country in the Territory;\n* Manufacture or have manufactured any Competing Product in any country in the Territory;\n* Market or have marketed any Competing Product in any country in the Territory; or\n* License any Third Party to do any of the foregoing.  \n*(Page 18)*\n\n### 2. Restrictions on EKR Therapeutics, Inc. (EKR)\n* **Non-Compete (Section 4.16):** EKR shall not, during [**], market, distribute or sell a Competing Product in the Territory.  \n  * *Exceptions:* This restriction does not apply if an A/B rated generic product of the Product(s) is launched in that country of the Territory, or if the Agreement is terminated, or if EKR exercises its remedies under Section 17.4. *(Page 28)*\n* **Prohibition on Sales Outside the Territory (Section 4.15):** EKR is prohibited from directly or indirectly marketing, distributing, and/or selling the Product outside the Territory, or selling the Product to any Third Party that EKR knows intends to sell or distribute the Product outside the Territory. *(Page 28)*\n* **PPI as Exclusive Provider (Section 4.17):** During the Term, EKR must purchase all of its requirements for the Product from PPI (unless PPI cannot supply the Product or as otherwise provided in the Supply Agreement or Section 17.5). *(Page 28)*\n\n---\n\n### Definition of \"Competing Product\"\nUnder **Section 1.1**, a \"Competing Product\" is defined as:\n> \"...any [**] ([**] hours) [**] preparation (other than the Product) available in a country in the Territory which competes or would compete directly with the Product. For the avoidance of doubt, the definition of 'Competing Product' does not include Depobupivacaine or any improvement thereto.\" *(Page 5)*\n\n---\n\n### Related Provision: Change of Control\n* **Section 20.4 (Change of Control):** If a Change of Control of either Party results in control of that Party by a Third Party that markets or sells a Competing Product in any part of the Territory, the rights under the Agreement cannot be assigned without the express consent of the other Party (such consent not to be unreasonably withheld). *(Page 63)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states the non-compete restrictions for both PPI and EKR as outlined in the annotated clauses."
+      }
+    },
+    {
+      "question_id": "q009",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 8660,
+      "prompt_tokens": 7739,
+      "latency_ms": 3480,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.79,
+      "cited_pages": [
+        10,
+        15
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the agreement is governed by the laws of the **State of Delaware, United States of America**, without reference to conflict-of-laws principles.\n\n**Sources:**\n* *Loop Industries, Inc. - Marketing Agreement.PDF*, Page 10, Section 7.4 (\"Choice of Law\")\n* *(Related form)* *Loop Industries, Inc. - Marketing Agreement.PDF*, Page 15, Exhibit C, Section 5 (\"Governing Law\")",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly states that the agreement is governed by the laws of the State of Delaware, United States of America, accurately citing the annotated page."
+      }
+    },
+    {
+      "question_id": "q010",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 25199,
+      "prompt_tokens": 22351,
+      "latency_ms": 4616,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.73,
+      "cited_pages": [
+        3
+      ],
+      "cited_correct": true,
+      "answer": "The provided document does not contain a specific provision defining or requiring a \"minimum commitment.\" \n\nHowever, the agreement contains the following **related provisions** concerning performance standards, efforts, and pricing thresholds:\n\n* **Remarketing Agent's Efforts and Minimum Pricing (Related Provision):** Under Section 1(b)(i) and Section 1(c), the Remarketing Agent agrees to use its \"commercially reasonable efforts\" to remarket the Remarketing Securities at a price at least equal to:\n  * 100% of the aggregate Accreted Value thereof as of the end of the day on the day next preceding the Remarketing Settlement Date; or\n  * On the Maturity Remarketing Date, 100% of the stated liquidation amount of the Preferred Securities or the principal amount at maturity of the Debentures, as the case may be (*Reinsurance Group of America, Incorporated - A_R REMARKETING AGREEMENT.PDF, Page 3*).\n* **Company's Efforts (Related Provision):** Under Section 5, the Company agrees to use its \"reasonable best efforts\" to fulfill specific obligations, such as furnishing copies of the Prospectus, delivering documents, and qualifying Remarketing Securities under state securities laws (*Reinsurance Group of America, Incorporated - A_R REMARKETING AGREEMENT.PDF, Pages 17\u201318*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant provides the exact substance of the annotated minimum pricing and remarketing efforts requirement from page 3."
+      }
+    },
+    {
+      "question_id": "q011",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 13287,
+      "prompt_tokens": 12612,
+      "latency_ms": 4064,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.86,
+      "cited_pages": [],
+      "cited_correct": false,
+      "answer": "Based on Section 12.4 (**\"No Assignment\"**) of the Co-Branding Agreement:\n\n* **General Rule:** Neither party may transfer, assign, or cede any rights or delegate any obligations under the agreement\u2014whether in whole or in part, voluntarily or by operation of law\u2014without the prior written consent of the other party. Such consent may be withheld at the other party's reasonable business discretion.\n* **VerticalNet Exception:** VerticalNet specifically may transfer the agreement without LeadersOnline's prior written consent to:\n  * An Affiliate of VerticalNet,\n  * The surviving party in a merger or consolidation, or\n  * A purchaser of all or substantially all of its assets.\n* **LeadersOnline:** LeadersOnline has no such unilateral exception stated in the agreement; therefore, LeadersOnline cannot transfer the agreement without obtaining VerticalNet's prior written consent.\n\n*(Source: LeadersonlineInc_20000427_S-1A_EX-10.8_4991089_EX-10.8_Co-Branding Agreement.pdf, Pages 8\u20139, Section 12.4)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant accurately explains the general restriction on assignment/transfer without prior written consent as well as the specific exceptions outlined in the annotated clause."
+      }
+    },
+    {
+      "question_id": "q012",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 9172,
+      "prompt_tokens": 8342,
+      "latency_ms": 4950,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.35,
+      "cited_pages": [
+        3
+      ],
+      "cited_correct": true,
+      "answer": "The provided agreement contains no specific provision stating how long the warranties last (i.e., an explicit warranty duration period).\n\n**Related Provisions:**\n* **Paragraph 2.6 (Warranty):** States that the Company warrants that all Products sold to the Customer, *\"at the time of shipment to the Customer,\"* will (a) be merchantable and of generally commercially salable quality, and (b) *\"have a then remaining shelf life of at least twelve (12) months.\"* It also warrants compliance with applicable laws regarding manufacturing, packaging, storage, and shipping (*BIOPURECORP_06_30_1999-EX-10.13-AGENCY AGREEMENT.PDF*, Pages 3\u20134).\n* **Paragraph 1.5(e) (Company Obligations):** States that the Company *\"will replace, any unit of Product to the Customer which has outdated (provided the Product is not outdated more than ninety (90) days) with equal Product\"* (*BIOPURECORP_06_30_1999-EX-10.13-AGENCY AGREEMENT.PDF*, Page 3).\n* **Paragraph 2.5 (Claims):** Notes that *\"Any claim for shortage in Product delivery must be made within ten (10) business days after the Customer's receipt of shipment\"* (*BIOPURECORP_06_30_1999-EX-10.13-AGENCY AGREEMENT.PDF*, Page 3).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately provides the substance of the warranty provision from Paragraph 2.6, noting that the warranties apply at the time of shipment and require a remaining shelf life of at least twelve months."
+      }
+    },
+    {
+      "question_id": "q014",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 28738,
+      "prompt_tokens": 26713,
+      "latency_ms": 5424,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.55,
+      "cited_pages": [
+        5,
+        8
+      ],
+      "cited_correct": false,
+      "answer": "Based on the provided document, the agreement **does not contain a provision specifying an overall monetary limit or dollar cap** on how much either side can be liable for.\n\nThere are, however, several related provisions limiting certain types of liability or damages:\n\n*   **Waiver of Certain Damages (Related):** Under Section 26(a) and Section 26(b), in the event of a material breach and termination, neither Party \"may assert consequential, special or punitive damages or any claim for lost profits\" against the other (*NEXSTARFINANCEHOLDINGSINC_03_27_2002-EX-10.26-OUTSOURCING AGREEMENT.PDF, Pages 13\u201314*).\n*   **FCC and Public Interest Obligations (Related):** Under Section 6(b)(i), WYZZ has \"no liability or obligation to Nexstar for taking any action that WYZZ deems necessary or appropriate to discharge such obligations or comply with such laws, rules, regulations or policies\" (*NEXSTARFINANCEHOLDINGSINC_03_27_2002-EX-10.26-OUTSOURCING AGREEMENT.PDF, Page 5*).\n*   **Uncollected Accounts Receivable (Related):** Under Section 10(d)(ii), Nexstar incurs \"no liability to WYZZ for any uncollected account\" except to the extent resulting from Nexstar's willful breach (*NEXSTARFINANCEHOLDINGSINC_03_27_2002-EX-10.26-OUTSOURCING AGREEMENT.PDF, Page 8*).\n*   **Limits on Shared Start-Up Costs (Related):** Under Section 4 and Exhibit D, the parties agree to share certain start-up expenses, with specific maximum amounts designated for identified categories (such as master control improvements capped at $292,000, new traffic system at $110,000, and employee severance at $105,000) (*NEXSTARFINANCEHOLDINGSINC_03_27_2002-EX-10.26-OUTSOURCING AGREEMENT.PDF, Pages 4, 14*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly identifies the relevant limitation on damages from Section 26 on page 13, noting the exclusion of consequential, special, punitive damages, and lost profits."
+      }
+    },
+    {
+      "question_id": "q016",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 29987,
+      "prompt_tokens": 26895,
+      "latency_ms": 2989,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.41,
+      "cited_pages": [
+        22
+      ],
+      "cited_correct": true,
+      "answer": "Based on Section 16.1 of the Manufacturing Outsourcing Agreement, the renewal term (referred to as the \"Extended Term\") is an automatic renewal for an **indefinite period of time**, unless terminated by the parties pursuant to Sections 16.2 or 16.3.\n\n**Source:** \n* NICELTD_06_26_2003-EX-4.5-OUTSOURCING AGREEMENT.PDF, Page 22 (Section 16.1)",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states that the agreement automatically renews for an indefinite period of time based on the annotated clause."
+      }
+    },
+    {
+      "question_id": "q017",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 15503,
+      "prompt_tokens": 14669,
+      "latency_ms": 4792,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.75,
+      "cited_pages": [
+        11,
+        13,
+        14,
+        16
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the Agreement does not contain a specific expiration date or a general expiration provision. \n\nRelated provisions regarding the duration and terminability of the Agreement and its terms include:\n* **Perpetual and Irrevocable Licenses:** Under Section 3.1.1, the intellectual property licenses granted are \"perpetual\" and \"irrevocable\" (Page 11).\n* **No Rescission or Termination:** Under Section 3.3, the provisions of the Agreement, including the license rights, \"shall not be terminable or revocable for any reason,\" and each Party irrevocably waives the right to seek termination or rescission (Page 13).\n* **Specific Time-Limited Obligations:** \n  * Under Section 4.2.2, members of the Otis Group and Carrier Group must apply to change corporate names containing United Technologies Trademarks within six (6) months of the Effective Time (Page 14).\n  * Under Section 4.2.3, the temporary right to use United Technologies Trademarks must cease as soon as practicable, and in any event within three (3) years after the Effective Time (Pages 14\u201315).\n  * Under Section 7.1.1, requests for copies of tangible embodiments of Assigned and Licensed Intellectual Property Rights may be made for a period of six (6) months after the Effective Time (Page 16).\n\n*(Source: OTISWORLDWIDECORP_04_03_2020-EX-10.4-INTELLECTUAL PROPERTY AGREEMENT by and among UNITED TECHNOLOGIES CORPORATION, OTIS WORLDWIDE CORPORATION and CARRIER ~1.PDF, Pages 11, 13, 14\u201316)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant accurately cites the annotated clause from page 13 stating that the agreement's provisions are not terminable or revocable for any reason."
+      }
+    },
+    {
+      "question_id": "q018",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 39257,
+      "prompt_tokens": 34824,
+      "latency_ms": 4709,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.5,
+      "cited_pages": [
+        1,
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Based on the Technology Outsourcing Agreement, the expiration details are as follows:\n\n* **Initial Term Expiration:** The Initial Term of the Agreement commenced on January 26, 2007, and ends on **November 30, 2014** (*Page 1*).\n* **Automatic Renewal/Extension:** Unless earlier terminated, Metavante must provide a written renewal notice at least 12 months prior to the expiration of the Initial Term. Unless the Customer gives written notice of its intent not to renew within 3 months following that notice, the Agreement automatically renews at the end of the Initial Term for **one (1) twelve-month period** (which would extend the term to November 30, 2015) (*Section 2.1, Page 2*).\n* **Subsequent Expiration:** Upon the expiration of that 12-month extension, the Agreement expires unless renewed in writing by the parties (with Metavante having the option, but no obligation, to continue services on a month-to-month basis) (*Section 2.1, Page 2*).\n\n*(Source: OFGBANCORP_03_28_2007-EX-10.23-OUTSOURCING AGREEMENT.PDF, Pages 1\u20132)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states that the Initial Term ends on November 30, 2014, citing Page 1, and correctly details the renewal terms."
+      }
+    },
+    {
+      "question_id": "q019",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 9172,
+      "prompt_tokens": 8340,
+      "latency_ms": 4114,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1,
+        5
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the Agency Agreement is made as of **March 29, 1999** (BIOPURECORP_06_30_1999-EX-10.13-AGENCY AGREEMENT.PDF, Page 1). \n\nSection 4.1 also confirms that the agreement became effective as of \"the date first written above\" (BIOPURECORP_06_30_1999-EX-10.13-AGENCY AGREEMENT.PDF, Page 5).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant accurately identifies the date of the agreement as March 29, 1999, referencing page 1."
+      }
+    },
+    {
+      "question_id": "q020",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 26003,
+      "prompt_tokens": 27210,
+      "latency_ms": 8979,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1,
+        5
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the Master Operation and Maintenance Agreement is dated as of **April 13, 2012** (*BloomEnergyCorp_20180321_DRSA (on S-1)_EX-10_11240356_EX-10_Maintenance Agreement.pdf*, Page 1, Page 5).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly identified the agreement date as April 13, 2012, matching the annotated clause."
+      }
+    },
+    {
+      "question_id": "q022",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 4583,
+      "prompt_tokens": 4622,
+      "latency_ms": 2391,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        4
+      ],
+      "cited_correct": true,
+      "answer": "Based on Section I(8) (*Assignment*) of the Agency Agreement, the agreement can be transferred (assigned) under the following conditions:\n\n* **By MICOA:** MICOA may assign the Agreement to its parent, affiliate, or subsidiary corporations who are licensed insurers upon written notice to the Agency.\n* **By the Agency:** The Agency may not assign the Agreement without the written permission of MICOA or its successors or assigns.\n\n**Source:** \n* AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page 4 (Section I.8)",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately conveys the assignment restrictions from the annotated clause on page 4."
+      }
+    },
+    {
+      "question_id": "q023",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 26003,
+      "prompt_tokens": 27212,
+      "latency_ms": 7549,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.75,
+      "cited_pages": [
+        13,
+        15,
+        20
+      ],
+      "cited_correct": false,
+      "answer": "Based on the Master Operation and Maintenance Agreement, the warranties last for the duration of the defined **\u201cWarranty Period\u201d** (and terminate immediately upon the expiration of such period pursuant to Section 4.2):\n\n1. **For each Bloom System:**\n   * **Starts:** The day following the date that the \"Warranty Period\" for such Bloom System under and as defined in the MESPA has expired.\n   * **Ends:** The **twenty-first (21st) anniversary** of the date of Commencement of Operations for such Bloom System.\n\n2. **For the BOF (Balance of Facility):**\n   * **Starts:** The day following the date that the Section 8.2(b) Warranty for such BOF under the MESPA has expired.\n   * **Ends:** The **twenty-first (21st) anniversary** of such starting date.\n\n*(Source: BloomEnergyCorp_20180321_DRSA (on S-1)_EX-10_11240356_EX-10_Maintenance Agreement.pdf, Section 1.1, Page 15)*\n\n---\n### Related Provisions Regarding Warranty Duration and Termination\n* **Termination of Warranties (Section 4.2):** Each of the Facility Service Warranty, the Efficiency Warranty, and the Power Performance Warranty terminates with respect to a Bloom System immediately upon termination of the Warranty Period for that system (though claims accrued prior to termination survive until resolved). Additionally, the Operator is under no warranty obligation during any period for which a Bloom System's Service Fees have not been paid in full. *(Page 20)*\n* **Service Beyond the Warranty Period (Section 2.4):** If the Owner desires services beyond the Warranty Period, time-based services are quoted quarterly and materials are invoiced at retail prices. *(Page 13)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "partial",
+        "reason": "The assistant accurately explains the warranty periods according to the contract definitions, but attributes the clause to page 15 instead of annotated page 17."
+      }
+    },
+    {
+      "question_id": "q024",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 8185,
+      "prompt_tokens": 7816,
+      "latency_ms": 5303,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.46,
+      "cited_pages": [
+        3,
+        10
+      ],
+      "cited_correct": false,
+      "answer": "Based on the provided agreement, **yes**, either party may terminate the employment without cause by providing advance written notice:\n\n* **Notice Requirement:** Under **Clause 2.1**, the Executive\u2019s employment continues until terminated by either party giving the other minimum advance written notice of:\n  * **6 weeks\u2019 notice**, or\n  * **Such other longer period as required by law** (*Page 3, Clauses 2.1.1 and 2.1.2*).\n\n### Related Provisions:\n* **Payment in Lieu of Notice (PILON):** Under **Clause 17.1**, the Company has the sole and absolute discretion to terminate the Executive\u2019s employment at any time with immediate effect by paying a payment in lieu of notice equal to the basic salary the Executive would have received during the notice period (*Pages 8\u20139*).\n* **Garden Leave:** Under **Clause 19.1**, following the service of notice to terminate by either party, the Company may place the Executive on Garden Leave for all or part of the notice period (*Page 10*).\n* **Termination Without Notice (For Cause):** Immediate termination without notice or payment in lieu of notice is addressed separately under **Clause 18.1**, which applies only under specific circumstances such as gross misconduct, serious or repeated breaches, bankruptcy, fraud, or criminal convictions (*Pages 9\u201310*).\n\n*(Source: THERAVANCEBIOPHARMA,INC_05_08_2020-EX-10.2-SERVICE AGREEMENT.PDF, Pages 3, 8\u201310)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states that termination without cause is permitted, citing both the notice provisions and the Company's right to terminate immediately with payment in lieu of notice under Clause 17 on page 8."
+      }
+    },
+    {
+      "question_id": "q025",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 9172,
+      "prompt_tokens": 8338,
+      "latency_ms": 5949,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.69,
+      "cited_pages": [
+        5
+      ],
+      "cited_correct": true,
+      "answer": "The agreement does not contain a specific expiration date. \n\nUnder **Section 4.1 (Term)**, the agreement became effective as of March 29, 1999, and states that it *\"will continue in effect thereafter until terminated pursuant to Paragraph 4.2\"* (BIOPURECORP_06_30_1999-EX-10.13-AGENCY AGREEMENT.PDF, Page 5).\n\n### Related Provisions on Termination\nUnder **Section 4.2 (Termination)**, the agreement may be terminated under the following circumstances (BIOPURECORP_06_30_1999-EX-10.13-AGENCY AGREEMENT.PDF, Pages 5\u20136):\n* **Material Breach:** Automatically terminates if a party fails in any material respect to observe or perform its obligations and does not remedy the failure within 30 days (or 5 business days for payments due) after written notice (Section 4.2(a)).\n* **Change in Control:** By the Company, upon written notice, in the event of any material change in the organization, ownership, management, or control of the Agent's business (Section 4.2(b)).\n* **Without Cause:** By either party, effective at any time after January 31, 1999, upon at least 90 days' prior written notice (Section 4.2(c)).\n* **Failure to Agree on a Business Plan:** By either party upon at least 30 days' prior written notice if, after good faith efforts, the parties fail to timely agree on a Business Plan (Section 4.2(d)).\n* **Adverse Publicity:** By the Company upon at least 5 days' prior written notice in the event of publicity concerning the Agent reasonably believed to have a material adverse effect on the status or reputation of the Agent and/or Products (Section 4.2(e)).\n* **Transfer of Business:** By the Company upon at least 90 days' prior written notice if it terminates, sells, or transfers its veterinary products business in its entirety (Section 4.2(f)).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately quotes and explains the term provision from Page 5, noting that the agreement continues in effect until terminated under Paragraph 4.2."
+      }
+    },
+    {
+      "question_id": "q027",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 21678,
+      "prompt_tokens": 21031,
+      "latency_ms": 8309,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.67,
+      "cited_pages": [
+        3,
+        5,
+        6,
+        7,
+        14,
+        21,
+        28
+      ],
+      "cited_correct": true,
+      "answer": "Based on the Endorsement Licensing and Co-Branding Agreement, the following licenses and rights are granted to MusclePharm:\n\n### 1. License to Distribute and Promote Licensed Products\n* **Distribution and Promotion:** MusclePharm is granted a license on a worldwide basis to distribute and promote the Licensed Products through specified \"Distribution Channels\" (initially through GNC retail and online chains worldwide during the First Contract Year, and thereafter through MusclePharm's other worldwide distribution channels as mutually determined), subject to quality control approval rights (*Section 2(d), Page 3*).\n\n### 2. Right of Publicity: Name and Appearance Rights and Trademarks\n* **Scope of Rights:** The AS Parties grant MusclePharm the right to use the **Trademarks** and **Name and Appearance Rights** (including Endorser Arnold Schwarzenegger\u2019s name, approved photograph, approved picture, approved appearance, approved likeness, voice, signature, personal/professional background and experience, reputation, approved quotations, and approved endorsements) during the Term (*Section 6(a), Page 6*).\n* **Commercial and Promotional Uses:** The AS Parties grant MusclePharm consent for commercial use of the Name and Appearance Rights worldwide in any media selected by MusclePharm (excluding telephone marketing or texting campaigns) to advertise, promote, endorse, and publicize MusclePharm's business, its Products, and the Licensed Products. Any use on physical products is strictly limited to the Licensed Products (*Section 4(b), Page 5; Section 6(b), Page 6*).\n* **Editorial Uses:** Endorser grants MusclePharm consent for worldwide editorial use of his Name and Appearance in MusclePharm-published materials approved by Endorser (uses that do not directly promote, advertise, or endorse the business or products) (*Section 6(c), Page 7*).\n* **Endorsements:** MusclePharm is granted the right to use worldwide Endorser\u2019s oral or written endorsements, or paraphrases thereof, subject to approval (*Section 4(c), Page 5*).\n\n### 3. Promotional Products\n* MusclePharm is granted the right to create and distribute approved Promotional Products worldwide (*Section 4(e), Page 5; Exhibit A, Page 28*).\n\n### 4. Key Limitations and Terms of the License\n* **Personal License:** The license granted is personal to MusclePharm and cannot be assigned, transferred, licensed, sublicensed, or delegated without prior written consent, except in connection with certain qualifying change-of-control transactions (*Section 18, Page 21*).\n* **Use-Up Period:** The right to use Endorser\u2019s Name and Appearance Rights in advertisements and promotional materials created before expiration extends for a six (6) month \"Use-Up Period\" following contract expiration (though no new advertising may be created during this time) (*Section 4(d), Page 5; Section 9(c), Page 14*).\n\n*(Source: `MusclepharmCorp_20170208_10-KA_EX-10.38_9893581_EX-10.38_Co-Branding Agreement.pdf`, Pages 2, 3, 5, 6, 7, 14, 21, 28)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately describes the scope and terms of the licenses granted to MusclePharm based on the annotated clauses, including commercial and editorial use of the Name and Appearance rights and promotional products."
+      }
+    },
+    {
+      "question_id": "q028",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 22627,
+      "prompt_tokens": 21335,
+      "latency_ms": 27342,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.43,
+      "cited_pages": [
+        2,
+        9
+      ],
+      "cited_correct": true,
+      "answer": "Based on Section 11.1 of the Co-Branding Agreement, each renewal term is on a **year-to-year basis** (one year), automatically renewing at the end of the Initial Term or a subsequent renewal term unless either party provides written notice of non-renewal at least 30 days prior to the end of the then-current term (*NeoformaInc_19991202_S-1A_EX-10.26_5224521_EX-10.26_Co-Branding Agreement.pdf, Page 9*; see also Section 1.41 on *Page 2*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states that the agreement renews on a year-to-year basis and correctly cites page 9."
+      }
+    },
+    {
+      "question_id": "q029",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 21678,
+      "prompt_tokens": 21031,
+      "latency_ms": 10445,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.65,
+      "cited_pages": [
+        4,
+        5,
+        8,
+        9
+      ],
+      "cited_correct": true,
+      "answer": "Based on the Endorsement Licensing and Co-Branding Agreement, revenue is shared through royalties based on **Net Sales**, subject to guaranteed minimum payments, as follows:\n\n---\n\n### **1. Royalty Percentage (10% of Net Sales)**\n* **Licensed Products:** MusclePharm must pay Lender a **10% royalty** on the Net Sales of Licensed Products sold through wholesale or retail Distribution Channels during the term and any sell-off period (*Section 7(a)(i), Page 8*).\n* **Training Video & Related Products:** If Endorser agrees to produce the Training Video, Lender receives a **10% royalty** on Net Sales of the Training Video and on Net Sales of any Products (other than Licensed Products) featured and sold directly in conjunction with the Training Video (*Section 4(a)(ii), Page 4; Section 7(a)(i), Page 8*).\n* **Promotional Products:** If MusclePharm sells Promotional Products above its cost, Endorser is entitled to receive **10% of Net Sales** from such sales (otherwise, if sold at cost, no additional compensation is due) (*Section 4(e), Page 5*).\n\n---\n\n### **2. Definition and Calculation of \"Net Sales\"**\n* **Net Sales** means gross sales (the gross invoice amount billed to customers) of the Licensed Products, less:\n  * Discounts and allowances actually shown on the invoice (up to an aggregate maximum of 5% in any reporting cycle, excluding cash discounts, transportation costs, and commissions); and\n  * Bona fide returns (not to exceed 5% in any reporting cycle) (*Section 7(a)(i), Page 8*).\n* **Excluded Deductions:** No other costs incurred in manufacturing, selling, advertising, and distribution, nor any uncollectible accounts, allowances, or bad debt may be deducted (*Section 7(a)(i), Page 8*).\n* **Affiliate Sales:** If sold to an affiliate at less than regular price, royalties are computed based on the regular price charged to third parties (*Section 7(a)(iii), Page 8*).\n\n---\n\n### **3. Guaranteed Minimum Royalties**\nLender is entitled to receive a **Guaranteed Minimum Royalty** for each Contract Year, paid in three installments (July 23, October 1, and February 1), regardless of sales (*Section 7(a)(viii), Page 9; Exhibit C, Pages 30\u201332*):\n\n* **Initial Term:**\n  * **Contract Year 1:** $1,500,000 (three payments of $500,000)\n  * **Contract Year 2:** $2,000,000 (three payments of $666,666.66)\n  * **Contract Year 3:** $2,500,000 (three payments of $833,333.33)\n* **First Additional Term (if renewed):**\n  * **Contract Years 4, 5, and 6:** $2,500,000 per year (three payments of $833,333.33 per year)\n* **Second Additional Term (if renewed):**\n  * **Contract Years 7, 8, and 9:** $5,000,000 per year (three payments of $1,666,666.66 per year)\n\n---\n\n### **4. Payment Timing**\n* Royalties are paid quarterly in U.S. dollars within thirty (30) days following the end of each calendar quarter ending in September, December, March, and June, accompanied by an itemized certified statement (*Section 7(a)(v), Page 8*).\n\n---\n\n*(Note: In addition to revenue-based cash royalties, Lender was issued 780,000 restricted shares of MusclePharm stock upon execution under Section 8(a), Page 9).*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately describes the revenue sharing structure under the agreement, including the 10% Net Sales royalty for Licensed Products, Training Videos/associated products, and promotional products sold above cost, correctly citing the relevant pages."
+      }
+    },
+    {
+      "question_id": "q030",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 1794,
+      "prompt_tokens": 1855,
+      "latency_ms": 3471,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.92,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Based on Section 12 (\"TERM AND TERMINATION\") of the Outsourcing Agreement, **no**, both sides cannot walk away without cause. Only **Dragon Systems** is granted the right to terminate without cause:\n\n* **Dragon Systems:** \"Dragon may terminate this agreement without cause by giving sixty (60) days written notice to MMI.\"\n* **MMI:** The agreement contains no provision allowing MMI to terminate without cause. \n\nBoth parties are only permitted to terminate the Agreement with immediate effect under specific circumstances:\n* If either party breaches a material term of the Agreement\n* In case of a merger or change of key management or control\n* In case of bankruptcy or similar\n\n**Source:** \n* `DRAGONSYSTEMSINC_01_08_1999-EX-10.17-OUTSOURCING AGREEMENT.PDF, Page 2` (Section 12)",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly states that only Dragon Systems has the right to terminate the agreement without cause upon sixty days' written notice, accurately citing page 2."
+      }
+    },
+    {
+      "question_id": "q031",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 21493,
+      "prompt_tokens": 20278,
+      "latency_ms": 2773,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "Based on the Co-Branding Agreement, the parties to the agreement are:\n\n1. **VerticalNet, Inc.**, a Pennsylvania corporation.\n2. **PaperExchange.com, LLC**, a Delaware limited liability company.\n\n*(Source: PaperexchangeComInc_20000322_S-1A_EX-10.4_5202103_EX-10.4_Co-Branding Agreement.pdf, Page 1)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly identified the parties to the agreement as VerticalNet, Inc. and PaperExchange.com, LLC, citing the correct page."
+      }
+    },
+    {
+      "question_id": "q032",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 17565,
+      "prompt_tokens": 16491,
+      "latency_ms": 2779,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.67,
+      "cited_pages": [],
+      "cited_correct": false,
+      "answer": "Pursuant to Section 14 of the Remarketing Agreement:\n\n* **General Rule:** The Agreement is construed in accordance with and governed by the **laws of the State of New York** (without regard to conflict of laws principles that would require the application of the laws of another jurisdiction).\n* **Exception:** **Section 25** (Liability of Officers, Trustees and Shareholders) is construed in accordance with and governed by the **laws of the Commonwealth of Massachusetts** (without regard to conflict of laws principles that would require the application of the laws of another jurisdiction).\n\n*(Source: NUVEEN - REMARKETING AGREEMENT.PDF, Pages 16\u201317)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately reflects the governing law provision, including the general rule of New York law and the specific Massachusetts exception for Section 25, citing the correct pages."
+      }
+    },
+    {
+      "question_id": "q033",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 3753,
+      "prompt_tokens": 3303,
+      "latency_ms": 4437,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.27,
+      "cited_pages": [],
+      "cited_correct": false,
+      "answer": "Based on the provided document, there is **no specific provision** establishing a monetary cap or maximum dollar limit on how much either party can be liable for. \n\nHowever, the agreement does contain the following related provisions concerning the scope and source of liability:\n\n*   **Related Provision \u2013 Adviser's Standard of Liability and Indemnification (Section 7, \"Limitation of Liability\", Pages 2\u20133):** \n    Neither the Adviser nor its affiliates/employees are liable for errors of judgment, mistakes of law, or any acts or omissions, *except* in cases of willful misfeasance, bad faith, gross negligence, or reckless disregard of duties. The Adviser also agrees to defend and indemnify the Trust against liabilities and damages arising from inaccurate/incomplete statements provided for fund disclosures, or from willful misfeasance, bad faith, gross negligence, or reckless disregard. No dollar cap is placed on these liabilities.\n*   **Related Provision \u2013 Trust's Personal Liability Limit (Section 10, \"The Trust\", Pages 2\u20133):** \n    The obligations of the Trust are not binding personally upon any Trustees, officers, employees, agents, nominees, or shareholders of the Trust; instead, liability binds only the trust property of the Trust (and only the property of the Fund).\n\n*(Source: PFSFUNDS_06_26_2020-EX-99.H OTH MAT CONT-SERVICES AGREEMENT.PDF, Pages 2\u20133)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant accurately explains the limitation of liability provision from Section 7 on page 2, noting the standard of liability exemptions while clarifying there is no aggregate monetary cap."
+      }
+    },
+    {
+      "question_id": "q034",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 2893,
+      "prompt_tokens": 2871,
+      "latency_ms": 2328,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the Intellectual Property Agreement became effective as of **November 20, 2007** (the \u201cEffective Date\u201d).\n\n**Source:**\n* `MSCIINC_02_28_2008-EX-10.10-.PDF, Page 1`",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately identifies November 20, 2007 as the effective date based on page 1 of the document."
+      }
+    },
+    {
+      "question_id": "q035",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 33263,
+      "prompt_tokens": 29203,
+      "latency_ms": 3677,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 1.0,
+      "cited_pages": [
+        1,
+        44,
+        46
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, there is no specific provision labeled \"Effective Date\" defining when the Agency Agreement itself becomes effective. \n\nHowever, the agreement contains the following related provisions regarding its execution and binding effect:\n\n* **Upon Signing and Return of Counterparts:** The agreement specifies on page 44: *\"If the foregoing is in accordance with the Agent\u2019s understanding of our agreement, kindly sign and return to the Company one of the counterparts hereof, whereupon it will become a binding agreement among the Transaction Entities, the Manager and the Agent in accordance with its terms.\"* (BLUEROCKRESIDENTIALGROWTHREIT,INC_06_01_2016-EX-1.1-AGENCY AGREEMENT.PDF, Page 44).\n* **Date of Acceptance:** The signature block confirms acceptance *\"as of the date first above written,\"* which is **May 25, 2016** (BLUEROCKRESIDENTIALGROWTHREIT,INC_06_01_2016-EX-1.1-AGENCY AGREEMENT.PDF, Page 1, Page 46).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer correctly identifies the date first written on page 1 (May 25, 2016) as the effective date of the agreement."
+      }
+    },
+    {
+      "question_id": "q036",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 5825,
+      "prompt_tokens": 5400,
+      "latency_ms": 2872,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        4
+      ],
+      "cited_correct": true,
+      "answer": "Based on Section 11.2 of the Strategic Sales & Marketing Agreement, each party is required to maintain comprehensive or commercial general liability and products liability insurance (contractual liability included) with respect to its activities under the Agreement. \n\nThe insurance must be in amounts and limits that are reasonable and customary in the industry, but with limits not less than:\n\n* **Each occurrence:** $1,000,000\n* **Products/completed operations aggregate:** $5,000,000\n* **Personal and advertising injury:** $1,000,000\n* **General aggregate (commercial form only):** $5,000,000\n\nEach party must maintain this coverage for as long as it continues its activities under the Agreement, and thereafter for as long as it customarily maintains insurance for itself covering similar activities.\n\n**Source:**\n* *SightLife Surgical, Inc. - STRATEGIC SALES _ MARKETING AGREEMENT.PDF*, Page 4 (Section 11.2).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states the required insurance types, minimum limits, and duration as specified in the annotated clause, with correct page attribution."
+      }
+    },
+    {
+      "question_id": "q037",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 5236,
+      "prompt_tokens": 4794,
+      "latency_ms": 3338,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.89,
+      "cited_pages": [
+        6
+      ],
+      "cited_correct": true,
+      "answer": "According to Section 10.3 of the Service Agreement, the agreement (and any question about its subsistence, effect, or termination) is governed by and to be interpreted in accordance with the **laws of India**, save for that body of law which governs the conflict of laws. \n\n**Source:** \n* `OPERALTD_04_30_2020-EX-4.14-SERVICE AGREEMENT.PDF`, Page 6, Section 10.3",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly identifies that the agreement is governed by the laws of India, accurately citing the annotated clause and page."
+      }
+    },
+    {
+      "question_id": "q039",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 4583,
+      "prompt_tokens": 4619,
+      "latency_ms": 2603,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        3
+      ],
+      "cited_correct": true,
+      "answer": "Based on the agreement, it is governed by and interpreted under the laws of the **State of Nevada**. \n\nSpecifically, Section I.5 (\"Applicable Law\") states:\n> \"This Agreement shall be interpreted under the laws of the State of Nevada. Any provisions of this Agreement or any amendments to the Agreement that are or become in conflict with any applicable statutes or regulations shall be deemed to be amended to conform to those statutes or regulations.\"\n\n**Source:** `AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page 3`",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states that the agreement is governed by the laws of the State of Nevada, matching the annotated clause and page."
+      }
+    },
+    {
+      "question_id": "q040",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 6569,
+      "prompt_tokens": 5972,
+      "latency_ms": 2432,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the Services Agreement was **entered into on October 1, 2019**, and made **effective as of November 1, 2019** (*ABILITYINC_06_15_2020-EX-4.25-SERVICES AGREEMENT.PDF, Page 1*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly identifies the agreement date as October 1, 2019, accurately citing page 1."
+      }
+    },
+    {
+      "question_id": "q041",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 11237,
+      "prompt_tokens": 10142,
+      "latency_ms": 4210,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.0,
+      "cited_pages": [
+        1,
+        12
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the exact day and month of the Agency Agreement are left blank; it is only dated as **\"________, 2006\"** (and the execution block references it being executed \"as of the day and year first above written\").\n\n**Sources:**\n* `BANUESTRAFINANCIALCORP_09_08_2006-EX-10.16-AGENCY AGREEMENT.PDF`, Page 1\n* `BANUESTRAFINANCIALCORP_09_08_2006-EX-10.16-AGENCY AGREEMENT.PDF`, Page 12",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant accurately identifies that the agreement date is listed with blank month/day and the year 2006, citing the correct page."
+      }
+    },
+    {
+      "question_id": "q042",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 5506,
+      "prompt_tokens": 4795,
+      "latency_ms": 3603,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.76,
+      "cited_pages": [
+        9
+      ],
+      "cited_correct": true,
+      "answer": "Based on Section 14 (*Insurance*) of the Master Services Agreement, the Contractor (RadialSpark, LLC) is required to maintain the following insurance throughout the term of the Agreement:\n\n1. **Workers' Compensation Insurance:** In the amount required by statute.\n2. **Comprehensive General Liability Insurance:** With coverage of at least one million dollars ($1,000,000).\n3. **Professional Errors and Omissions Insurance:** For bodily injury, property damage, or other losses with coverage of at least one million dollars ($1,000,000).\n\nAdditionally, at the Company's request, the Contractor must provide certificates or other acceptable evidence of insurance or self-insurance evidencing this coverage, and must provide prompt written notice of any material change.\n\n**Source:** \n* `MERITLIFEINSURANCECO_06_19_2020-EX-10.(XIV)-MASTER SERVICES AGREEMENT.PDF`, Page 9 (Section 14).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately lists all required insurance types, amounts, and additional conditions matching the annotated clause from page 9."
+      }
+    },
+    {
+      "question_id": "q043",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 35318,
+      "prompt_tokens": 34988,
+      "latency_ms": 9364,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.44,
+      "cited_pages": [
+        33,
+        34,
+        52
+      ],
+      "cited_correct": false,
+      "answer": "Under the Amended and Restated Strategic Licensing, Distribution and Marketing Agreement, revenue and proceeds are shared between Pacira Pharmaceuticals, Inc. (\"PPI\") and EKR Therapeutics, Inc. (\"EKR\") through upfront and milestone payments, royalties on product sales, revenue sharing from third-party licensing, and shared infringement recoveries:\n\n---\n\n### 1. Royalties on Product Sales (Section 6.4)\nEKR pays PPI royalties on sales of the Product as follows:\n* **Minimum Royalty:** $[**] for each [**] mg Vial and $[**] for each [**] mg Vial of Product sold during the Term.\n* **Additional Royalty:** An additional [**]% of any post-Effective Date incremental price increase implemented by EKR over the Current Base Price ($[**] for the [**] mg Vial and $[**] for the [**] mg Vial).\n* **Royalty Cap:** The sum of the Minimum Royalty, the Additional Royalty, and the Supply Price cannot exceed:\n  * **[**]%** of the net average selling price of the Product generally; or\n  * **[**]%** of the net average selling price during the Royalty Offset Period or until the Advanced Royalty Payment is fully repaid (Section 6.3(e), 6.4).\n* **New Dosages/Presentations:** Royalties on any new presentations and dosages receiving Marketing Authorization in the Territory are to be negotiated in good faith consistent with existing royalty rates.\n*(Source: Pages 35, 36)*\n\n---\n\n### 2. Advanced Royalty and Offsets (Section 6.3)\n* EKR agreed to make an **Advanced Royalty Payment** to PPI of $[**] within three days of the Agreement Date.\n* EKR recoups/offsets this amount during the Royalty Offset Period via:\n  * A reduction of $[**] for each [**] mg Vial and $[**] for each [**] mg Vial sold;\n  * Full repayment of any remaining balance upon a Change of Control of PPI (within 10 days of closing).\n*(Source: Pages 33\u201335)*\n\n---\n\n### 3. Third-Party Licensing and Asset Revenue Sharing (Section 6.3(b)(ii))\n* PPI must pay EKR **[**]%** of any purchase price payments, license fees, other access fees, or royalties received by PPI or its Affiliates after the Agreement Date in connection with the license or transfer of any rights to the Product (or underlying IP) in the Field in the Territory to a Third Party.\n*(Source: Page 34)*\n\n---\n\n### 4. Upfront and Milestone Payments (Sections 6.1 and 6.2)\n* **Up-Front Payment:** A non-refundable, non-creditable payment of $[**] acknowledged as previously paid by EKR under the Original Agreement.\n* **Deferred Milestone Payments:**\n  * First Deferred Milestone: $[**] (acknowledged as paid prior to the Agreement Date).\n  * Second Deferred Milestone: $[**] (payable by EKR within three days of the Agreement Date).\n*(Source: Page 33)*\n\n---\n\n### 5. Sharing of Infringement Awards / Recoveries (Section 14.3)\nFor third-party patent or trademark infringement actions:\n* Damages, awards, or settlement monies received by PPI compensating for **sales lost by EKR** are deemed Net Sales and paid to EKR (after PPI deducts its pursuit costs and expenses).\n* Any damages, awards, or settlements received by PPI **not paid in compensation for sales lost by EKR** are **shared equally (50/50)** between PPI and EKR.\n*(Source: Page 52)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant accurately explains the royalty structure and royalty caps from the annotated clause on page 36, along with relevant context."
+      }
+    },
+    {
+      "question_id": "q044",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 32419,
+      "prompt_tokens": 28747,
+      "latency_ms": 8784,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.39,
+      "cited_pages": [
+        17,
+        18,
+        25
+      ],
+      "cited_correct": true,
+      "answer": "The provided agreement does not contain a specific provision titled \"minimum commitment\" or specify a fixed numerical minimum commitment. \n\nHowever, the agreement contains the following **related provisions**:\n\n* **No Firm Underwriting Commitment:** The agreement expressly states that it *\"is not intended to constitute, and should not be construed as, an agreement or commitment between the Company, the Bank and Sandler O\u2019Neill relating to the firm commitment underwriting of any securities,\"* and Sandler O\u2019Neill is in no event obligated to take or purchase any Securities (Page 18).\n* **Best Efforts Solicitation:** Sandler O\u2019Neill commits to using its *\"best efforts to assist the Company with the solicitation of subscriptions and purchase orders for Securities\"* (Page 17) and, if Securities remain available after the Subscription and Community Offering, to seek to form a syndicate of Selected Dealers to assist on a *\"best efforts basis\"* (Page 18).\n* **Minimum Sales Threshold for Closing:** The agreement stipulates that the Company must sell *\"at least the total minimum of the Securities, as set forth on the cover page of the Prospectus.\"* If this minimum is not met within the provided period, the agreement terminates and all subscription funds received must be refunded with interest (Page 18, Page 25).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately identifies the minimum sales requirement set forth on the cover page of the Prospectus and describes the termination and refund consequences if that minimum is not met, citing page 18."
+      }
+    },
+    {
+      "question_id": "q045",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 2075,
+      "prompt_tokens": 1939,
+      "latency_ms": 3485,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        3
+      ],
+      "cited_correct": true,
+      "answer": "According to Section 13 (*Governing Law; Consent to Jurisdiction*) of the Services Agreement, the agreement is governed by and construed in accordance with the **law of the State of New York**, without giving effect to the principles of conflicts of law thereof.\n\n**Source:**\n* `SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF`, Page 3, Section 13",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately identifies that the agreement is governed by the law of the State of New York and cites the correct page."
+      }
+    },
+    {
+      "question_id": "q046",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 4583,
+      "prompt_tokens": 4622,
+      "latency_ms": 2374,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.8,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Under Section E of the Agency Agreement (*AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page 2*), the Agency must maintain:\n\n1. **Errors and Omissions Insurance:** Valid errors and omissions insurance with minimum limits of $1,000,000 per incident.\n2. **Fidelity and Electronic Crime Policy:** A fidelity and electronic crime policy through an insurer.\n\nBoth policies must:\n* Contain terms and limits of coverage acceptable to MICOA.\n* Cover the Agency's solicitors and each of its employees.\n* Be provided to MICOA on a regular and current basis as a precondition to all of the Agency's rights under the Agreement (including the payment of earned commissions).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately lists the required errors and omissions insurance and fidelity and electronic crime policy, along with all associated requirements from the annotated clause."
+      }
+    },
+    {
+      "question_id": "q047",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 26003,
+      "prompt_tokens": 27211,
+      "latency_ms": 13446,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.58,
+      "cited_pages": [
+        22,
+        31
+      ],
+      "cited_correct": true,
+      "answer": "Based on Section 9.4 of the Master Operation and Maintenance Agreement, the agreement **cannot be transferred (assigned) without prior written consent**, subject to specific exceptions:\n\n### General Rule\n* Neither the Agreement nor any rights, interests, or obligations under it may be assigned by either Party (whether by operation of law or otherwise) without the **prior written consent of the other Party** (Page 31, Section 9.4).\n\n### Exceptions (Where Transfer/Assignment is Allowed Without Consent)\n1. **Collateral Assignment:** Either Party may collaterally assign its rights under the Agreement without the other Party's consent to any party providing debt or equity financing to that Party (Page 31, Section 9.4).\n2. **Assignment to an Affiliate by Operator:** The Operator (Bloom Energy Corporation) is entitled to assign its right, title, and interest in and to the Agreement to an Affiliate under common ownership with the Operator, provided that such assignment will not disqualify or impair either the Owner or the Portfolio from receiving service under the QFCP-RC Tariff (Page 31, Section 9.4).\n\n---\n\n### Related Provisions\n* **Appointment of a Service Provider (Section 2.18):** Operator may appoint an unrelated third party as a \"Service Provider\" to operate and maintain the Facilities throughout the Term, subject to Owner's prior written approval (and, if applicable, PJM and/or DPL). However, this appointment does not relieve Operator of any liability, obligation, or responsibility under the Agreement (Page 22, Section 2.18).\n* **Replacement of Agreement Upon Early Termination (Section 4.3):** In the event of early termination, Bloom Energy and Operator agree to use commercially reasonable efforts to cooperate with Owner to facilitate entering into a new agreement with a third-party replacement operator on substantially similar terms (Pages 24\u201325, Section 4.3).\n\n*(Source: BloomEnergyCorp_20180321_DRSA (on S-1)_EX-10_11240356_EX-10_Maintenance Agreement.pdf, Pages 22, 24\u201325, 31)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately explains that assignment requires prior written consent, notes the collateral assignment exception, and cites the correct page."
+      }
+    },
+    {
+      "question_id": "q048",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 1794,
+      "prompt_tokens": 1851,
+      "latency_ms": 2715,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 1.0,
+      "cited_pages": [
+        1,
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, a specific effective date is not stated. The preamble of the agreement contains the placeholder:\n\n* **\"EFFECTIVE AS OF (EFFECTIVE DATE)\"** (Page 1).\n\n**Related Information:**\n* The agreement was signed by Dragon Systems, Inc. on **12 Jan. 1998** and by MMI on **19 Jan. 1998** (Pages 2 and 3). \n* Section 12 (\"Term and Termination\") states that the agreement \"shall be valid for an indefinite period\" (Page 2).\n\n*(Source: DRAGONSYSTEMSINC_01_08_1999-EX-10.17-OUTSOURCING AGREEMENT.PDF, Pages 1\u20133)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "partial",
+        "reason": "The answer incorrectly claims the effective date is not stated, but does identify the correct date of 19 Jan. 1998 from page 2 as a signature date."
+      }
+    },
+    {
+      "question_id": "q049",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 1702,
+      "prompt_tokens": 1599,
+      "latency_ms": 8664,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.25,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the Service Agreement is entered into and effective as of **January 1, 1998** (*NYLIACVARIABLEANNUITYSEPARATEACCOUNTIII_04_10_2020-EX-99.8.KK-SERVICE AGREEMENT.PDF, Page 1*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly identifies January 1, 1998 as the effective date and references the correct page."
+      }
+    },
+    {
+      "question_id": "q050",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 4583,
+      "prompt_tokens": 4621,
+      "latency_ms": 12252,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.75,
+      "cited_pages": [
+        1,
+        5
+      ],
+      "cited_correct": true,
+      "answer": "Yes, exclusivity is granted in the agreement:\n\n* **Exclusive Appointment in Nevada:** Under **Section A.5**, MICOA grants an **\"exclusive appointment of Agency by MICOA to sell its professional liability products listed on the attached Commission Schedule in Nevada.\"** In exchange, the Agency agrees not to sell any competing professional liability products in Nevada without MICOA's written consent (provided that if MICOA declines a submitted risk, the Agency may place that risk with another insurance company) (*AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page 1*).\n\n**Related Provisions:**\n* In the attached Project Memorandum dated April 7, 1999, it is noted that *\"an exclusive agency agreement will be negotiated which will spell out the terms and conditions of the relationship\"* to allow SC&W to expand the distribution system in Nevada (*AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Page 5*).\n* The Project Memorandum also provides that SC&W agrees not to serve in a strategic marketing capacity for another insurer in Nevada while providing services for MICOA or for a period of one year thereafter (*AMERICANPHYSICIANSCAPITALINC_03_31_2003-EX-10.26-AGENCY AGREEMENT.PDF, Pages 5\u20136*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly identifies that exclusivity is granted and quotes the annotated provision from Page 5 of the agreement."
+      }
+    },
+    {
+      "question_id": "q051",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 11730,
+      "prompt_tokens": 9889,
+      "latency_ms": 4339,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.78,
+      "cited_pages": [
+        7
+      ],
+      "cited_correct": true,
+      "answer": "Based on the agreement, **no**, the agreement cannot be transferred or assigned. \n\nAccording to **Section 15.7 (Assignment; Change of Control)**:\n* \"Neither Party may assign or transfer this Agreement by operation of law or otherwise.\"\n* Any assignment made in violation of this section is considered \"null and void for all purposes.\"\n* Furthermore, in the event of a \"Change of Control,\" the agreement immediately terminates (unless the Subcontractor has expressly consented in writing to a Change of Control with respect to the Manufacturer).\n\n*(Source: Zounds Hearing, Inc. - MANUFACTURING DESIGN MARKETING AGREEMENT.PDF, Page 7)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant accurately states that the agreement cannot be transferred or assigned pursuant to Section 15.7 on page 7."
+      }
+    },
+    {
+      "question_id": "q052",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 13534,
+      "prompt_tokens": 13787,
+      "latency_ms": 5955,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.88,
+      "cited_pages": [
+        8,
+        9,
+        11
+      ],
+      "cited_correct": true,
+      "answer": "The agreement does not contain a specific \"revenue sharing\" provision. \n\nHowever, the agreement includes several **related** provisions concerning revenue commitments, fees, and revenue allocation:\n\n* **Related \u2014 Minimum Sell-Through Revenue Commitment (Exhibit A, Section 3.0(b) and Section 4.1):** \n  HSNS agrees to pay E.piphany a \"Minimum Sell Through Revenue Commitment\" of $750,000.00 over the initial three-year term, payable in quarterly minimum installments of $62,500 ($250,000 per year) (*Page 8\u20139*). In Years 2 and 3, this minimum commitment increases based on email volume:\n  * *Year 2:* $250,000 plus a percentage increase equal to 50% of the difference between the number of emails sent in the first six months and the second six months of Year 1, up to a maximum of $375,000 (*Page 9*).\n  * *Year 3:* $250,000 plus a percentage increase equal to 50% of the difference between the number of emails sent in Year 1 and Year 2, up to a maximum of $500,000 (*Page 9*).\n\n* **Related \u2014 Lead Sharing Fees (Exhibit A, Section 4.2):** \n  HSNS pays E.piphany an additional $0.005 per email distributed by HSNS as a result of any closed deal that either results from an E.piphany-generated lead or in which E.piphany assisted prior to closing, payable quarterly for the first year after the deal closes (*Pages 9\u201310*).\n\n* **Related \u2014 Internal Sales Commission Allocation (Exhibit B, Territory):** \n  HSNS must provide quarterly reports to E.piphany detailing the number of international customers and emails sent on their behalf \"so that E.piphany can use such information to allocate sales revenue for the payment of commissions to its local sales representatives\" (*Page 11*).\n\n*(Source: OASYSMOBILE,INC_07_05_2001-EX-10.17-OUTSOURCING AGREEMENT.PDF, Pages 8\u201311)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states the substance of the annotated clause regarding the fee per email for deals resulting from leads generated or assisted by E.piphany."
+      }
+    },
+    {
+      "question_id": "q053",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 16329,
+      "prompt_tokens": 15055,
+      "latency_ms": 4263,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1,
+        3,
+        4
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the Service Agreement is dated **1 October 2019** (*WPPPLC_04_30_2020-EX-4.28-SERVICE AGREEMENT.PDF*, Page 1, Page 3). \n\n*(Note: Clause 2.1 specifies that the Appointment itself was set to begin on **27 January 2020**, Page 4).*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly states the date of the agreement as 1 October 2019 and cites page 1."
+      }
+    },
+    {
+      "question_id": "q054",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 28738,
+      "prompt_tokens": 26705,
+      "latency_ms": 4632,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.89,
+      "cited_pages": [
+        6
+      ],
+      "cited_correct": true,
+      "answer": "Under the Outsourcing Agreement, both WYZZ and Nexstar have specific insurance covenants:\n\n### 1. Insurance Required to be Maintained by WYZZ\nPursuant to **Section 8(f)**, WYZZ covenants that during the Term it must maintain:\n* **Replacement cost casualty and liability insurance** and **property insurance** on all of its assets and properties used and useful in the operation of WYZZ-TV;\n* **General liability insurance**; and\n* **Workers' compensation insurance**.\n\n*Terms:* All such insurance must be in amounts and on terms and conditions that are ordinary and customary in the broadcast industry and reasonably acceptable to Nexstar.  \n*(Source: NEXSTARFINANCEHOLDINGSINC_03_27_2002-EX-10.26-OUTSOURCING AGREEMENT.PDF, Page 6)*\n\n---\n\n### 2. Insurance Required to be Maintained by Nexstar\nPursuant to **Section 9(f)**, Nexstar covenants that during the Term it must maintain:\n* **Replacement cost casualty and liability insurance** and **property insurance** on all of its assets and properties used and useful in the operation of WMBD-TV;\n* **General liability insurance**;\n* **Workers' compensation insurance**; and\n* **Broadcast liability insurance**.\n\n*Terms:* All such insurance must be in amounts and on terms and conditions that are ordinary and customary in the broadcast industry and reasonably acceptable to WYZZ.  \n*(Source: NEXSTARFINANCEHOLDINGSINC_03_27_2002-EX-10.26-OUTSOURCING AGREEMENT.PDF, Page 6)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately describes the insurance requirements for both WYZZ and Nexstar under the agreement, matching the annotated clause and page reference."
+      }
+    },
+    {
+      "question_id": "q055",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 11730,
+      "prompt_tokens": 9891,
+      "latency_ms": 10643,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.55,
+      "cited_pages": [
+        5,
+        7,
+        8
+      ],
+      "cited_correct": true,
+      "answer": "Under Section 15.7 (*Assignment; Change of Control*) of the Agreement, if a **Change of Control** occurs, the Agreement **immediately terminates** (unless, in the case of the Manufacturer, the Subcontractor expressly consents in writing):\n\n* **Acquisition of the Manufacturer (InnerScope Hearing Technologies, Inc.):** \n  A \"Change of Control\" occurs with respect to the Manufacturer if:\n  1. Any person or group (other than the Subcontractor) becomes the beneficial owner of 50% or more of the Manufacturer's outstanding voting equity on a fully diluted basis;\n  2. The board of directors of the Manufacturer ceases to consist of a majority of the directors on the board as of the Effective Date (or replacements appointed by a majority thereof); or\n  3. The Manufacturer or any of its affiliates merges or consolidates with, or sells all or substantially all of its assets to, any other person or entity.  \n  *(Source: Page 7, Section 15.7)*\n\n* **Restrictions on Assignment/Transfer for Both Parties:** \n  Section 15.7 also provides that neither party may assign or transfer the Agreement by operation of law or otherwise, and any assignment in contravention of this section is null and void. *(Source: Page 7, Section 15.7)*\n\n* **Effects of Termination:**\n  * If the Agreement terminates, all licenses to Subcontractor\u2019s Intellectual Property immediately terminate, and the Manufacturer must immediately cease all use of Subcontractor\u2019s Intellectual Property. *(Source: Page 5, Section 11.4)*\n  * Provisions regarding Limited Warranty (Section 7), Limitation of Liability (Section 10), Confidentiality/IP (Section 11), Indemnity (Section 12), Regulatory Compliance (Section 14), and General Provisions (Section 15) survive termination. *(Source: Page 8, Section 15.14)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states that a Change of Control results in immediate termination of the agreement unless expressly consented to in writing, citing the correct section and page."
+      }
+    },
+    {
+      "question_id": "q057",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 19830,
+      "prompt_tokens": 20910,
+      "latency_ms": 4145,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.78,
+      "cited_pages": [
+        37
+      ],
+      "cited_correct": true,
+      "answer": "Yes, the agreement can be transferred (assigned or novated), subject to specific conditions set forth in Section 18:\n\n### **1. Assignment by Datec (PNG) Limited**\nUnder **Clause 18.1**, Datec cannot assign the agreement or any right under it unless:\n* Datec is not in breach of the agreement;\n* Datec obtains the prior written consent of Bank of South Pacific Limited (BSP);\n* Datec ensures that the assignee agrees to be bound by all of Datec's obligations under the agreement; and\n* Datec acknowledges that it remains bound by the agreement.\n\n*(Source: ELANDIAINTERNATIONALINC_04_25_2007-EX-10.21-Outsourcing Agreement.PDF, Page 37)*\n\n---\n\n### **2. Assignment by BSP**\nUnder **Clause 18.2**, BSP may:\n* Assign all or part of the agreement to any person as part of a restructure; and\n* Assign or novate all or part of the rights and obligations under the agreement to any of BSP\u2019s Related Companies as part of a re-organisation of its business.\n\n*(Source: ELANDIAINTERNATIONALINC_04_25_2007-EX-10.21-Outsourcing Agreement.PDF, Page 37)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately describes the conditions under which both Datec and BSP can transfer or assign the agreement, matching the annotated clause on page 37."
+      }
+    },
+    {
+      "question_id": "q059",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 2075,
+      "prompt_tokens": 1941,
+      "latency_ms": 4204,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the parties to the agreement are:\n\n1. **Idan Maimon** (\u201cMaimon\u201d)\n2. **Intellisense Solutions, Inc.**, a Nevada corporation (the \u201cCompany\u201d)\n\n**Source:** `SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF, Page 1`",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer correctly identifies both parties to the agreement and accurately references Page 1."
+      }
+    },
+    {
+      "question_id": "q060",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 14174,
+      "prompt_tokens": 13155,
+      "latency_ms": 11583,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.48,
+      "cited_pages": [
+        5,
+        9,
+        12,
+        16
+      ],
+      "cited_correct": true,
+      "answer": "Based on the Service Agreement between BicycleTX Ltd and Nigel Crockett, several employee and company obligations survive or arise upon the termination of employment:\n\n---\n\n### 1. Confidentiality and Return of Property (Paragraph 13)\n* **Confidential Information:** At any time following employment, the employee must not disclose or use for their own or another\u2019s purpose or benefit any Confidential Information, nor copy, reproduce, or remove documents containing Confidential Information (Paragraph 13.3, *Page 12*).\n* **Return of Property:** Immediately upon termination of employment for any reason, the employee must return all Company property (documents, records, keys, credit cards, phones, computers, etc.) and may not take copies without written authority (Paragraph 13.4, *Page 12*).\n\n---\n\n### 2. Restrictive Covenants (Paragraph 14)\n* **Restricted Period Restrictions:** For a period of 12 months following the Termination Date (which is reduced by any time spent on Garden Leave):\n  * **Non-Competition:** The employee may not compete in the Restricted Territory by being employed or engaged by any entity that provides Restricted Business to Restricted Customers or Prospective Customers (Paragraph 14.2(a), *Pages 13\u201314*).\n  * **Non-Dealing:** The employee may not transact competitive business with Restricted Customers or Prospective Customers with whom they dealt during the 12 months prior to termination (Paragraph 14.2(b), *Pages 13\u201314*).\n  * **Non-Solicitation of Customers:** The employee may not solicit or entice custom from such Restricted Customers or Prospective Customers (Paragraph 14.2(c), *Pages 13\u201314*).\n  * **Non-Solicitation of Employees:** The employee may not solicit or entice away any director or senior employee in a managerial, scientific, or technical role with whom they had material personal dealings during the preceding 12 months (Paragraph 14.2(d), *Pages 13\u201314*).\n  * **No Holding Out:** The employee may not represent themselves or allow themselves to be held out as having any present association with the Company or any Group Company (Paragraph 14.2(e), *Pages 13\u201314*).\n  * **Notice to Future Employers:** The employee must provide a copy of the restrictions in paragraphs 13 and 14 to any prospective employer or engaging party during the Restricted Period (Paragraph 14.7, *Pages 14\u201315*).\n* **Perpetual Name Restriction:** The employee must not *at any time* after termination carry on any trade or business incorporating the name \"Bicycle\" or any confusingly similar deviation (Paragraph 14.2(f), *Pages 13\u201314*).\n\n---\n\n### 3. Intellectual Property (Paragraph 15)\n* **Further Assistance (Without Limit in Time):** Both during and *thereafter, without limit in time*, the employee must promptly assist the Company (at the Company's request and expense) to:\n  * File, prosecute, obtain, and maintain registrations for any IPRs subsisting in or protecting Works (Paragraph 15.7(a), *Page 16*).\n  * Commence, prosecute, or defend legal proceedings regarding infringement of IPRs (Paragraph 15.7(b), *Page 16*).\n  * Execute all necessary acts and documents to give the Company the full benefit of paragraph 15 (Paragraph 15.10, *Page 16*).\n* **Delivery of Materials:** On termination or expiry, the employee must promptly deliver all correspondence, documents, records, and media relating to the Works and their creation (Paragraph 15.9, *Page 16*).\n* **Waiver of Moral Rights & Trust:** The employee irrevocably waives moral rights and holds unvested IPRs on trust for the Company (Paragraphs 15.5 and 15.6, *Pages 15\u201316*).\n\n---\n\n### 4. Litigation Assistance (Paragraph 16)\n* The agreement expressly states that the obligations under paragraph 16 **continue notwithstanding termination**. At all times after employment, the employee must furnish information and assistance (including meeting legal advisers and providing written/oral witness evidence up to 5 days per calendar month) regarding intellectual property or litigation involving the Company/Group Companies (Paragraph 16, *Pages 16\u201317*).\n* In return, the Company must reimburse reasonable out-of-pocket expenses and pay an agreed reasonable daily rate for such post-employment assistance (Paragraph 16, *Page 16*).\n\n---\n\n### 5. Termination Payments and Severance (Paragraphs 8 and 11)\n* **Holiday Pay:** Upon termination, the employee is entitled to pay in lieu of accrued but untaken holiday, or the Company may deduct for excess days taken (Paragraph 8.4, *Page 5*).\n* **Accrued Benefits:** Upon termination for any reason, the Company must pay Salary earned through the Termination Date, unpaid expense reimbursements, and vested benefits under employee benefit plans (Paragraph 11.6, *Page 9*).\n* **Severance Pay & Benefits:** If terminated by the Company without Cause, by the employee for Good Reason, or due to death (subject to executing an effective release and settlement agreement reaffirming continuing obligations under paragraphs 13\u201315):\n  * *Outside a Change in Control:* 9 months' salary and 9 months of contractual benefits (or cost equivalent) (Paragraph 11.7, *Page 9*).\n  * *Within a Change in Control Period (12 months post-Change in Control):* 12 months' salary plus target annual bonus, 12 months of contractual benefits, and accelerated vesting of time-based equity awards (Paragraph 11.8, *Pages 9\u201310*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant accurately and comprehensively identifies the obligations that survive or arise upon termination, including the post-termination covenants (paragraphs 13-15) and post-termination payments/accrued benefits (paragraph 11)."
+      }
+    },
+    {
+      "question_id": "q061",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 21493,
+      "prompt_tokens": 20277,
+      "latency_ms": 5720,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1,
+        10
+      ],
+      "cited_correct": true,
+      "answer": "Based on the Co-Branding Agreement, the agreement is dated and specifies an **Effective Date** of **September 30, 1999** (*PaperexchangeComInc_20000322_S-1A_EX-10.4_5202103_EX-10.4_Co-Branding Agreement.pdf, Page 1*).\n\n*(Related provision: Section 13.16 notes that the agreement becomes binding when one or more counterparts bear the signatures of both parties (*Page 10*).)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately identifies September 30, 1999 on page 1 as the effective date."
+      }
+    },
+    {
+      "question_id": "q062",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 28465,
+      "prompt_tokens": 25902,
+      "latency_ms": 8690,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 1.0,
+      "cited_pages": [
+        3,
+        22
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, there is a liability limitation that applies to the Agent, but the agreement does not contain a provision capping the overall liability of the Company, the MHC, or the Bank. \n\nSpecifically:\n\n* **For the Agent:** \n  Under **Section 9 (Contribution)**, it is expressly agreed that:\n  > \"...the Agent shall not be liable for any loss, liability, claim, damage or expense or be required to contribute any amount which in the aggregate exceeds the amount paid (excluding reimbursable expenses) to the Agent under this Agreement.\"  \n  *(ALAMOGORDOFINANCIALCORP_12_16_1999-EX-1-AGENCY AGREEMENT.PDF, Page 22)*\n\n* **For the Company, MHC, and Bank:** \n  There is no provision setting a cap or dollar limit on how much the Company, the MHC, or the Bank can be held liable for under the agreement. To the contrary, Section 9 states that their obligations under Section 9 and Section 8 (Indemnification) *\"shall be in addition to any liability which the Company and the Bank may otherwise have.\"*  \n  *(ALAMOGORDOFINANCIALCORP_12_16_1999-EX-1-AGENCY AGREEMENT.PDF, Page 22)*\n\n---\n**Related Provisions:**\n* Under **Section 2(d)**, there is a specific cap regarding expense reimbursements: the Company's reimbursement of the Agent's fees of underwriter's counsel (including counsel's out-of-pocket expenses) is limited to an amount *\"not to exceed $35,000.\"* *(ALAMOGORDOFINANCIALCORP_12_16_1999-EX-1-AGENCY AGREEMENT.PDF, Page 3)*\n* Under **Section 8 (Indemnification)**, neither side is required to indemnify the other for losses, liabilities, claims, damages, or expenses primarily resulting from their own willful misconduct or gross negligence. *(ALAMOGORDOFINANCIALCORP_12_16_1999-EX-1-AGENCY AGREEMENT.PDF, Pages 20\u201321)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately quotes and describes the liability cap for the Agent from page 22 as specified in the annotated clause."
+      }
+    },
+    {
+      "question_id": "q064",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 19830,
+      "prompt_tokens": 20909,
+      "latency_ms": 16625,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        4,
+        10,
+        41,
+        57
+      ],
+      "cited_correct": true,
+      "answer": "Based on the agreement, the parties are:\n\n1. **Datec (PNG) LTD** (also referred to as Datec PNG Limited or Datec)\n2. **Bank of South Pacific Limited** (BSP)\n\n**Sources:** \n* `ELANDIAINTERNATIONALINC_04_25_2007-EX-10.21-Outsourcing Agreement.PDF`, Page 4, Page 10 (Section 1.1), Page 41, and Page 57 (Section 2.0).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately identifies both parties to the agreement and references the annotated pages."
+      }
+    },
+    {
+      "question_id": "q065",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 7422,
+      "prompt_tokens": 6693,
+      "latency_ms": 2862,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1,
+        9
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the parties to the Service Agreement are:\n\n1. **The Victory Portfolios** (the \u201cTrust\u201d), a Delaware statutory trust, on behalf of those series identified on Schedule A to the Agreement individually and not jointly (individually referred to as the \u201cFund\u201d and collectively as the \u201cFunds\u201d).\n2. **Hartford Life Insurance Co., Inc.** (also designated in the signature block as **Hartford Life Insurance Company**), a Connecticut corporation (the \u201cAdministrator\u201d).\n\n**Sources:** \n* `TALCOTTRESOLUTIONLIFEINSURANCECO-SEPARATEACCOUNTTWELVE_04_30_2020-EX-99.8(L)-SERVICE AGREEMENT.PDF`, Page 1 and Page 9.",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately identifies the parties to the agreement (The Victory Portfolios and Hartford Life Insurance Co., Inc.) as annotated on Page 1."
+      }
+    },
+    {
+      "question_id": "q066",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 13287,
+      "prompt_tokens": 12612,
+      "latency_ms": 6094,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 0.5,
+      "cited_pages": [],
+      "cited_correct": false,
+      "answer": "The provided agreement does not contain a general monetary liability cap provision (and therefore does not explicitly label any liabilities as \"uncapped\" in terms of a dollar ceiling).\n\nHowever, as a **related provision**, Section 11.3 (*Limitation of Liability*) excludes liability for \"special, indirect, consequential, exemplary or incidental damages,\" but expressly carves out (and does not apply this limitation to) the following:\n\n1. **Breach of Article 9** (Confidentiality) by either party;\n2. **Breach of Section 10.1.4(v)** by either party (representation and warranty that its Site and materials do not infringe, violate, or misappropriate any Intellectual Property Rights of any third party);\n3. **Indemnification obligations of LeadersOnline under Section 11.4(i)(c)** (claims that any portion of the LeadersOnline Site or materials provided to VerticalNet violates, infringes, or misappropriates any Intellectual Property Right of any third party); and\n4. **Indemnification obligations of VerticalNet under Section 11.5(i)(c)** (claims that any portion of the VerticalNet Site or materials provided by VerticalNet to LeadersOnline violates, infringes, or misappropriates any Intellectual Property Right of any third party).\n\n*(Source: LeadersonlineInc_20000427_S-1A_EX-10.8_4991089_EX-10.8_Co-Branding Agreement.pdf, Pages 6\u20137)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately identifies the liabilities carved out from the limitation of liability clause, including breaches of Article 9 and Section 10.1.4(v), as well as the specified indemnification obligations."
+      }
+    },
+    {
+      "question_id": "q067",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 39257,
+      "prompt_tokens": 34826,
+      "latency_ms": 11360,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.33,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the agreement (Technology Outsourcing Agreement between Oriental Financial Group Inc. and Metavante Corporation) is dated as of **January 26, 2007** (the \"Effective Date\").\n\n**Source:** *OFGBANCORP_03_28_2007-EX-10.23-OUTSOURCING AGREEMENT.PDF, Page 1*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly identified the agreement date as January 26, 2007, matching the annotated clause and page."
+      }
+    },
+    {
+      "question_id": "q068",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 31663,
+      "prompt_tokens": 29439,
+      "latency_ms": 13150,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.57,
+      "cited_pages": [
+        23,
+        32,
+        33
+      ],
+      "cited_correct": true,
+      "answer": "Based on Section 4.1 of the Intellectual Property Agreement, the agreement does not have a fixed calendar expiration date. Instead, its term and expiration are defined as follows:\n\n* **Expiration / Term:** The agreement remains in effect from the Effective Date **\"until all of the Intellectual Property licensed hereunder is in the public domain\"** (or until terminated pursuant to Section 4.3). The agreement explicitly states that it **\"shall not expire or terminate for any other reason (even in the event of a material breach)\"** (Page 32, Section 4.1).\n* **Early Termination:** The agreement will terminate automatically without further action if the underlying Acquisition Agreement is terminated in accordance with its terms (Page 33, Section 4.3).\n\n---\n### Related Provisions Regarding Specific Licenses:\n* **Patents:** The license granted to any particular Patent automatically terminates upon the expiration of its statutory term, including extensions and renewals (Page 32, Section 4.2(ii)(b)).\n* **Transitional Trademarks:** \n  * The sublicense for *Mobility Trademarks* is for a transition period of **180 days** after the applicable Closing Date (Page 23, Section 2.2(d)(i)(A)).\n  * The license for *Non-Mobility Trademarks* is for a transition period of **730 days** after the applicable Closing Date (Page 23, Section 2.2(d)(i)(B)).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant accurately states the term of the agreement from the annotated clause on page 32, noting it expires when all licensed intellectual property enters the public domain or upon termination under Section 4.3."
+      }
+    },
+    {
+      "question_id": "q069",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 22627,
+      "prompt_tokens": 21334,
+      "latency_ms": 13681,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.67,
+      "cited_pages": [
+        12
+      ],
+      "cited_correct": true,
+      "answer": "Based on Section 16.2 (*No Assignment*) of the Co-Branding Agreement, the agreement generally **cannot** be transferred without consent, with limited exceptions:\n\n* **General Rule:** Neither party may transfer, assign, or cede any rights or delegate any obligations under the agreement, in whole or in part (whether voluntarily or by operation of law), without the prior written consent of the other party. This consent may be withheld at the other party's reasonable business discretion.\n* **Exceptions (No Prior Consent Required):** Either party may transfer the agreement without prior written consent:\n  1. To an **Affiliate**, or \n  2. In connection with a **merger or sale of all or substantially all of the stock or assets** of such party.\n\n**Source:**\n* *NeoformaInc_19991202_S-1A_EX-10.26_5224521_EX-10.26_Co-Branding Agreement.pdf, Page 12, Section 16.2*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states both the general requirement for prior written consent and the specific exceptions allowing transfer to affiliates or in connection with a merger or sale of assets."
+      }
+    },
+    {
+      "question_id": "q071",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 5027,
+      "prompt_tokens": 4868,
+      "latency_ms": 2034,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the agreement became effective on **April 6, 2014** (*LECLANCH\u00c9 S.A. - JOINT DEVELOPMENT AND MARKETING AGREEMENT.PDF, Page 2*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant correctly identified the effective date as April 6, 2014, matching the annotated clause and page."
+      }
+    },
+    {
+      "question_id": "q072",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 8809,
+      "prompt_tokens": 9598,
+      "latency_ms": 36261,
+      "context_has_page": true,
+      "abstained": true,
+      "support": 1.0,
+      "cited_pages": [
+        7,
+        8
+      ],
+      "cited_correct": true,
+      "answer": "Based on the Intellectual Property Agreement between Sony Electronics Inc. (\u201cSONY\u201d) and GSI Technology, Inc. (\u201cPURCHASER\u201d), the following licenses are granted:\n\n### 1. Grant by SONY to PURCHASER (Section 3.1)\nSONY, on behalf of itself and its Affiliates, grants to PURCHASER a worldwide, non-exclusive, fully paid-up, royalty-free license:\n* **(a) Under the Licensed Patents:** to make, have made, use, offer to sell, sell, otherwise dispose of, and import any Competing Products (including, without limitation, the SRAM Products); and\n* **(b) Under the SRAM Intellectual Property:** to use, reproduce, modify, prepare derivative works of, perform, display, and otherwise practice and exploit in any manner any and all of the SRAM Intellectual Property in connection with the use and exploitation of the Transferred Assets, and to make, have made, use, offer to sell, sell, otherwise dispose of, and import Competing Products (including, without limitation, SRAM Products).  \n*(Source: GSITECHNOLOGYINC_11_16_2009-EX-10.2-INTELLECTUAL PROPERTY AGREEMENT between SONY ELECTRONICS INC. and GSI TECHNOLOGY, INC..PDF, Pages 6\u20137)*\n\n---\n\n### 2. Grant Back by PURCHASER to SONY (Section 3.2)\nSubject to SONY\u2019s compliance with the covenant not to compete in Section 8.3 of the Asset Purchase Agreement, PURCHASER grants to SONY:\n* A worldwide, non-exclusive, fully paid-up, royalty-free license, under the Transferred Patents, to make, use, offer to sell, sell, otherwise dispose of, and import any products, including any Competing Products.  \n*(Source: GSITECHNOLOGYINC_11_16_2009-EX-10.2-INTELLECTUAL PROPERTY AGREEMENT between SONY ELECTRONICS INC. and GSI TECHNOLOGY, INC..PDF, Page 7)*\n\n---\n\n### Key Terms and Scope Limitations\n* **No Sublicensing:** Neither license includes the right to grant sublicenses (Section 3.4, Page 7).\n* **No Implied Licenses:** Except as expressly set forth, neither party grants any other license explicitly or implicitly under any Intellectual Property (Section 3.3, Page 7).\n* **Trademarks:** SONY expressly does not grant a trademark license to PURCHASER under any SONY Branding (Section 5.1, Page 8), subject only to specific limited exceptions for selling finished inventory and using transferred Mask Works that produce JTAG or other markings indicating a connection to SONY under certain conditions (Sections 5.2, 5.3, 5.5, Pages 8\u20139).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The assistant accurately states both licenses granted under the agreement (from SONY to PURCHASER and the grant-back from PURCHASER to SONY) and correctly identifies pages 6 and 7."
+      }
+    },
+    {
+      "question_id": "q073",
+      "category": "semantic",
+      "condition": "full",
+      "doc_tokens": 2075,
+      "prompt_tokens": 1942,
+      "latency_ms": 23447,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 0.76,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the agreement cannot be transferred (assigned) unless prior written consent is obtained. \n\nSpecifically, Section 10 (\"Binding Effect; Benefits\") states:\n* Neither party may assign its or his rights under the agreement without the prior written consent of the other party.\n* Any attempted assignment without such consent is \"null and void and without effect.\"\n* If permitted, the agreement inures to the benefit of and is binding upon the parties and their respective successors, permitted assigns, heirs, and legal representatives.\n\n**Source:** \n* `SCOUTCAMINC_05_12_2020-EX-10.22-SERVICES AGREEMENT.PDF`, Page 2, Section 10.",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states that the agreement cannot be assigned without the prior written consent of the other party, correctly citing the annotated page."
+      }
+    },
+    {
+      "question_id": "q074",
+      "category": "exact_term",
+      "condition": "full",
+      "doc_tokens": 28738,
+      "prompt_tokens": 26704,
+      "latency_ms": 10547,
+      "context_has_page": true,
+      "abstained": false,
+      "support": 1.0,
+      "cited_pages": [
+        1,
+        14
+      ],
+      "cited_correct": true,
+      "answer": "Based on the provided document, the parties to the Outsourcing Agreement are:\n\n1. **WYZZ, Inc.** and **WYZZ Licensee, Inc.** (collectively referred to as \"WYZZ\")\n2. **Nexstar Broadcasting of Peoria, L.L.C.** (referred to as \"NEXSTAR\")\n\n*(Source: NEXSTARFINANCEHOLDINGSINC_03_27_2002-EX-10.26-OUTSOURCING AGREEMENT.PDF, Page 1, Page 14)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately identifies all the parties named in the agreement and cites the correct page."
+      }
+    },
+    {
+      "question_id": "q089",
+      "category": "clause_absent",
+      "condition": "full",
+      "doc_tokens": 39257,
+      "prompt_tokens": 34828,
+      "latency_ms": 9164,
+      "context_has_page": true,
+      "abstained": false,
+      "support": null,
+      "cited_pages": [
+        1,
+        15,
+        16,
+        17,
+        19
+      ],
+      "cited_correct": null,
+      "answer": "Based on the provided agreement, **no**. \n\nUnder **Section 17.10 (No Third Party Beneficiaries)**, the agreement explicitly states:\n\n> \"Each party intends that this Agreement shall not benefit, or create any right or cause of action in or on behalf of, any person or entity other than the Customer and Metavante.\"  \n*(OFGBANCORP_03_28_2007-EX-10.23-OUTSOURCING AGREEMENT.PDF, Page 17)*\n\n### Related Details Regarding the Parties:\n* **Definition of \"Customer\":** The term \"Customer\" includes Oriental Financial Group Inc. as well as its Affiliates listed in Exhibit A (and any new affiliates added pursuant to Section 16.4) (*Page 1, Page 15, Page 19*).\n* **Assignees:** Rights and obligations may transfer to permitted assignees or successors in interest under the assignment rules set forth in **Section 17.5** (*Page 16*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer correctly states that no outside parties have rights under the agreement and appropriately cites the 'No Third Party Beneficiaries' provision."
+      }
+    },
+    {
+      "question_id": "q091",
+      "category": "clause_absent",
+      "condition": "full",
+      "doc_tokens": 7422,
+      "prompt_tokens": 6695,
+      "latency_ms": 5479,
+      "context_has_page": true,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [
+        5,
+        6
+      ],
+      "cited_correct": null,
+      "answer": "Based on the provided document, the agreement **does not contain a specific provision** addressing third-party rights or third-party beneficiaries generally. \n\nHowever, there are related provisions in the agreement that reference or extend certain protections and permissions to non-parties:\n\n* **Related Provision \u2013 Indemnification (Section 14, pages 6\u20137):** The agreement explicitly provides indemnification rights to specified non-parties:\n  * The Administrator agrees to indemnify and hold harmless the Trust, the Trust\u2019s administrators, investment adviser, and transfer agent, and each of their directors, trustees, officers, employees, agents, and controlling persons.\n  * The Trust agrees to indemnify and hold harmless the Administrator and its affiliates, as well as their respective directors, officers, employees, and agents (\"Administrator Indemnified Parties\").\n* **Related Provision \u2013 Effect of Termination (Section 13, page 6):** The agreement provides that following termination, owners of \"Existing Contracts\" (group variable annuity contracts and funding agreements) \"shall be permitted to direct reallocation of investments in the Fund, redeem investments in the Fund and/or invest in the Fund upon the making of additional purchase payments under the Existing Contracts,\" unless proscribed by law, regulation, or an applicable regulatory body.\n* **Related Provision \u2013 Fund Prospectuses (Section 9, page 5):** The agreement states that each Fund\u2019s statement of additional information shall be obtainable by Contract owners from the Trust, the Administrator, or another designated person.",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer correctly identifies that the contract lacks a specific third-party beneficiary clause while appropriately identifying and labeling related provisions."
+      }
+    },
+    {
+      "question_id": "q092",
+      "category": "clause_absent",
+      "condition": "full",
+      "doc_tokens": 5506,
+      "prompt_tokens": 4795,
+      "latency_ms": 3631,
+      "context_has_page": true,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [],
+      "cited_correct": null,
+      "answer": "The provided agreement does not contain any provision for source code escrow.\n\n**Related Provisions:**\n* **Ownership of Materials Related to Services (Section 4):** Section 4(a) provides that tangible materials, computer programs, and computer systems authored or prepared as work product (\"Works\") become property of the Company once invoiced and paid. Under Section 4(c), to the extent the Contractor incorporates its proprietary information into the Works, it grants the Company a royalty-free, non-exclusive perpetual license to use, copy, modify, and create derivative versions of it. Section 4(d) permits the Company to make changes or additions to the software created under the Agreement (*MERITLIFEINSURANCECO_06_19_2020-EX-10.(XIV)-MASTER SERVICES AGREEMENT.PDF, Pages 4\u20135*).\n* **Delivery of Works in Progress upon Termination (Sections 6(b) and 11(c)):** Upon termination, the Contractor is required to provide and assign to the Company all right, title, and interest to any Works in progress (*MERITLIFEINSURANCECO_06_19_2020-EX-10.(XIV)-MASTER SERVICES AGREEMENT.PDF, Pages 7, 8*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer correctly states that the agreement does not contain a source code escrow provision and appropriately identifies related provisions."
+      }
+    },
+    {
+      "question_id": "q093",
+      "category": "clause_absent",
+      "condition": "full",
+      "doc_tokens": 4994,
+      "prompt_tokens": 5000,
+      "latency_ms": 3476,
+      "context_has_page": true,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [
+        6
+      ],
+      "cited_correct": null,
+      "answer": "Based on the provided document, there is no provision regarding a \"minimum commitment.\" \n\n**Related Provisions:**\n* **Term and Early Termination (Clause 10):** Clause 10.1 provides that in relation to each Fund, the Agreement terminates on the earlier of (a) the expiration of the term of such Fund, (b) the date Oaktree US is removed as general partner, or (c) the Sub-Advisor ceasing to be authorised and regulated by the FCA. Clause 10.2 provides that the Agreement may be terminated by either party for any reason upon 30 days' written notice (*OAKTREECAPITALGROUP,LLC_03_02_2020-EX-10.8-Services Agreement.PDF, Page 6*).\n* **Appointment and Services (Clauses 1 and 2):** These clauses define the scope of appointment and services of the Sub-Advisor, but do not set forth any minimum financial or time commitment (*OAKTREECAPITALGROUP,LLC_03_02_2020-EX-10.8-Services Agreement.PDF, Pages 2\u20134*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer correctly states that the agreement does not contain a minimum commitment provision and appropriately notes related provisions."
+      }
+    },
+    {
+      "question_id": "q094",
+      "category": "clause_absent",
+      "condition": "full",
+      "doc_tokens": 11730,
+      "prompt_tokens": 9889,
+      "latency_ms": 5067,
+      "context_has_page": true,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": null,
+      "answer": "The agreement does not contain a specific provision outlining general insurance requirements or policies (such as commercial general liability, property, or workers' compensation coverage) that must be maintained by the parties.\n\n**Related Provision:**\n* Under **Section 4 (Delivery and Shipping)**, the agreement mentions insurance with respect to shipping costs: *\"In addition to the purchase price, Manufacturer shall pay any and all transportation charges (including insurance).\"* (*Zounds Hearing, Inc. - MANUFACTURING DESIGN MARKETING AGREEMENT.PDF, Page 2*)",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer correctly states that the agreement contains no specific general insurance requirement while accurately referencing a related mention of shipping insurance."
+      }
+    },
+    {
+      "question_id": "q095",
+      "category": "clause_absent",
+      "condition": "full",
+      "doc_tokens": 1226,
+      "prompt_tokens": 1419,
+      "latency_ms": 10148,
+      "context_has_page": true,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": null,
+      "answer": "Based on the provided document, there is no renewal provision or any provision specifying how much notice is required to stop the agreement from renewing. \n\n*(Related provision: The agreement states on page 1 that it is \"subject in all respects to the terms and conditions of the Asset Purchase Agreement and is intended only to document the assignment of the Assigned Intellectual Property,\" but the terms of that Asset Purchase Agreement are not contained in the provided text.)* \n\n**Source:** *VERSOTECHNOLOGIESINC_12_28_2007-EX-99.3-INTELLECTUAL PROPERTY AGREEMENT.PDF, Pages 1\u20136*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer correctly states that there is no renewal provision specifying notice requirements in the agreement."
+      }
+    },
+    {
+      "question_id": "q097",
+      "category": "clause_absent",
+      "condition": "full",
+      "doc_tokens": 1460,
+      "prompt_tokens": 1477,
+      "latency_ms": 3775,
+      "context_has_page": true,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [
+        2
+      ],
+      "cited_correct": null,
+      "answer": "The provided Services Agreement does not contain a specific provision addressing what happens if one side is acquired (such as a change-of-control or acquisition clause).\n\nRelated provisions in the agreement include:\n\n*   **Termination (Related Provision - Section 2.3, Page 2):** The Agreement remains in effect until terminated. It may be terminated by (a) mutual written agreement of the Parties, or (b) by either Party upon 5 days' written notice to the other Party. All payment obligations survive termination in accordance with their terms.\n*   **Assignment (Related Provision - Section 2.5, Page 2):** Neither Party has the right to assign its rights or obligations under the Agreement without the consent of the other Party, except that either Party may make a collateral assignment solely to secure working capital financing.\n\n*(Source: `TRANSMONTAIGNEPARTNERSLLC_03_13_2020-EX-10.9-SERVICES AGREEMENT.PDF`, Page 2)*",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer accurately states that the agreement does not contain a provision regarding acquisition or change of control, while clearly labeling related sections."
+      }
+    },
+    {
+      "question_id": "q099",
+      "category": "clause_absent",
+      "condition": "full",
+      "doc_tokens": 1840,
+      "prompt_tokens": 2111,
+      "latency_ms": 4392,
+      "context_has_page": true,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [
+        1
+      ],
+      "cited_correct": null,
+      "answer": "Based on the provided document, the agreement does not contain any provision imposing restrictions on competing (such as a non-compete clause). \n\nAs related provisions regarding trademark use and third parties:\n* **Section 5 (Trademark Restrictions):** mPhase agrees not to adopt any designation that is confusingly similar to the Lucent Co-Branding Logo or Lucent's marks (*MphaseTechnologiesInc_20030911_10-K_EX-10.15_1560667_EX-10.15_Co-Branding Agreement.pdf, Page 1*).\n* **Section 10 (Third-Party Licensing):** The agreement specifies that nothing shall be construed to restrict Lucent's rights to license or consent to third parties' use of the Lucent Co-Branding Logo or any other Lucent marks (*MphaseTechnologiesInc_20030911_10-K_EX-10.15_1560667_EX-10.15_Co-Branding Agreement.pdf, Pages 1\u20132*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer correctly states that the agreement contains no non-compete restrictions, and appropriately identifies other clauses as merely related provisions."
+      }
+    },
+    {
+      "question_id": "q100",
+      "category": "clause_absent",
+      "condition": "full",
+      "doc_tokens": 28738,
+      "prompt_tokens": 26704,
+      "latency_ms": 11748,
+      "context_has_page": true,
+      "abstained": true,
+      "support": null,
+      "cited_pages": [
+        1,
+        4,
+        12
+      ],
+      "cited_correct": null,
+      "answer": "The provided Outsourcing Agreement does not contain a specific provision granting commercial exclusivity (such as an exclusive service, agency, or sales right) to either party.\n\n### Related Provisions\nWhile no exclusivity is affirmatively granted as a commercial right, the agreement contains the following related provisions regarding retained exclusive authority and specific employee roles:\n\n* **Recitals:** States that none of the services provided by Nexstar are intended to abrogate WYZZ\u2019s \"exclusive authority and duty, as the FCC licensee of WYZZ-TV, to manage and control programming on WYZZ-TV\" (*NEXSTARFINANCEHOLDINGSINC_03_27_2002-EX-10.26-OUTSOURCING AGREEMENT.PDF, Page 1*).\n* **Section 6(a)(i):** Provides that during the Term, WYZZ retains \"exclusive authority, power and control over WYZZ-TV's programming, personnel, and finances\" (*NEXSTARFINANCEHOLDINGSINC_03_27_2002-EX-10.26-OUTSOURCING AGREEMENT.PDF, Page 4*).\n* **Section 6(a)(iii):** Specifies that WYZZ retains \"exclusive authority for the negotiation, preparation, execution and implementation of any and all programming agreements for WYZZ-TV\" (*NEXSTARFINANCEHOLDINGSINC_03_27_2002-EX-10.26-OUTSOURCING AGREEMENT.PDF, Page 4*).\n* **Section 24(g):** In addressing post-termination obligations, refers descriptively to \"account executives of Nexstar exclusively selling time on WYZZ-TV\" whom WYZZ is obligated to hire (*NEXSTARFINANCEHOLDINGSINC_03_27_2002-EX-10.26-OUTSOURCING AGREEMENT.PDF, Page 12*).",
+      "judge": {
+        "model": "gemini-3.7-flash",
+        "grade": "correct",
+        "reason": "The answer correctly states that the agreement does not grant exclusivity and appropriately notes other related provisions."
+      }
+    }
+  ]
+}

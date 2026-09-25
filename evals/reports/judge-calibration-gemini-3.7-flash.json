@@ -1,0 +1,2353 @@
+{
+  "model": "gemini-3.7-flash",
+  "generated_at": "2026-09-24T15:31:59.952370+00:00",
+  "workbook": "faithfulness-grading-graded.xlsx",
+  "corrections": {
+    "q089/gemini-40k/rag10": "correct",
+    "q089/gemini-40k/full": "correct"
+  },
+  "rubric": "You grade answers from a legal assistant against expert annotations of a contract.\n\nEach case gives the question; whether the contract contains the clause asked about; when it does, the annotated clause text, its pages, and whether the assistant's context included an annotated page; and the assistant's answer. You do not see the contract, so judge the answer's claims against the annotation.\n\nChoose exactly one grade.\n\nIf the contract CONTAINS the clause:\n- correct: the answer states the substance of the annotated clause.\n- partial: the substance is incomplete, or partly right and partly wrong, or right but attributed to a page that is not annotated.\n- wrong: the answer contradicts the annotated clause, or presents a different provision as the answer.\n- abstain-correct: the answer says it cannot find the information, and the context did NOT include an annotated page.\n- abstain-wrong: the answer says it cannot find the information although the context included an annotated page.\nAn answer that says the information is missing and then gives it anyway is graded on what it gives.\n\nIf the contract does NOT contain the clause:\n- correct: the answer says there is no such provision, or answers no or none, with or without quoting a provision that rules the clause out (a \"no third-party beneficiaries\" section when asked whether outsiders have rights, for example).\n- abstain-correct: the answer only says it cannot find or determine the information.\n- wrong: the answer says or implies the clause exists, or offers a different provision as the answer (assignment restrictions offered as what happens on a change of control, for example). Related provisions are fine when the answer first says the asked-for one is absent and labels them as related.\n- partial: the answer hedges between saying the clause is absent and asserting it.\n\nGrade the claims, not length, tone or formatting. Reply with JSON only: {\"grade\": \"<grade>\", \"reason\": \"<one sentence>\"}",
+  "summary": {
+    "cases": 290,
+    "exact grade agreement": 0.803,
+    "good / not good agreement": 0.941,
+    "good agreement, clause absent": 1.0,
+    "good agreement by answering model": {
+      "gemini-3.8-flash": 0.945,
+      "gemma4:e4b": 0.931
+    },
+    "wrong": {
+      "graded": 3,
+      "judged": 7,
+      "both": 2
+    },
+    "declined": {
+      "graded": 56,
+      "judged": 24,
+      "both": 23
+    },
+    "unparsed": 0
+  },
+  "rows": [
+    {
+      "question_id": "q001",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the date of the agreement as June 1, 2006, matching the annotated text and page number."
+    },
+    {
+      "question_id": "q001",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the date of the agreement as June 1, 2006, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q001",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified the agreement date as June 1, 2006, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q001",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the agreement date as June 1, 2006, correctly citing page 5."
+    },
+    {
+      "question_id": "q001",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly states the execution date of the agreement as June 1, 2006, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q001",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies the agreement date as June 1, 2006, matching the annotated clause from page 5."
+    },
+    {
+      "question_id": "q001",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly states the date of the agreement as June 1, 2006, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q001",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies the date of the agreement as June 1, 2006, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q002",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "partial",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies the annotated clause on page 5 regarding the exception for loss attributable to breach of confidentiality."
+    },
+    {
+      "question_id": "q002",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies the exception for breach of confidentiality on page 5, which corresponds to the annotated clause."
+    },
+    {
+      "question_id": "q002",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "partial",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies the exception for losses attributable to breach of confidentiality from the limitation of liability provision on page 5."
+    },
+    {
+      "question_id": "q002",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "partial",
+      "judged": "correct",
+      "reason": "The assistant correctly identified the exception/carve-out for losses attributable to breach of confidentiality from the liability exclusion clause on page 5."
+    },
+    {
+      "question_id": "q002",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies the exception for loss attributable to breach of confidentiality from Section 8.3 on page 5 while accurately noting the overall liability cap structure."
+    },
+    {
+      "question_id": "q002",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "partial",
+      "judged": "correct",
+      "reason": "The assistant correctly identified that losses attributable to a breach of confidentiality are excepted from the limitation on liability as stated on page 5."
+    },
+    {
+      "question_id": "q002",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "wrong",
+      "judged": "partial",
+      "reason": "The assistant correctly identifies breach of confidentiality on page 5 as an exception to the limitations, but erroneously phrases it as an exclusion of liability rather than an uncapped liability exception."
+    },
+    {
+      "question_id": "q002",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "correct",
+      "reason": "The answer correctly identifies from the annotated text that liability for losses attributable to a breach of confidentiality is an exception to the liability limitations."
+    },
+    {
+      "question_id": "q003",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the laws of the State of New York, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q003",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies that New York law governs the agreement, correctly matching the annotated clause and page."
+    },
+    {
+      "question_id": "q004",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement becomes effective on April 1, 2019, matching the annotated text and page."
+    },
+    {
+      "question_id": "q004",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately identifies the effective date as April 1, 2019, based on Page 1 of the agreement."
+    },
+    {
+      "question_id": "q004",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The answer correctly identifies that the agreement commences on 'the date hereof' from page 1, but misses the specific date (April 1, 2019) provided on that page."
+    },
+    {
+      "question_id": "q004",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified that the agreement became effective on April 1, 2019, matching the annotated clause and page reference."
+    },
+    {
+      "question_id": "q004",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly states that the agreement became effective on April 1, 2019, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q004",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The assistant correctly states that the agreement becomes effective on the date hereof/signed from page 1, but omits the specific effective date of April 1, 2019."
+    },
+    {
+      "question_id": "q004",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "partial",
+      "judged": "correct",
+      "reason": "The answer accurately identifies from page 1 that the agreement commences on the date hereof (the Effective Date) and notes the April 1, 2019 date."
+    },
+    {
+      "question_id": "q004",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The answer correctly identifies the commencement clause on page 1 but fails to provide the specific effective date of April 1, 2019 stated on that page."
+    },
+    {
+      "question_id": "q005",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the expiration term from the annotated clause on page 10."
+    },
+    {
+      "question_id": "q005",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately quotes and states the expiration provision from the annotated clause."
+    },
+    {
+      "question_id": "q006",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-wrong",
+      "judged": "abstain-wrong",
+      "reason": "The assistant states that the specific effective date is not provided in the excerpts, even though page 1 containing the date (January 26, 2007) was included in its context."
+    },
+    {
+      "question_id": "q006",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies the effective date as January 26, 2007, referencing page 1."
+    },
+    {
+      "question_id": "q007",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The answer accurately describes the non-compete restrictions applicable to EKR from page 29, but fails to include the competing restrictions imposed on PPI from page 18."
+    },
+    {
+      "question_id": "q007",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The assistant accurately states the substance of both non-compete clauses, but attributes the EKR non-compete provision to page 28 instead of the annotated page 29."
+    },
+    {
+      "question_id": "q009",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies Delaware law as the governing law based on page 10."
+    },
+    {
+      "question_id": "q009",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the laws of the State of Delaware, matching the annotated clause and page reference."
+    },
+    {
+      "question_id": "q010",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately provides the full substance and text of the annotated clause from page 3."
+    },
+    {
+      "question_id": "q010",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately identifies the minimum pricing and effort commitments required of the Remarketing Agent under the agreement from the annotated page."
+    },
+    {
+      "question_id": "q011",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately explains the transfer restrictions and the specific exceptions for VerticalNet as stated in the annotated clause."
+    },
+    {
+      "question_id": "q011",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately conveys the assignment restrictions and exceptions set forth in the annotated clause."
+    },
+    {
+      "question_id": "q012",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately reflects the warranty terms from the annotated clause, noting that they apply at the time of shipment and require a remaining shelf life of at least 12 months."
+    },
+    {
+      "question_id": "q012",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies the warranty terms under Section 2.6, noting that the warranty applies at the time of shipment and guarantees a remaining shelf life of at least twelve months, while referencing the correct page."
+    },
+    {
+      "question_id": "q014",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately captures the limitation on liability excluding consequential, special, punitive damages, and lost profits, while correctly citing page 13."
+    },
+    {
+      "question_id": "q014",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer correctly identifies that while there is no aggregate dollar cap, liability is limited by the exclusion of consequential, special, or punitive damages and lost profits under the annotated sections on page 13."
+    },
+    {
+      "question_id": "q016",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the renewal term is for an indefinite period of time, consistent with the annotated clause and page."
+    },
+    {
+      "question_id": "q016",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately stated that the agreement automatically renews for an indefinite period of time, correctly citing the annotated clause and page."
+    },
+    {
+      "question_id": "q017",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The assistant stated that the expiration date was not found in the provided documents, and the context did not include the annotated page."
+    },
+    {
+      "question_id": "q017",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "partial",
+      "reason": "The answer accurately states the substance of the clause (that the agreement is non-terminable and irrevocable), but attributes the provision to page 10 instead of the annotated page 13."
+    },
+    {
+      "question_id": "q018",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the expiration date of November 30, 2014 from page 1 as provided in the annotated clause."
+    },
+    {
+      "question_id": "q018",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the expiration date of November 30, 2014, correctly attributing it to page 1."
+    },
+    {
+      "question_id": "q019",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-wrong",
+      "judged": "abstain-wrong",
+      "reason": "The assistant stated that the exact date of the agreement could not be found, even though the context included page 1 containing the annotated agreement date."
+    },
+    {
+      "question_id": "q019",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified the date of the agreement as March 29, 1999, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q020",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The assistant correctly stated that the date of the agreement was not provided in the excerpted context, which did not include the annotated page."
+    },
+    {
+      "question_id": "q020",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies April 13, 2012 as the date of the agreement and cites the annotated page."
+    },
+    {
+      "question_id": "q022",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the assignment restrictions for the Agency from the annotated clause on page 4."
+    },
+    {
+      "question_id": "q022",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The answer accurately states the substance of the assignment clause but attributes it to page 3 instead of the annotated page 4."
+    },
+    {
+      "question_id": "q022",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the substance of the assignment clause from page 4, detailing the conditions under which the agreement may be transferred."
+    },
+    {
+      "question_id": "q022",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the assignment conditions from the annotated clause on page 4."
+    },
+    {
+      "question_id": "q022",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the assignment conditions for the agreement and cites the correct page."
+    },
+    {
+      "question_id": "q022",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the assignment conditions for both parties from the annotated page."
+    },
+    {
+      "question_id": "q022",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the assignment provisions for both parties as found on page 4."
+    },
+    {
+      "question_id": "q022",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the assignment terms from the contract, including the annotated restriction on the Agency transferring the agreement without written permission."
+    },
+    {
+      "question_id": "q023",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-wrong",
+      "judged": "abstain-wrong",
+      "reason": "The assistant claimed the definition establishing the duration of the Warranty Period was missing from the text, even though page 17 was included in its context and explicitly defined the 21st anniversary period."
+    },
+    {
+      "question_id": "q023",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "partial",
+      "reason": "The answer accurately states the substance of the warranty duration definitions, but attributes the clause to page 15 instead of the annotated page 17."
+    },
+    {
+      "question_id": "q024",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the substance of the annotated clause regarding the Company's right to terminate without cause via a payment in lieu of notice under Clause 17."
+    },
+    {
+      "question_id": "q024",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies the termination rights, including the Company's right under Clause 17 on page 8 to terminate at any time by paying in lieu of notice."
+    },
+    {
+      "question_id": "q025",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately states the substance of the annotated clause, explaining that the agreement continues in effect until terminated pursuant to Paragraph 4.2, and cites the correct page."
+    },
+    {
+      "question_id": "q025",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the substance of the annotated term clause, noting that the agreement continues in effect until terminated pursuant to Paragraph 4.2, and cites the correct page."
+    },
+    {
+      "question_id": "q027",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the substance of the license granted to MusclePharm, including the commercial use of Name and Appearance Rights, scope and media exclusions, and product limitations."
+    },
+    {
+      "question_id": "q027",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately captures the full substance and scope of the license granted according to the annotated clauses."
+    },
+    {
+      "question_id": "q028",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the renewal term is on a year-to-year basis and cites the correct page and text."
+    },
+    {
+      "question_id": "q028",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the renewal term is on a year-to-year basis as specified in the annotated clause."
+    },
+    {
+      "question_id": "q029",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The answer correctly identifies the 10% royalty on Net Sales for Licensed Products, Training Videos, and associated products, but omits the 10% share on Promotional Products sold above cost from page 5."
+    },
+    {
+      "question_id": "q029",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately explains all the revenue-sharing provisions from the annotated text, correctly identifying the 10% royalty on Net Sales for Licensed Products, Training Videos/featured products, and Promotional Products sold above cost."
+    },
+    {
+      "question_id": "q030",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that only Dragon Systems can terminate without cause upon 60 days' written notice, correctly citing the annotated clause and page."
+    },
+    {
+      "question_id": "q030",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that only Dragon Systems can terminate without cause upon 60 days' written notice, correctly matching the annotated clause."
+    },
+    {
+      "question_id": "q030",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately answers that only Dragon Systems, and not both parties, may terminate the agreement without cause upon giving sixty days' written notice, citing the correct page."
+    },
+    {
+      "question_id": "q030",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly states that only Dragon Systems may terminate the agreement without cause upon giving sixty days written notice, citing page 2."
+    },
+    {
+      "question_id": "q030",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the substance of the annotated clause, noting that only Dragon Systems can terminate without cause upon 60 days' written notice."
+    },
+    {
+      "question_id": "q030",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that Dragon may terminate the agreement without cause upon giving sixty days written notice to MMI, correctly citing page 2."
+    },
+    {
+      "question_id": "q030",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that Dragon can terminate without cause upon 60 days' written notice and correctly notes that this right is specified only for Dragon."
+    },
+    {
+      "question_id": "q030",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the substance of the annotated clause, confirming Dragon Systems' right to terminate without cause on 60 days' written notice, and correctly cites page 2."
+    },
+    {
+      "question_id": "q031",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-wrong",
+      "judged": "abstain-wrong",
+      "reason": "The assistant stated that the parties entering into the agreement are not provided, even though the context included the annotated page identifying VerticalNet, Inc. and PaperExchange.com, LLC."
+    },
+    {
+      "question_id": "q031",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies both parties to the agreement and correctly references the preamble on Page 1."
+    },
+    {
+      "question_id": "q032",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-wrong",
+      "judged": "abstain-wrong",
+      "reason": "The assistant states that the governing law is not explicitly provided despite the context including an annotated page containing the governing law clause."
+    },
+    {
+      "question_id": "q032",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies that New York law governs the agreement with an exception for Section 25 governed by Massachusetts law, matching the annotated clause and page numbers."
+    },
+    {
+      "question_id": "q033",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately explains that there is no monetary cap and correctly details the limitation of liability standard from the annotated clause on page 2."
+    },
+    {
+      "question_id": "q033",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately explains that there is no monetary cap and correctly outlines the standard of conduct limitation of liability from Section 7 on page 2."
+    },
+    {
+      "question_id": "q033",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately explains the limitation of liability clause from page 2, clarifying that while there is no dollar cap, liability is limited to cases of willful misfeasance, bad faith, gross negligence, or reckless disregard."
+    },
+    {
+      "question_id": "q033",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately states the substance of the limitation of liability clause from page 2, correctly noting the standard of liability and the absence of a monetary cap."
+    },
+    {
+      "question_id": "q033",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer correctly identifies that there is no monetary cap and accurately explains the standard of liability limitations set out in Section 7 on page 2."
+    },
+    {
+      "question_id": "q033",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately summarizes the limitations and exceptions to liability outlined on page 2 of the agreement."
+    },
+    {
+      "question_id": "q033",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly describes the limitation of liability clause from page 2, noting that the Adviser is not liable except for willful misfeasance, bad faith, gross negligence, or reckless disregard."
+    },
+    {
+      "question_id": "q033",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately summarizes the limitation of liability clause from page 2 of the agreement."
+    },
+    {
+      "question_id": "q034",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement becomes effective as of November 20, 2007 and cites the correct page."
+    },
+    {
+      "question_id": "q034",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies the effective date as November 20, 2007, matching the annotated text and page."
+    },
+    {
+      "question_id": "q034",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified November 20, 2007 as the effective date from page 1."
+    },
+    {
+      "question_id": "q034",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified the effective date as November 20, 2007, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q034",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the effective date as November 20, 2007, matching the annotation and page number."
+    },
+    {
+      "question_id": "q034",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified the effective date as November 20, 2007, matching the annotation."
+    },
+    {
+      "question_id": "q034",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified the effective date as November 20, 2007, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q034",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement became effective on November 20, 2007, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q035",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The assistant correctly states that the provided documents do not specify the effective date of the agreement, and the annotated page was not in its context."
+    },
+    {
+      "question_id": "q035",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies the effective date as May 25, 2016, accurately referencing page 1."
+    },
+    {
+      "question_id": "q036",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states all the required insurance types, policy limits, and maintenance duration from the annotated clause on page 4."
+    },
+    {
+      "question_id": "q036",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately describes the required insurance types, policy limits, and duration as set forth in the annotated clause."
+    },
+    {
+      "question_id": "q036",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states all the required insurance details and limits specified in the annotated clause and correctly cites page 4."
+    },
+    {
+      "question_id": "q036",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately and completely states all the insurance requirements, limits, and duration specified in the annotated clause."
+    },
+    {
+      "question_id": "q036",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states all the required insurance types, policy limits, and duration specified in the annotated clause, and correctly references page 4."
+    },
+    {
+      "question_id": "q036",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "partial",
+      "reason": "The answer correctly states the required insurance coverage and limits, but attributes one of the limits (general aggregate) to page 3 instead of annotated page 4."
+    },
+    {
+      "question_id": "q036",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "partial",
+      "reason": "The answer accurately describes the required insurance terms but attributes portions of the clause to page 3, which is not an annotated page."
+    },
+    {
+      "question_id": "q036",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the required insurance coverage and specific minimum limits as detailed on page 4 of the contract."
+    },
+    {
+      "question_id": "q037",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the laws of India, excluding conflict of laws principles, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q037",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly states that the agreement is governed by the laws of India, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q037",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately states that the agreement is governed by the laws of India, correctly referencing the annotated page."
+    },
+    {
+      "question_id": "q037",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the laws of India and cites the correct page."
+    },
+    {
+      "question_id": "q037",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the laws of India, excluding conflict of laws rules, and correctly identifies page 6."
+    },
+    {
+      "question_id": "q037",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the laws of India, excluding conflict of law principles, correctly citing page 6."
+    },
+    {
+      "question_id": "q037",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the laws of India and cites page 6."
+    },
+    {
+      "question_id": "q037",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the laws of India, matching the annotated clause."
+    },
+    {
+      "question_id": "q039",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the laws of the State of Nevada and correctly cites page 3."
+    },
+    {
+      "question_id": "q039",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the laws of the State of Nevada and correctly cites page 3."
+    },
+    {
+      "question_id": "q039",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies Nevada law as governing the agreement and cites the correct page."
+    },
+    {
+      "question_id": "q039",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies that the agreement is governed by the laws of the State of Nevada, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q039",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies that the agreement is governed by the laws of the State of Nevada and cites the correct page."
+    },
+    {
+      "question_id": "q039",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies that the agreement is governed by the laws of the State of Nevada, citing page 3."
+    },
+    {
+      "question_id": "q039",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by Nevada law, matching the annotated clause."
+    },
+    {
+      "question_id": "q039",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The answer correctly identifies Nevada law as governing the agreement, but attributes it to page 4 rather than the annotated page 3."
+    },
+    {
+      "question_id": "q040",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified October 1, 2019 as the date the agreement was entered into, matching the annotated text on page 1."
+    },
+    {
+      "question_id": "q040",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies the agreement date as October 1, 2019, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q041",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "partial",
+      "judged": "abstain-wrong",
+      "reason": "The assistant stated that the date was not provided in the excerpts even though the context included the annotated page."
+    },
+    {
+      "question_id": "q041",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified that the agreement only provides the year 2006 with the month and day left blank, accurately reflecting the annotated text on page 1."
+    },
+    {
+      "question_id": "q042",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately lists all the required insurance coverages and amounts specified in the annotated clause."
+    },
+    {
+      "question_id": "q042",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer completely and accurately reflects the insurance requirements specified in the annotated clause, including the correct page citation."
+    },
+    {
+      "question_id": "q042",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states all required insurance coverages and conditions as specified in the annotated clause on page 9."
+    },
+    {
+      "question_id": "q042",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately lists all three required insurance coverages and conditions as set forth in the annotated clause."
+    },
+    {
+      "question_id": "q042",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately lists all the required insurance coverages, their required amounts, and related obligations matching the annotated text and page number."
+    },
+    {
+      "question_id": "q042",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately lists all required insurance types and their specified coverage amounts as stated in the annotated clause."
+    },
+    {
+      "question_id": "q042",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately lists all required insurance coverages and limits matching the annotated clause from page 9."
+    },
+    {
+      "question_id": "q042",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately lists all the required insurance types and coverage limits stated in the annotated clause."
+    },
+    {
+      "question_id": "q043",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately summarizes the royalty and revenue sharing structure from the annotated clause on page 36, including the minimum royalty, price increase sharing, and royalty caps."
+    },
+    {
+      "question_id": "q043",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The answer accurately states the substance of the royalty and revenue sharing provisions, but attributes the clause to page 35 instead of annotated page 36."
+    },
+    {
+      "question_id": "q044",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately states that the agreement requires the sale of at least the total minimum of the Securities as set forth on the cover page of the Prospectus, correctly citing page 18."
+    },
+    {
+      "question_id": "q044",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately explains that the agreement requires selling at least the total minimum of the Securities as set forth on the cover page of the Prospectus, along with the consequences of failing to meet this threshold."
+    },
+    {
+      "question_id": "q045",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the laws of the State of New York, matching the annotated clause."
+    },
+    {
+      "question_id": "q045",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies New York state law as governing the agreement, matching the annotated clause."
+    },
+    {
+      "question_id": "q045",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately identifies that the agreement is governed by the laws of the State of New York, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q045",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately identifies the State of New York as the governing law without giving effect to conflicts of law principles, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q045",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the law of the State of New York, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q045",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is governed by the law of the State of New York, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q045",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly states that the agreement is governed by the law of the State of New York, accurately referencing page 3."
+    },
+    {
+      "question_id": "q045",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately identifies the governing law as the law of the State of New York from page 3 of the agreement."
+    },
+    {
+      "question_id": "q046",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately identifies the required insurance policies, limits, coverage scope, and precondition requirements from the annotated clause on page 2."
+    },
+    {
+      "question_id": "q046",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately captures all required insurance policies and conditions stated in the annotated clause."
+    },
+    {
+      "question_id": "q046",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies both the errors and omissions insurance and the fidelity and electronic crime policy required under the agreement, citing the correct page."
+    },
+    {
+      "question_id": "q046",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states all the required insurance coverages and conditions as detailed in the annotated clause, with the correct page reference."
+    },
+    {
+      "question_id": "q046",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately and completely states the insurance requirements from the annotated clause, including coverage types, limits, and conditions."
+    },
+    {
+      "question_id": "q046",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately lists the required errors and omissions insurance and fidelity and electronic crime policy as specified in the annotated clause on page 2."
+    },
+    {
+      "question_id": "q046",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately lists the required insurance policies, minimum limits, and coverage terms specified in the contract with correct page citations."
+    },
+    {
+      "question_id": "q046",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately describes the required errors and omissions and fidelity/electronic crime insurance policies, including limits, terms, and coverage details found on page 2."
+    },
+    {
+      "question_id": "q047",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The assistant correctly abstains from answering because the annotated page containing the assignment clause was not included in its context."
+    },
+    {
+      "question_id": "q047",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The answer accurately states the substance of the assignment clause but attributes it to page 27 instead of annotated page 31."
+    },
+    {
+      "question_id": "q048",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The assistant states that the effective date is not specified, but correctly identifies the annotated date of January 19, 1998 on page 2 as a signing date."
+    },
+    {
+      "question_id": "q048",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The assistant notes that the preamble has a placeholder for the effective date, but mentions the final signature date of January 19, 1998 from the annotated page."
+    },
+    {
+      "question_id": "q048",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "abstain-wrong",
+      "judged": "abstain-wrong",
+      "reason": "The assistant stated that the exact effective date is not specified even though the annotated page containing the date (19 Jan. 1998) was included in the context."
+    },
+    {
+      "question_id": "q048",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "partial",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies the January 19, 1998 date from page 2 while explaining the context of the placeholder and signature dates."
+    },
+    {
+      "question_id": "q048",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies the January 19, 1998 date from page 2."
+    },
+    {
+      "question_id": "q048",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "abstain-wrong",
+      "judged": "abstain-wrong",
+      "reason": "The assistant stated that the documents do not state when the agreement becomes effective, even though the context included the annotated page containing the effective date."
+    },
+    {
+      "question_id": "q048",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "abstain-wrong",
+      "judged": "abstain-wrong",
+      "reason": "The assistant stated that a specific effective date was not provided in the context, even though the context included the annotated page containing the date."
+    },
+    {
+      "question_id": "q048",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The assistant mentions the January 19, 1998 date on page 2 as a signature date rather than definitively identifying it as the effective date, noting that the effective date line on page 1 was left blank."
+    },
+    {
+      "question_id": "q049",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies January 1, 1998 as the effective date and references the correct page."
+    },
+    {
+      "question_id": "q049",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies the effective date as January 1, 1998, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q049",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly states that the agreement is effective as of January 1, 1998, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q049",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately states the effective date as January 1, 1998, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q049",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies January 1, 1998 as the effective date and references the correct page."
+    },
+    {
+      "question_id": "q049",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly states the effective date as January 1, 1998, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q049",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement becomes effective as of January 1, 1998, citing page 1."
+    },
+    {
+      "question_id": "q049",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies the effective date as January 1, 1998, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q050",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately identified and quoted the exclusivity clause from page 5 of the agreement."
+    },
+    {
+      "question_id": "q050",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "correct",
+      "reason": "The assistant correctly states that an exclusivity/exclusive agency arrangement is granted in Nevada, citing the relevant memorandum terms."
+    },
+    {
+      "question_id": "q050",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The assistant correctly states that the provided excerpts do not mention exclusivity, and its context did not include the annotated page containing the clause."
+    },
+    {
+      "question_id": "q050",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately identifies and quotes the annotated exclusivity clause from page 5 of the agreement."
+    },
+    {
+      "question_id": "q050",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies the exclusive agency agreement terms on page 5 as well as related exclusivity provisions."
+    },
+    {
+      "question_id": "q050",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The assistant correctly stated that the provided documents do not confirm exclusivity, and its context did not contain the annotated page."
+    },
+    {
+      "question_id": "q050",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately quotes and describes the exclusivity clause from page 5 of the agreement."
+    },
+    {
+      "question_id": "q050",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The assistant correctly captures the substance of the exclusivity provision regarding the expansion of the distribution system in Nevada with subagents, but attributes it to page 7 instead of page 5."
+    },
+    {
+      "question_id": "q051",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement cannot be assigned or transferred and that any unauthorized assignment is null and void, correctly referencing the annotated clause and page."
+    },
+    {
+      "question_id": "q051",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that neither party may transfer or assign the agreement based on the annotated clause on page 7."
+    },
+    {
+      "question_id": "q052",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately explains the fee sharing structure per email, including the amount, conditions, duration, and page source matching the annotated text."
+    },
+    {
+      "question_id": "q052",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately describes the revenue sharing / lead sharing fee structure, including the $0.005 per email provision for deals generated or assisted by E.piphany."
+    },
+    {
+      "question_id": "q053",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "partial",
+      "reason": "The answer correctly identifies the date of the agreement as 1 October 2019, but attributes it to page 3 instead of the annotated page 1."
+    },
+    {
+      "question_id": "q053",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement is dated 1 October 2019 and cites the correct page."
+    },
+    {
+      "question_id": "q054",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately describes the insurance requirements for both Nexstar and WYZZ based on the annotated clause from page 6."
+    },
+    {
+      "question_id": "q054",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately and comprehensively states the insurance requirements for both parties under the agreement as reflected in the annotated clause."
+    },
+    {
+      "question_id": "q055",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement immediately terminates upon a Change of Control unless the Subcontractor consents in writing, correctly citing page 7."
+    },
+    {
+      "question_id": "q055",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately explains that the agreement immediately terminates upon a Change of Control unless consented to in writing, citing the correct page."
+    },
+    {
+      "question_id": "q057",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The answer accurately describes BSP's ability to transfer to related companies under page 37, but omits the rules governing Datec's ability to assign the agreement with consent and other conditions."
+    },
+    {
+      "question_id": "q057",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately provides the full transfer and assignment conditions for both parties as outlined in the annotated clause."
+    },
+    {
+      "question_id": "q059",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies both parties named in the agreement from page 1."
+    },
+    {
+      "question_id": "q059",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies both parties named in the agreement from page 1."
+    },
+    {
+      "question_id": "q059",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies both parties named in the agreement from page 1."
+    },
+    {
+      "question_id": "q059",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies both parties to the agreement and correctly cites page 1."
+    },
+    {
+      "question_id": "q059",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies the parties to the agreement in accordance with the annotated clause."
+    },
+    {
+      "question_id": "q059",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identifies Idan Maimon and Intellisense Solutions, Inc. as the parties to the agreement based on the annotated text."
+    },
+    {
+      "question_id": "q059",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately identifies the parties to the agreement and cites the correct page."
+    },
+    {
+      "question_id": "q059",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies both parties to the agreement and correctly cites page 1."
+    },
+    {
+      "question_id": "q060",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "partial",
+      "judged": "partial",
+      "reason": "The answer accurately identifies the continuing obligations referenced on annotated page 9, but it also details provisions attributed to page 14, which is not an annotated page."
+    },
+    {
+      "question_id": "q060",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "correct",
+      "reason": "The assistant accurately identifies the surviving obligations of both parties upon termination, including the continuing post-termination covenants, intellectual property and confidentiality provisions, and the company's payment obligations."
+    },
+    {
+      "question_id": "q061",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The assistant correctly states that the effective date is not provided in the excerpts, and the annotated page was not included in its context."
+    },
+    {
+      "question_id": "q061",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement became effective on September 30, 1999, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q062",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The assistant correctly stated that the provided excerpts did not contain the information, and the annotated page was not included in its context."
+    },
+    {
+      "question_id": "q062",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the liability limitation for the Agent as set forth in the annotated clause on page 22."
+    },
+    {
+      "question_id": "q064",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified the parties to the agreement (Datec (PNG) Limited and Bank of South Pacific Limited) and referenced an annotated page."
+    },
+    {
+      "question_id": "q064",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified the parties to the agreement as Bank of South Pacific Limited and Datec (PNG) Limited."
+    },
+    {
+      "question_id": "q065",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified the parties to the agreement (The Victory Portfolios and Hartford Life Insurance Co., Inc.) as annotated on Page 1."
+    },
+    {
+      "question_id": "q065",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies the parties to the agreement as The Victory Portfolios and Hartford Life Insurance Co., Inc., consistent with the annotated text."
+    },
+    {
+      "question_id": "q066",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies the four liabilities carved out from the limitation of liability clause."
+    },
+    {
+      "question_id": "q066",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately lists all four carved-out exceptions to the limitation of liability specified in the annotated clause."
+    },
+    {
+      "question_id": "q067",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-wrong",
+      "judged": "abstain-wrong",
+      "reason": "The assistant stated that the date of the agreement was not provided, even though the annotated page containing the date (January 26, 2007) was included in its context."
+    },
+    {
+      "question_id": "q067",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately identifies the date of the agreement as January 26, 2007, consistent with the annotated text and page number."
+    },
+    {
+      "question_id": "q068",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the agreement's term and expiration conditions as described in the annotated text from page 32."
+    },
+    {
+      "question_id": "q068",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the substance of the annotated clause, noting that the agreement expires when all licensed intellectual property is in the public domain or upon early termination under Section 4.3."
+    },
+    {
+      "question_id": "q069",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the assignment restrictions and the specific exceptions for affiliates and mergers/asset sales as detailed in the annotated clause."
+    },
+    {
+      "question_id": "q069",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately conveys the substance of the assignment clause, including the general requirement for prior written consent and the specific exceptions for affiliates and mergers or asset sales."
+    },
+    {
+      "question_id": "q071",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly states that the agreement becomes effective on April 6, 2014, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q071",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly states the effective date of the agreement as April 6, 2014, matching the annotation and page number."
+    },
+    {
+      "question_id": "q071",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the effective date as April 6, 2014 and cites the correct page."
+    },
+    {
+      "question_id": "q071",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly identified the effective date as April 6, 2014, consistent with the annotated clause and page."
+    },
+    {
+      "question_id": "q071",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the effective date as April 6, 2014, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q071",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly states the effective date as April 6, 2014, matching the annotated clause and page."
+    },
+    {
+      "question_id": "q071",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the effective date is April 6, 2014, correctly citing page 2."
+    },
+    {
+      "question_id": "q071",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the effective date as April 6, 2014, consistent with the annotated clause and page."
+    },
+    {
+      "question_id": "q072",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately describes both the license granted by Sony to GSI Technology and the grant-back license to Sony, including the scope and conditions from the annotated pages."
+    },
+    {
+      "question_id": "q072",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately and thoroughly details the licenses granted by both SONY and PURCHASER, citing the correct provisions and pages."
+    },
+    {
+      "question_id": "q073",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the substance of the assignment clause from the annotated page, noting that neither party may assign rights without prior written consent."
+    },
+    {
+      "question_id": "q073",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement cannot be assigned without prior written consent and cites the correct page."
+    },
+    {
+      "question_id": "q073",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the substance of the assignment clause, confirming that transfer requires prior written consent from the other party and that unauthorized assignments are null and void."
+    },
+    {
+      "question_id": "q073",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately states that the agreement can only be transferred with the prior written consent of the other party, matching the annotated clause from page 2."
+    },
+    {
+      "question_id": "q073",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately conveys the substance of the assignment clause from page 2, noting that transfers require the prior written consent of the other party."
+    },
+    {
+      "question_id": "q073",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the substance of the assignment clause and correctly references page 2."
+    },
+    {
+      "question_id": "q073",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states the substance of the assignment clause and cites the correct page."
+    },
+    {
+      "question_id": "q073",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that assignment requires the prior written consent of the other party and correctly cites page 2."
+    },
+    {
+      "question_id": "q074",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The answer accurately identifies all the parties named in the annotated clause and cites the correct page."
+    },
+    {
+      "question_id": "q074",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant accurately identifies all parties to the agreement as stated in the annotated clause on page 1."
+    },
+    {
+      "question_id": "q089",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly answered that no outside parties have rights under the agreement by referencing the 'No Third Party Beneficiaries' provision."
+    },
+    {
+      "question_id": "q089",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "correct",
+      "judged": "correct",
+      "reason": "The assistant correctly answers that no outsiders have rights under the agreement and quotes the No Third Party Beneficiaries provision ruling such rights out."
+    },
+    {
+      "question_id": "q091",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement contains no express provision regarding third-party rights or beneficiaries."
+    },
+    {
+      "question_id": "q091",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "wrong",
+      "judged": "wrong",
+      "reason": "The contract does not contain a third-party beneficiary clause, but the answer incorrectly claims that outside parties are granted rights under the agreement."
+    },
+    {
+      "question_id": "q092",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly states that the agreement does not provide for source code escrow."
+    },
+    {
+      "question_id": "q092",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement does not contain any provisions for source code escrow."
+    },
+    {
+      "question_id": "q092",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement does not contain a provision for source code escrow."
+    },
+    {
+      "question_id": "q092",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly identifies that the contract does not contain a provision for source code escrow."
+    },
+    {
+      "question_id": "q092",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The assistant correctly states that the agreement does not contain a source code escrow provision."
+    },
+    {
+      "question_id": "q092",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the contract does not contain a provision for source code escrow."
+    },
+    {
+      "question_id": "q092",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that there is no mention of source code escrow in the agreement."
+    },
+    {
+      "question_id": "q092",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly states that the agreement does not contain source code escrow provisions."
+    },
+    {
+      "question_id": "q093",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The contract does not contain the clause, and the assistant correctly states that no minimum commitment is mentioned."
+    },
+    {
+      "question_id": "q093",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The contract does not contain the clause and the assistant correctly stated that there is no mention of a minimum commitment."
+    },
+    {
+      "question_id": "q093",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement contains no mention of a minimum commitment."
+    },
+    {
+      "question_id": "q093",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly identifies that the contract does not contain a minimum commitment requirement."
+    },
+    {
+      "question_id": "q093",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly identifies that the contract does not contain a minimum commitment provision."
+    },
+    {
+      "question_id": "q093",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The contract does not contain the clause, and the assistant accurately states that the provided documents do not contain this information."
+    },
+    {
+      "question_id": "q093",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly states that the agreement does not specify a minimum commitment requirement."
+    },
+    {
+      "question_id": "q093",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the contract does not contain a minimum commitment requirement."
+    },
+    {
+      "question_id": "q094",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement does not specify general insurance requirements, while properly contextualizing a minor mention of shipping insurance."
+    },
+    {
+      "question_id": "q094",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly states that the agreement does not outline specific insurance requirements while mentioning a minor related reference to shipping insurance."
+    },
+    {
+      "question_id": "q095",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement does not contain a renewal provision or notice requirement for non-renewal."
+    },
+    {
+      "question_id": "q095",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement does not contain a renewal provision or notice period to stop renewal."
+    },
+    {
+      "question_id": "q095",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The contract does not contain the clause, and the answer correctly states that the provided documents contain no information on renewal or notice required to prevent renewal."
+    },
+    {
+      "question_id": "q095",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The contract does not contain the clause, and the answer correctly states that there is no mention of an agreement renewal clause or required notice period."
+    },
+    {
+      "question_id": "q095",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly states that the agreement does not contain a renewal clause or notice requirement to stop renewal."
+    },
+    {
+      "question_id": "q095",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The contract does not contain the clause, and the answer correctly states that the information is not provided in the documents."
+    },
+    {
+      "question_id": "q095",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The contract does not contain the clause, and the answer accurately states that the provided documents do not contain this information."
+    },
+    {
+      "question_id": "q095",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The contract does not contain the clause, and the assistant correctly stated that the document does not specify the requested notice period."
+    },
+    {
+      "question_id": "q097",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly states that the agreement does not contain a provision addressing what happens if a party is acquired, while appropriately noting related assignment and termination clauses."
+    },
+    {
+      "question_id": "q097",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly states that the agreement contains no provision addressing what happens if one party is acquired."
+    },
+    {
+      "question_id": "q097",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement does not contain a provision addressing what happens if a party is acquired, while appropriately noting related provisions."
+    },
+    {
+      "question_id": "q097",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly states that the agreement does not contain a change of control clause while appropriately labeling assignment and termination provisions as related terms."
+    },
+    {
+      "question_id": "q097",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly states that the contract does not contain a provision addressing what happens if a party is acquired, while appropriately identifying related termination and assignment terms."
+    },
+    {
+      "question_id": "q097",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "partial",
+      "judged": "wrong",
+      "reason": "The contract does not contain a change of control clause, and the answer offers assignment restrictions as what happens on an acquisition."
+    },
+    {
+      "question_id": "q097",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "partial",
+      "judged": "wrong",
+      "reason": "The contract does not contain a change of control provision, but the answer inappropriately provides the assignment clause instead of stating that no acquisition clause exists."
+    },
+    {
+      "question_id": "q097",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "wrong",
+      "judged": "wrong",
+      "reason": "The contract does not contain a change of control provision, but the answer inappropriately presents the assignment restriction clause as the answer to what happens upon an acquisition."
+    },
+    {
+      "question_id": "q099",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly identifies that the agreement does not contain any non-compete restrictions."
+    },
+    {
+      "question_id": "q099",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly states that the agreement contains no restrictions on competing."
+    },
+    {
+      "question_id": "q099",
+      "report": "gemini-6k",
+      "condition": "rag5",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement does not contain any restrictions on competing."
+    },
+    {
+      "question_id": "q099",
+      "report": "gemini-6k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly states that the agreement contains no restrictions on competing."
+    },
+    {
+      "question_id": "q099",
+      "report": "gemini-6k",
+      "condition": "full",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer accurately states that the agreement does not contain any restrictions on competing."
+    },
+    {
+      "question_id": "q099",
+      "report": "gemma-6k",
+      "condition": "rag5",
+      "graded": "partial",
+      "judged": "wrong",
+      "reason": "The contract does not contain a non-compete clause, but the assistant offered logo usage and quality restrictions as the answer instead of stating that there are no restrictions on competing."
+    },
+    {
+      "question_id": "q099",
+      "report": "gemma-6k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "correct",
+      "reason": "The answer correctly states that the agreement does not contain a general non-compete clause while noting other branding-related restrictions."
+    },
+    {
+      "question_id": "q099",
+      "report": "gemma-6k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "wrong",
+      "reason": "The contract does not contain a non-compete clause, but the answer lists trademark and branding restrictions instead of stating that there are no restrictions on competing."
+    },
+    {
+      "question_id": "q100",
+      "report": "gemini-40k",
+      "condition": "rag10",
+      "graded": "abstain-correct",
+      "judged": "abstain-correct",
+      "reason": "The assistant correctly abstained from answering as the information could not be determined from the provided excerpts, matching the fact that the contract does not contain the clause."
+    },
+    {
+      "question_id": "q100",
+      "report": "gemini-40k",
+      "condition": "full",
+      "graded": "partial",
+      "judged": "wrong",
+      "reason": "The contract does not contain an exclusivity clause, but the answer asserts that specific exclusivity grants exist within the agreement."
+    }
+  ]
+}

@@ -190,6 +190,7 @@ Requires Docker and [Ollama](https://ollama.com) with `nomic-embed-text` pulled.
 ```bash
 ollama pull nomic-embed-text
 cp .env.example .env          # set GEMINI_API_KEY for answer generation
+pip install -r backend/requirements.lock    # Python 3.11, every version pinned
 docker compose up -d db       # PostgreSQL 16 + pgvector
 cd backend ; alembic upgrade head
 ```

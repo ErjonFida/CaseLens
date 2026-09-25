@@ -1,3 +1,8 @@
+# Direct dependencies, as ranges. CI and the Docker image install
+# requirements.lock instead, which pins every transitive version, so a new
+# release cannot change a build unannounced (SQLAlchemy 2.1 did). After
+# editing this file, regenerate the lock from the repository root:
+#   uv pip compile backend/requirements.txt --universal --python-version 3.11 -o backend/requirements.lock
 fastapi>=0.115.0
 uvicorn[standard]>=0.30.0
 sqlalchemy[asyncio]>=2.0

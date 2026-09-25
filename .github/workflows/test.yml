@@ -28,9 +28,10 @@ jobs:
         with:
           python-version: '3.11'
           cache: pip
+          cache-dependency-path: backend/requirements.lock
 
-      # httpx is not a runtime dep; starlette's TestClient needs it.
-      - run: pip install -r backend/requirements.txt httpx
+      # Pinned. httpx, which TestClient needs, is in it through ollama.
+      - run: pip install -r backend/requirements.lock
 
       # Doubles as the migration check: a broken revision chain fails here.
       - run: alembic upgrade head

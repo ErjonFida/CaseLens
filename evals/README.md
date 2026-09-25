@@ -65,7 +65,7 @@ averaged.
 | Retriever | recall@5 | MRR |
 |---|---:|---:|
 | `dense` | 0.340 | 0.298 |
-| `scoped` | 0.702 | 0.562 |
+| `scoped` | 0.702 | 0.566 |
 
 Read `scoped` with its caveat: `cuad_import` templates every question as
 "the {party} agreement", so all 100 name their contract by construction. 67 of

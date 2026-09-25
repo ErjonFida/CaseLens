@@ -1,21 +1,47 @@
 # CaseLens
 
-**Retrieval over legal documents, with the retrieval actually measured.** Upload
-contracts, court transcripts or scanned filings; ask questions in natural
-language; get answers that cite the filename and page they came from. Documents
-are private to the account that uploaded them.
+**Question answering over legal contracts, measured end to end.** Upload
+contracts, filings or scanned documents, ask in plain language, and get answers
+that cite the file and page they came from. It runs fully offline on a local
+model, or with Gemini. Documents are private to the account that uploaded them.
 
-The part worth looking at is `evals/`: a 100-question evaluation suite built from
-expert clause annotations, which reports what the retriever actually finds and
-what the model then does with it, rather than asserting that either works.
+Every claim below is measured, on questions built from expert annotations of
+real contracts, and so are the ideas that did not work:
+
+- **Retrieval doubled without a new model.** recall@5 went from 0.340 to
+  **0.702** by reading which questions failed and why: weighting question words
+  by how rare they are across filenames, so a question that names its contract
+  finds it, then removing that name from the search so the cover page stops
+  winning. A question that names no contract still gets the dense baseline.
+- **A 4B model on a laptop comes close to Gemini.** Graded answer by answer,
+  the local `gemma4:e4b` gets 20 of 24 right to Gemini's 22, on the same
+  questions.
+- **The dangerous failure is measured and fixed.** Asked about a clause a
+  contract lacks, both models sometimes answered with an adjacent one. A model
+  judge calibrated against the graded answers counts it, and one prompt line
+  removed it from both paths that ship without adding a wrongful refusal.
 
 | | |
 |---|---|
 | **Live demo** | _not yet deployed_ |
-| **Evaluation suite** | [evals/README.md](evals/README.md) |
-| **Current baseline** | recall@5 **0.702**, MRR **0.562** ([report](evals/reports/name-scoped.json)) |
-| **Graded answers** | local `gemma4:e4b` 20 of 24 good, Gemini 22 of 24 ([workbook](evals/reports/faithfulness-grading-graded.xlsx)) |
+| **Evaluation** | [evals/README.md](evals/README.md) |
+| **Retrieval** | recall@5 **0.702**, MRR **0.566** ([report](evals/reports/name-scoped.json)) |
+| **Graded answers** | local `gemma4:e4b` 20 of 24, Gemini 22 of 24 ([workbook](evals/reports/faithfulness-grading-graded.xlsx)) |
 | **Local setup** | [Running it](#running-it) |
+
+### What did not work
+
+| idea | result | why |
+|---|---|---|
+| Hybrid lexical search | recall@5 0.126 | the words that identify a contract are in its filename, not its text |
+| Cross-encoder reranking | worse, twice | even handed the right contract, web-trained rerankers ordered its pages worse than vector distance |
+| Larger embedding models | a trade | Qwen3 gained on paraphrase and lost more on exact terms |
+| Fusing two embedders | recall@10 +0.07 | real, but not worth a second 2.5 GB model in memory |
+| Whole documents, local model | worse than 10 chunks | a 4B model extracts less reliably from a full contract |
+| A regex for declines | precision 0.59 | it cannot tell a supported "no" from an assertion |
+
+Started in May as a ChromaDB and HTMX prototype, and rebuilt in September
+around a retriever that is measured before anything changes.
 
 ---
 
@@ -67,12 +93,12 @@ dense is kept as the comparison point every change is measured against.
 | Metric | Dense | Name-scoped |
 |---|---:|---:|
 | recall@5 | 0.340 | **0.702** |
-| recall@10 | 0.397 | 0.730 |
-| MRR | 0.298 | **0.562** |
+| recall@10 | 0.397 | 0.721 |
+| MRR | 0.298 | **0.566** |
 | exact_term | 0.419 | 0.790 |
 | semantic | 0.321 | 0.750 |
 | multi_document | 0.204 | 0.300 |
-| latency p50 / p95 | 113ms / 161ms | 88ms / 108ms |
+| latency p50 / p95 | 113ms / 161ms | 96ms / 137ms |
 
 **Name-scoping** resolves the contract from the question before searching, in
 `resolve_scope`, which both API endpoints call. A

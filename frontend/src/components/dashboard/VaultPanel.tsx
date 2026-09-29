@@ -15,6 +15,7 @@ interface Props {
   onUpload: (file: File) => void;
   onFindSegments: (filename: string) => void;
   onRequestDelete: (filename: string) => void;
+  readOnly: boolean;
 }
 
 export default function VaultPanel({
@@ -24,6 +25,7 @@ export default function VaultPanel({
   onUpload,
   onFindSegments,
   onRequestDelete,
+  readOnly,
 }: Props) {
   return (
     <main className="flex-1 flex flex-col min-h-0 p-6 overflow-y-auto">
@@ -38,6 +40,7 @@ export default function VaultPanel({
             </p>
           </div>
 
+          {!readOnly && (
           <label className="cursor-pointer">
             <Button size="sm" className="gap-2 pointer-events-none">
               <Upload className="w-4 h-4" /> Upload New File
@@ -54,6 +57,7 @@ export default function VaultPanel({
               }}
             />
           </label>
+          )}
         </div>
 
         <Card className="border-border/80">
@@ -88,6 +92,7 @@ export default function VaultPanel({
                     >
                       <Search className="w-3.5 h-3.5" /> Find Segments
                     </Button>
+                    {!readOnly && (
                     <Button
                       variant="ghost"
                       size="sm"
@@ -96,6 +101,7 @@ export default function VaultPanel({
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </Button>
+                    )}
                   </div>
                 </div>
               ))}

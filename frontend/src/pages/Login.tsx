@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import * as api from '../api/client';
 import { setStoredToken } from '../auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Scale, ShieldAlert, ArrowRight } from 'lucide-react';
+import { Scale, ShieldAlert, ArrowRight, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Login() {
@@ -15,6 +16,26 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [demoAvailable, setDemoAvailable] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
+
+  // Offer the demo only where one is seeded; a local install usually has none.
+  useEffect(() => {
+    api.getHealth().then((h) => setDemoAvailable(h.demo)).catch(() => undefined);
+  }, []);
+
+  const handleDemo = async () => {
+    setError('');
+    setDemoLoading(true);
+    try {
+      setStoredToken(await api.startDemo());
+      navigate('/');
+    } catch (err: any) {
+      setError(err.message || 'The demo is not available');
+    } finally {
+      setDemoLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,6 +131,19 @@ export default function Login() {
               Sign In
               {!loading && <ArrowRight className="ml-1 w-4 h-4" />}
             </Button>
+
+            {demoAvailable && (
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full h-11"
+                loading={demoLoading}
+                onClick={handleDemo}
+              >
+                {!demoLoading && <Sparkles className="mr-1 w-4 h-4" />}
+                Try the demo, no account needed
+              </Button>
+            )}
 
             <p className="text-center text-xs text-muted-foreground mt-2">
               Don't have an account yet?{' '}

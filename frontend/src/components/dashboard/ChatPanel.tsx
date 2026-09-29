@@ -17,6 +17,16 @@ const PROMPT_SUGGESTIONS = [
   'Are there any liability caps or exclusion of consequential damages?',
 ];
 
+// Each asks about a contract backend/seed_demo.py puts in the demo, and has an
+// annotated answer in evals/datasets/gold.jsonl: a date, a supported "no", a
+// clause the contract lacks, and a list.
+const DEMO_SUGGESTIONS = [
+  'When does the Scoutcam agreement become effective?',
+  'Does anyone outside the Ofgban agreement have rights under it?',
+  'What happens to the Transmontaigne Partners agreement if one side is acquired?',
+  'What insurance must be carried under the Merit Life Insurance agreement?',
+];
+
 interface Props {
   messages: ChatMessage[];
   isGenerating: boolean;
@@ -24,6 +34,7 @@ interface Props {
   userEmail: string;
   documentCount: number;
   selectedCount: number;
+  isDemo: boolean;
   onSend: (text: string) => void;
   onStop: () => void;
   onClear: () => void;
@@ -37,6 +48,7 @@ export default function ChatPanel({
   userEmail,
   documentCount,
   selectedCount,
+  isDemo,
   onSend,
   onStop,
   onClear,
@@ -75,7 +87,7 @@ export default function ChatPanel({
                   <Sparkles className="w-3.5 h-3.5 text-primary" /> Suggested Inquiries
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {PROMPT_SUGGESTIONS.map((prompt) => (
+                  {(isDemo ? DEMO_SUGGESTIONS : PROMPT_SUGGESTIONS).map((prompt) => (
                     <button
                       key={prompt}
                       type="button"

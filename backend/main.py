@@ -1,9 +1,12 @@
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from config import settings
 from database import async_engine
@@ -49,3 +52,22 @@ async def on_rate_limit(request: Request, exc: RateLimitExceeded):
 
 
 app.include_router(router)
+
+
+class SinglePageApp(StaticFiles):
+    """The built frontend. A path that is no file is a client-side route, so it
+    gets index.html - except under /api/, where a miss must stay a 404."""
+
+    async def get_response(self, path: str, scope):
+        try:
+            return await super().get_response(path, scope)
+        except StarletteHTTPException as exc:
+            # The request path, not `path`: StaticFiles normalises that with the
+            # OS separator, so on Windows it reads api\... and never matches.
+            if exc.status_code != 404 or scope["path"].startswith("/api/"):
+                raise
+            return await super().get_response("index.html", scope)
+
+
+if settings.STATIC_DIR and Path(settings.STATIC_DIR).is_dir():
+    app.mount("/", SinglePageApp(directory=settings.STATIC_DIR, html=True), name="frontend")

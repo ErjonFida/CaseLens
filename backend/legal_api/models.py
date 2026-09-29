@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import (
-    Column, Integer, BigInteger, String, Text, DateTime, ForeignKey, JSON, UniqueConstraint
+    Boolean, Column, Integer, BigInteger, String, Text, DateTime, ForeignKey, JSON, UniqueConstraint, false
 )
 from sqlalchemy.orm import relationship
 from pgvector.sqlalchemy import Vector
@@ -20,6 +20,9 @@ class User(Base):
     company = Column(String(255), default="")
     phone_number = Column(String(50), default="")
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    # The shared read-only demo account: no password sign-in, no uploads or
+    # deletions, and a daily cap on questions. Created by seed_demo.py.
+    is_demo = Column(Boolean, nullable=False, default=False, server_default=false())
 
     devices = relationship("KnownDevice", back_populates="user", cascade="all, delete-orphan")
     documents = relationship("Document", back_populates="user", cascade="all, delete-orphan")

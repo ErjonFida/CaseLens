@@ -22,6 +22,8 @@ interface Props {
   selected: string[];
   onToggleSelect: (filename: string) => void;
   onClearSelection: () => void;
+  /** The shared demo account: no uploads or deletions. */
+  readOnly: boolean;
 }
 
 export default function DocumentSidebar({
@@ -35,6 +37,7 @@ export default function DocumentSidebar({
   selected,
   onToggleSelect,
   onClearSelection,
+  readOnly,
 }: Props) {
   // The filter is nobody else's business, so it stays here rather than being
   // lifted into the dashboard's state.
@@ -72,6 +75,15 @@ export default function DocumentSidebar({
         </Tooltip>
       </div>
 
+      {readOnly ? (
+        <div className="p-3 border-b border-border/80 text-[11px] text-muted-foreground leading-relaxed">
+          Demo account, read-only. Contracts from{' '}
+          <a href="https://www.atticusprojectai.org/cuad" target="_blank" rel="noreferrer" className="underline">
+            CUAD
+          </a>{' '}
+          (CC BY 4.0).
+        </div>
+      ) : (
       <div className="p-3 border-b border-border/80">
         <label className="cursor-pointer block">
           <div
@@ -99,6 +111,7 @@ export default function DocumentSidebar({
           <span>Max 25MB</span>
         </div>
       </div>
+      )}
 
       <div className="p-3 border-b border-border/60">
         <div className="relative">
@@ -161,6 +174,7 @@ export default function DocumentSidebar({
                 </div>
               </div>
 
+              {!readOnly && (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -174,6 +188,7 @@ export default function DocumentSidebar({
                 </TooltipTrigger>
                 <TooltipContent>Delete Document</TooltipContent>
               </Tooltip>
+              )}
             </div>
           ))}
 

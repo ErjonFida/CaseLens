@@ -1,6 +1,8 @@
 import os
 import secrets
+from ipaddress import IPv4Network, IPv6Network, ip_network
 from pathlib import Path
+from urllib.parse import parse_qsl, urlencode
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 
@@ -22,7 +24,12 @@ def _normalize_db_url(url: str, async_driver: bool) -> str:
         return url
 
     if async_driver:
-        return f"postgresql+asyncpg://{base}"
+        # Hosted Postgres (Neon) hands out libpq-style URLs. asyncpg takes the
+        # SSL mode as `ssl`, and rejects libpq's `channel_binding` outright.
+        address, _, query = base.partition("?")
+        params = [(k, v) for k, v in parse_qsl(query) if k != "channel_binding"]
+        params = [("ssl" if k == "sslmode" else k, v) for k, v in params]
+        return f"postgresql+asyncpg://{address}" + (f"?{urlencode(params)}" if params else "")
     # Named, not left to the dialect default: SQLAlchemy 2.1 changed the default
     # for postgresql:// from psycopg2 to psycopg 3, which is not installed.
     return f"postgresql+psycopg2://{base}"
@@ -58,8 +65,8 @@ class Settings(BaseSettings):
     TRUSTED_PROXIES: str = ""
 
     @property
-    def trusted_proxies(self) -> set[str]:
-        return {p.strip() for p in self.TRUSTED_PROXIES.split(",") if p.strip()}
+    def trusted_proxies(self) -> list[IPv4Network | IPv6Network]:
+        return [ip_network(p.strip(), strict=False) for p in self.TRUSTED_PROXIES.split(",") if p.strip()]
 
     @property
     def cors_origins(self) -> list[str]:
@@ -100,6 +107,14 @@ class Settings(BaseSettings):
             return "gemma4:e4b"
         # An alias, not a pinned name: gemini-1.5-flash was retired and 404s.
         return os.environ.get("GEMINI_MODEL", "gemini-flash-latest")
+
+    # Questions a day the shared read-only demo account may ask, across all
+    # visitors: each one is a Gemini call on the deployer's key.
+    DEMO_DAILY_QUESTIONS: int = 200
+
+    # The built frontend, served by the API itself when set, so one container
+    # is the whole application. Unset in development, where Vite serves it.
+    STATIC_DIR: str = ""
 
     UPLOAD_DIR: str = str(BASE_DIR / "uploads")
     ALLOWED_FILE_EXTENSIONS: set[str] = {".pdf", ".txt", ".png", ".jpg", ".jpeg", ".tiff", ".bmp"}

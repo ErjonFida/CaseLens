@@ -5,6 +5,7 @@ import asyncio
 import hashlib
 import logging
 import threading
+from ipaddress import ip_address
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -78,14 +79,17 @@ def _whole_document(scope: list[int] | None, user: User, session) -> str | None:
     return format_pages(doc.filename, doc.pages)
 
 
-@router.get("/")
-def read_root():
-    return {
-        "status": "online",
-        "message": "CaseLens backend API is running.",
-        "frontend_url": "http://localhost:3000",
-        "docs_url": "/docs"
-    }
+@router.get("/api/health")
+async def health(db: AsyncSession = Depends(get_db)):
+    """Liveness, and whether a demo account is seeded - the sign-in page asks."""
+    demo = (await db.execute(select(User.id).where(User.is_demo.is_(True)).limit(1))).first() is not None
+    return {"status": "online", "demo": demo, "docs_url": "/docs"}
+
+
+def _writable(user: User) -> None:
+    """The demo account is shared by every visitor, so nobody may change it."""
+    if user.is_demo:
+        raise HTTPException(status_code=403, detail="The demo account is read-only")
 
 
 _RATE_SQL = text("""
@@ -126,11 +130,30 @@ class RateLimitExceeded(Exception):
 
 auth_limiter = RateLimiter(10, 60)
 query_limiter = RateLimiter(30, 60)
+# Across every visitor of the shared demo account: each question is a Gemini
+# call on the deployer's key, and per-IP limits alone do not bound the bill.
+demo_limiter = RateLimiter(settings.DEMO_DAILY_QUESTIONS, 24 * 3600)
+
+
+def _from_trusted_proxy(peer: str) -> bool:
+    try:
+        address = ip_address(peer)
+    except ValueError:  # not an address at all, e.g. "testclient"
+        return False
+    return any(address in network for network in settings.trusted_proxies)
+
+
+_untrusted_forwarding_logged = False
 
 
 def _client_ip(request: Request) -> str:
+    global _untrusted_forwarding_logged
     peer = request.client.host if request.client else "127.0.0.1"
-    if peer not in settings.trusted_proxies:
+    if not _from_trusted_proxy(peer):
+        if not _untrusted_forwarding_logged and request.headers.get("x-forwarded-for"):
+            _untrusted_forwarding_logged = True
+            logger.warning(f"X-Forwarded-For from untrusted peer {peer} ignored; "
+                           f"add its network to TRUSTED_PROXIES if it is your proxy")
         return peer
         
     forwarded = request.headers.get("x-forwarded-for", "")
@@ -304,7 +327,20 @@ async def logout():
 
 @router.get("/api/me")
 async def get_me(current_user: User = Depends(get_current_user)):
-    return {"email": current_user.email}
+    return {"email": current_user.email, "is_demo": current_user.is_demo}
+
+
+@router.post("/api/demo")
+async def start_demo(request: Request, db: AsyncSession = Depends(get_db)):
+    """Sign a visitor into the shared read-only demo account, if one is seeded.
+    No password: the account can only read documents seeded into it, and its
+    questions are capped per day, so a token is all it takes.
+    """
+    auth_limiter.check(_client_ip(request))
+    demo = (await db.execute(select(User).where(User.is_demo.is_(True)).limit(1))).scalars().first()
+    if not demo:
+        raise HTTPException(status_code=404, detail="The demo is not enabled on this server")
+    return {"access_token": create_access_token({"sub": demo.email}), "token_type": "bearer", "email": demo.email}
 
 
 @router.post("/api/upload")
@@ -313,6 +349,7 @@ async def upload_document(
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
 ):
+    _writable(current_user)
     filename = os.path.basename(file.filename or "")
     if not filename or not _SAFE_FILENAME_RE.match(filename):
         raise HTTPException(
@@ -391,6 +428,7 @@ async def list_documents(current_user: User = Depends(get_current_user)):
 
 @router.delete("/api/documents/{filename}")
 async def delete_document(filename: str, current_user: User = Depends(get_current_user)):
+    _writable(current_user)
     filename = os.path.basename(filename)
     if not _SAFE_FILENAME_RE.match(filename):
         raise HTTPException(status_code=400, detail="Invalid filename")
@@ -458,6 +496,15 @@ async def chat_stream(
     latest_msg = payload.messages[-1].content.strip()
     if not latest_msg:
         raise HTTPException(status_code=400, detail="Empty query message")
+
+    if current_user.is_demo:
+        try:
+            demo_limiter.check("demo")
+        except RateLimitExceeded:
+            raise HTTPException(
+                status_code=429,
+                detail="The demo has used today's question allowance. Try again tomorrow, or run CaseLens locally.",
+            )
 
     sync_session = SyncSessionLocal()
     try:

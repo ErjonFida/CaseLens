@@ -48,3 +48,6 @@ jobs:
 
       - run: python test_scoping.py
         working-directory: backend
+
+      - run: python test_deploy.py
+        working-directory: backend

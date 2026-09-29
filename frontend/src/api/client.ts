@@ -31,10 +31,25 @@ async function expectOk(res: Response, fallback: string): Promise<Response> {
   return res;
 }
 
-export async function getCurrentUser(): Promise<{ email: string }> {
+export async function getCurrentUser(): Promise<{ email: string; is_demo?: boolean }> {
   const res = await fetchWithAuth('/api/me');
   await expectOk(res, 'Could not load your account');
   return res.json();
+}
+
+/** Liveness, and whether this server has a demo account to offer. No sign-in needed. */
+export async function getHealth(): Promise<{ status: string; demo: boolean }> {
+  const res = await fetch('/api/health');
+  await expectOk(res, 'The server is not responding');
+  return res.json();
+}
+
+/** Sign in to the shared read-only demo account; returns its token. */
+export async function startDemo(): Promise<string> {
+  const res = await fetch('/api/demo', { method: 'POST' });
+  await expectOk(res, 'The demo is not available');
+  const data = await res.json();
+  return data.access_token;
 }
 
 export async function listDocuments(): Promise<string[]> {

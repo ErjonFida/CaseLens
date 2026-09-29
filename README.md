@@ -219,6 +219,40 @@ python -m evals.faithfulness --cuad path/to/CUAD_v1.json   # answer-level eval
 See [evals/README.md](evals/README.md) for the gold-set format and how to
 reproduce the corpus.
 
+### Deploying
+
+One container holds the whole application: the built frontend, the API,
+Tesseract, and Ollama with `nomic-embed-text`, so production retrieval is the
+retrieval that was measured. It runs as a Hugging Face Space against a Postgres
+with pgvector (Neon's free tier works), and answers come from Gemini.
+
+1. Create a Neon project and copy its connection string. From your machine,
+   create the schema and seed the read-only demo with its five CUAD contracts,
+   from any folder holding CUAD's PDFs (`evals/corpus` does):
+
+   ```bash
+   cd backend
+   DATABASE_URL="<neon url>" alembic upgrade head
+   DATABASE_URL="<neon url>" python seed_demo.py ../evals/corpus
+   ```
+
+2. Create a Docker Space on Hugging Face. Under *Settings*, add the secrets
+   `DATABASE_URL`, `JWT_SECRET` and `GEMINI_API_KEY`, and the variables
+   `ENVIRONMENT=production` and `LLM_PROVIDER=gemini`.
+
+3. Publish the committed code. git asks for a Hugging Face token with write
+   access:
+
+   ```bash
+   deploy/huggingface/push.sh <hf-username>/<space-name>
+   ```
+
+The demo account cannot upload or delete, and all its visitors together get
+`DEMO_DAILY_QUESTIONS` (200) questions a day, which bounds what the demo can
+spend of the Gemini key. If the Space logs warn that `X-Forwarded-For` came
+from an untrusted peer, set `TRUSTED_PROXIES` to that peer's network, or every
+visitor shares one rate-limit bucket.
+
 ---
 
 ## Architecture

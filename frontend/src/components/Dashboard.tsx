@@ -29,6 +29,7 @@ import VaultPanel from './dashboard/VaultPanel';
 export default function Dashboard() {
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState('');
+  const [isDemo, setIsDemo] = useState(false);
   const [activeTab, setActiveTab] = useState<DashboardTab>('chat');
   const [docToDelete, setDocToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -57,6 +58,7 @@ export default function Dashboard() {
         const me = await api.getCurrentUser();
         if (cancelled) return;
         setUserEmail(me.email || '');
+        setIsDemo(Boolean(me.is_demo));
         await loadDocuments();
       } catch (err: any) {
         if (cancelled) return;
@@ -133,6 +135,7 @@ export default function Dashboard() {
         selected={selection}
         onToggleSelect={toggleSelected}
         onClearSelection={() => setSelected([])}
+        readOnly={isDemo}
       />
 
       <div className="flex-1 flex flex-col bg-background min-w-0">
@@ -151,6 +154,7 @@ export default function Dashboard() {
             userEmail={userEmail}
             documentCount={docs.documents.length}
             selectedCount={selection.length}
+            isDemo={isDemo}
             onSend={(text) => chat.send(text, selection)}
             onStop={chat.stop}
             onClear={chat.clear}
@@ -177,6 +181,7 @@ export default function Dashboard() {
             uploading={docs.uploading}
             onUpload={docs.upload}
             onFindSegments={handleFindSegments}
+            readOnly={isDemo}
             onRequestDelete={setDocToDelete}
           />
         )}

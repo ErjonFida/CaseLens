@@ -70,19 +70,15 @@ class OllamaEmbedder:
 
 class GeminiEmbedder:
 
-    def __init__(self, model: str = "models/gemini-embedding-001", dimensions: int = 768, batch_size: int = 20):
-        self.name = model.split("/")[-1]
+    def __init__(self, model: str = "gemini-embedding-001", dimensions: int = 768, batch_size: int = 20):
+        self.name = model
         self.dimensions = dimensions
         self.batch_size = batch_size
-        self._model = model
 
-        import google.generativeai as genai
+        from google import genai
 
-        api_key = os.environ.get("GEMINI_API_KEY")
-        if api_key:
-            genai.configure(api_key=api_key)
-        else:
-            logger.warning("GEMINI_API_KEY is not set; Gemini embedding calls will fail")
+        # Raises now rather than on the first embedding when the key is missing.
+        self._client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
     @staticmethod
     def _normalize(vector: list[float]) -> list[float]:
@@ -92,8 +88,9 @@ class GeminiEmbedder:
         return [x / norm for x in vector]
 
     def _embed(self, texts: list[str], task_type: str) -> list[list[float]]:
-        import google.generativeai as genai
+        from google.genai import types
 
+        config = types.EmbedContentConfig(task_type=task_type, output_dimensionality=self.dimensions)
         all_vectors: list[list[float]] = []
         total_batches = (len(texts) + self.batch_size - 1) // self.batch_size
         for i in range(0, len(texts), self.batch_size):
@@ -101,24 +98,19 @@ class GeminiEmbedder:
             if total_batches > 1:
                 logger.info(f"Embedding batch {i // self.batch_size + 1}/{total_batches} ({len(batch)} items)")
             try:
-                response = genai.embed_content(
-                    model=self._model,
-                    content=batch,
-                    task_type=task_type,
-                    output_dimensionality=self.dimensions,
-                )
+                response = self._client.models.embed_content(model=self.name, contents=batch, config=config)
             except Exception as e:
                 logger.error(f"Gemini embedding failed: {e}")
                 raise
-            all_vectors.extend(response["embedding"])
+            all_vectors.extend(e.values for e in response.embeddings)
 
         return [self._normalize(v) for v in all_vectors]
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
-        return self._embed(texts, task_type="retrieval_document")
+        return self._embed(texts, task_type="RETRIEVAL_DOCUMENT")
 
     def embed_query(self, text: str) -> list[float]:
-        return self._embed([text], task_type="retrieval_query")[0]
+        return self._embed([text], task_type="RETRIEVAL_QUERY")[0]
 
 
 def get_embedder() -> EmbeddingProvider:

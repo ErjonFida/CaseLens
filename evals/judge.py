@@ -84,18 +84,18 @@ def _case(question: str, clause_absent: bool, spans: list[str], pages: str,
 
 
 def _ask(model: str, case: str) -> str:
-    import google.generativeai as genai
+    from google import genai
+    from google.genai import types
 
-    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-    llm = genai.GenerativeModel(model_name=model, system_instruction=RUBRIC)
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    config = types.GenerateContentConfig(
+        system_instruction=RUBRIC, temperature=0, response_mime_type="application/json"
+    )
     for attempt in range(8):
         _throttle(model)
         try:
-            r = llm.generate_content(
-                case, generation_config={"temperature": 0, "response_mime_type": "application/json"}
-            )
-            parts = r.candidates[0].content.parts if r.candidates else []
-            return "".join(getattr(p, "text", "") for p in parts if not getattr(p, "thought", False))
+            # .text leaves out thinking parts, so only the verdict comes back.
+            return client.models.generate_content(model=model, contents=case, config=config).text or ""
         except Exception as e:
             transient = any(code in str(e) for code in ("429", "500", "503", "deadline", "Deadline"))
             if attempt == 7 or not transient:

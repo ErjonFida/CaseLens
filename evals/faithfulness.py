@@ -72,22 +72,22 @@ def page_texts(path: Path, cache: dict) -> list[dict]:
 
 def ask_gemini(model: str, context: str, question: str) -> tuple[str, float, int]:
     import os
-    import google.generativeai as genai
+    from google import genai
+    from google.genai import types
 
-    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-    llm = genai.GenerativeModel(model_name=model, system_instruction=SYSTEM_PROMPT.format(context=context))
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    config = types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT.format(context=context), temperature=0)
     t0 = time.perf_counter()
     for attempt in range(6):
         try:
-            r = llm.generate_content(question, generation_config={"temperature": 0})
+            r = client.models.generate_content(model=model, contents=question, config=config)
             break
         except Exception as e:  # rate limits on the free tier: back off and retry
             if attempt == 5 or "429" not in str(e) and "quota" not in str(e).lower():
                 raise
             time.sleep(10 * (attempt + 1))
-    parts = r.candidates[0].content.parts if r.candidates else []
-    text = "".join(getattr(p, "text", "") for p in parts if not getattr(p, "thought", False))
-    return text, (time.perf_counter() - t0) * 1000, r.usage_metadata.prompt_token_count
+    # .text leaves out thinking parts, as the answer shown to a user would.
+    return r.text or "", (time.perf_counter() - t0) * 1000, r.usage_metadata.prompt_token_count
 
 
 def ask(model: str, num_ctx: int, context: str, question: str, think: bool | None = None,

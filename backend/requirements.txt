@@ -10,17 +10,19 @@ asyncpg>=0.30.0
 pgvector>=0.3.0
 alembic>=1.14.0
 pydantic-settings>=2.0.0
-google-generativeai==0.5.4
+google-genai>=2.0.0
 pytesseract==0.3.10
 pdf2image==1.17.0
-pdfplumber==0.11.0
-python-multipart==0.0.9
+# Floors are security fixes: pdfplumber 0.11.10 brings pdfminer.six 20260107
+# (CVE-2025-64512), python-multipart 0.0.31 closes the multipart DoS reports,
+# which matter because the upload form is parsed before sign-in is checked.
+pdfplumber>=0.11.10
+python-multipart>=0.0.31
 pydantic>=2.7.0
 email-validator>=2.0.0
-numpy==1.26.4
-pyjwt==2.8.0
+pyjwt>=2.13.0
 bcrypt==4.1.2
-python-dotenv==1.0.1
+python-dotenv>=1.2.2
 Pillow>=10.0.0
 psycopg2-binary>=2.9.0
 ollama>=0.3.0

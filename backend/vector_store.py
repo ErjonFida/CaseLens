@@ -1,6 +1,6 @@
 import logging
 import re
-from sqlalchemy import select, delete, desc, func, text
+from sqlalchemy import select, func, text
 from sqlalchemy.orm import Session
 
 from embeddings import get_embedder
@@ -144,18 +144,11 @@ class LegalVectorStore:
             session.commit()
             logger.info(f"Successfully indexed {filename} in vector database for user '{user.email}'.")
         except Exception as e:
+            # The rollback undoes this document's insert. Nothing else to clean:
+            # deleting by filename here could only hit another, committed copy.
             session.rollback()
             logger.error(f"Error indexing document {filename}: {e}")
-            # Clean up the document database record if indexing failed
-            try:
-                session.execute(
-                    delete(Document).where(Document.filename == filename, Document.user_id == user.id)
-                )
-                session.commit()
-            except Exception as cleanup_err:
-                session.rollback()
-                logger.error(f"Error cleaning up document {filename} record: {cleanup_err}")
-            raise e
+            raise
 
     def match_documents_by_name(self, query: str, user, session: Session) -> list[tuple[int, float, str]]:
 

@@ -95,6 +95,7 @@ def test_one_container_serves_the_app_and_the_api():
         assert "console.log" in client.get("/assets/app.js").text
         assert client.get("/api/health").json()["status"] == "online"
         assert client.get("/api/no-such-endpoint").status_code == 404  # not index.html
+        assert client.get("/assets/gone-after-a-redeploy.js").status_code == 404  # a file, not a route
 
 
 if __name__ == "__main__":

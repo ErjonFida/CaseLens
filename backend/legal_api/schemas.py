@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, Field, EmailStr
 
@@ -29,12 +29,19 @@ class SearchRequest(BaseModel):
     documents: SelectedDocuments
 
 
+# Every message a client sends goes to the model, so these bound what one
+# question can cost: the demo's daily cap counts questions, not tokens.
+# The frontend sends only the most recent MAX_CHAT_MESSAGES.
+MAX_CHAT_MESSAGES = 21  # ten exchanges and the question
+MAX_MESSAGE_CHARS = 20_000
+
+
 class ChatMessage(BaseModel):
-    role: str
-    content: str
+    role: Literal["user", "assistant"]
+    content: str = Field(..., max_length=MAX_MESSAGE_CHARS)
 
 
 class ChatRequest(BaseModel):
-    messages: list[ChatMessage]
+    messages: list[ChatMessage] = Field(..., min_length=1, max_length=MAX_CHAT_MESSAGES)
     documents: SelectedDocuments
 

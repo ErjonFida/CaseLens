@@ -5,6 +5,8 @@ import asyncio
 import hashlib
 import logging
 import threading
+from concurrent.futures import ThreadPoolExecutor
+from functools import cache
 from ipaddress import ip_address
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
@@ -199,6 +201,23 @@ def _get_status(user_id: int, filename: str) -> str:
         session.close()
 
 
+# Uploads are indexed one at a time, in order. OCR and embedding are CPU-bound,
+# so parallel jobs only slow each other down, and a second upload of the same
+# file now replaces the first instead of racing it for the filename.
+# ponytail: one worker for the whole process; raise max_workers on a host with cores to spare.
+_new_indexer = lambda: ThreadPoolExecutor(max_workers=1, thread_name_prefix="indexer")
+indexer = _new_indexer()
+
+
+def drop_queued_uploads():
+    """At shutdown: otherwise the interpreter works through every queued upload
+    before it exits. The job already running finishes; the rest can be
+    re-uploaded. A fresh executor, since an app can start again in-process."""
+    global indexer
+    indexer.shutdown(wait=False, cancel_futures=True)
+    indexer = _new_indexer()
+
+
 def process_document_task(file_path: str, filename: str, user_email: str, user_id: int):
     session = SyncSessionLocal()
     try:
@@ -209,12 +228,15 @@ def process_document_task(file_path: str, filename: str, user_email: str, user_i
             raise ValueError("No text could be extracted from the document.")
         _set_status(user_id, filename, "indexing", session)
 
-        user = session.execute(select(User).where(User.id == user_id))
-        user = user.scalar_one_or_none()
-        if user:
-            _get_store().add_document_pages(filename, pages, user, session)
-        else:
-            logger.error("User not found in background task.")
+        user = session.execute(select(User).where(User.id == user_id)).scalar_one_or_none()
+        if not user:
+            raise ValueError("The account no longer exists.")
+        # Replaced only now, so a re-upload that yields no text keeps the old version.
+        store = _get_store()
+        existing = store.delete_document(filename, user, session)
+        if existing:
+            logger.info(f"Removed {existing} old chunks for '{filename}' before re-indexing.")
+        store.add_document_pages(filename, pages, user, session)
 
         _set_status(user_id, filename, "completed", session)
         logger.info(f"Processing completed: {filename} (owner: {user_email})")
@@ -234,7 +256,7 @@ _SAFE_FILENAME_RE = re.compile(r'^[\w\-. ]+$')
 async def register(request: Request, payload: RegisterRequest, db: AsyncSession = Depends(get_db)):
     if not settings.REGISTRATION_OPEN:
         raise HTTPException(status_code=403, detail="Registration is closed on this server")
-    auth_limiter.check(_client_ip(request))
+    await asyncio.to_thread(auth_limiter.check, _client_ip(request))
 
     if payload.password != payload.confirm_password:
         raise HTTPException(status_code=400, detail="Passwords do not match")
@@ -269,21 +291,22 @@ async def register(request: Request, payload: RegisterRequest, db: AsyncSession 
     return {"message": "User registered successfully"}
 
 
+# Checked against when the email is unknown, so that answer costs the same
+# bcrypt round as a wrong password and the timing does not reveal accounts.
+_NO_USER_HASH = bcrypt.hashpw(os.urandom(16), bcrypt.gensalt())
+
+
 @router.post("/api/login")
 async def login(request: Request, payload: LoginRequest, db: AsyncSession = Depends(get_db)):
-    auth_limiter.check(_client_ip(request))
+    await asyncio.to_thread(auth_limiter.check, _client_ip(request))
 
     email = payload.email.strip().lower()
     result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
 
-    if not user:
-        raise HTTPException(status_code=401, detail="Incorrect email or password")
-
-    password_valid = await asyncio.to_thread(
-        bcrypt.checkpw, payload.password.encode(), user.password_hash.encode()
-    )
-    if not password_valid:
+    stored = user.password_hash.encode() if user else _NO_USER_HASH
+    password_valid = await asyncio.to_thread(bcrypt.checkpw, payload.password.encode(), stored)
+    if not user or not password_valid:
         raise HTTPException(status_code=401, detail="Incorrect email or password")
 
     # Device fingerprinting
@@ -339,16 +362,20 @@ async def start_demo(request: Request, db: AsyncSession = Depends(get_db)):
     No password: the account can only read documents seeded into it, and its
     questions are capped per day, so a token is all it takes.
     """
-    auth_limiter.check(_client_ip(request))
+    await asyncio.to_thread(auth_limiter.check, _client_ip(request))
     demo = (await db.execute(select(User).where(User.is_demo.is_(True)).limit(1))).scalars().first()
     if not demo:
         raise HTTPException(status_code=404, detail="The demo is not enabled on this server")
     return {"access_token": create_access_token({"sub": demo.email}), "token_type": "bearer", "email": demo.email}
 
 
+# Endpoints that touch the database through the synchronous session, or wait on
+# Ollama, are plain `def`: FastAPI runs those in its thread pool. Declared
+# `async`, each blocking call would stall the event loop, and with it every
+# other request, streamed answers included.
+
 @router.post("/api/upload")
-async def upload_document(
-    request: Request,
+def upload_document(
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
 ):
@@ -375,7 +402,7 @@ async def upload_document(
     received = 0
     try:
         with open(tmp_path, "wb") as f:
-            while chunk := await file.read(1024 * 1024):
+            while chunk := file.file.read(1024 * 1024):
                 received += len(chunk)
                 if received > settings.MAX_FILE_SIZE_BYTES:
                     raise HTTPException(
@@ -392,35 +419,19 @@ async def upload_document(
         if os.path.exists(tmp_path):
             os.remove(tmp_path)
 
-    # Delete existing chunks if re-uploading (sync session for vector store)
-    sync_session = SyncSessionLocal()
-    try:
-        existing = _get_store().delete_document(filename, current_user, sync_session)
-        if existing > 0:
-            logger.info(f"Removed {existing} old chunks for '{filename}' before re-indexing.")
-    finally:
-        sync_session.close()
-
     _set_status(current_user.id, filename, "queued")
-
-    # Process in background thread
-    threading.Thread(
-        target=process_document_task,
-        args=(file_path, filename, current_user.email, current_user.id),
-        daemon=True,
-    ).start()
-
+    indexer.submit(process_document_task, file_path, filename, current_user.email, current_user.id)
     return {"filename": filename, "status": "queued"}
 
 
 @router.get("/api/status/{filename}")
-async def get_processing_status(filename: str, current_user: User = Depends(get_current_user)):
+def get_processing_status(filename: str, current_user: User = Depends(get_current_user)):
     status = _get_status(current_user.id, filename)
     return {"filename": filename, "status": status}
 
 
 @router.get("/api/documents")
-async def list_documents(current_user: User = Depends(get_current_user)):
+def list_documents(current_user: User = Depends(get_current_user)):
     sync_session = SyncSessionLocal()
     try:
         docs = _get_store().list_documents(current_user, sync_session)
@@ -430,7 +441,7 @@ async def list_documents(current_user: User = Depends(get_current_user)):
 
 
 @router.delete("/api/documents/{filename}")
-async def delete_document(filename: str, current_user: User = Depends(get_current_user)):
+def delete_document(filename: str, current_user: User = Depends(get_current_user)):
     _writable(current_user)
     filename = os.path.basename(filename)
     if not _SAFE_FILENAME_RE.match(filename):
@@ -468,7 +479,7 @@ async def delete_document(filename: str, current_user: User = Depends(get_curren
 
 
 @router.post("/api/search")
-async def search_documents(
+def search_documents(
     request: Request,
     payload: SearchRequest,
     current_user: User = Depends(get_current_user),
@@ -486,16 +497,19 @@ async def search_documents(
 
 
 
+@cache
+def _gemini():
+    from google import genai
+    return genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+
 @router.post("/api/chat")
-async def chat_stream(
+def chat_stream(
     request: Request,
     payload: ChatRequest,
     current_user: User = Depends(get_current_user),
 ):
     query_limiter.check(_client_ip(request))
-    if not payload.messages:
-        raise HTTPException(status_code=400, detail="No messages provided")
-
     latest_msg = payload.messages[-1].content.strip()
     if not latest_msg:
         raise HTTPException(status_code=400, detail="Empty query message")
@@ -532,11 +546,7 @@ async def chat_stream(
 
         def generate():
             messages = [{"role": "system", "content": system_prompt}]
-            for msg in payload.messages[:-1]:
-                messages.append({
-                    "role": "user" if msg.role == "user" else "assistant",
-                    "content": msg.content,
-                })
+            messages += [{"role": m.role, "content": m.content} for m in payload.messages[:-1]]
             messages.append({"role": "user", "content": latest_msg})
 
             try:
@@ -561,24 +571,21 @@ async def chat_stream(
             detail=f"Unknown LLM_PROVIDER '{settings.LLM_PROVIDER}'. Expected 'ollama' or 'gemini'.",
         )
 
-    import google.generativeai as genai
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
+    if not os.environ.get("GEMINI_API_KEY"):
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY is not configured")
 
-    genai.configure(api_key=api_key)
+    from google.genai import types
+
+    contents = [
+        {"role": "user" if m.role == "user" else "model", "parts": [{"text": m.content}]}
+        for m in payload.messages[:-1]
+    ] + [{"role": "user", "parts": [{"text": latest_msg}]}]
+    config = types.GenerateContentConfig(system_instruction=system_prompt)
 
     def generate():
         try:
-            model = genai.GenerativeModel(model_name=model_name, system_instruction=system_prompt)
-            history = []
-            for msg in payload.messages[:-1]:
-                role = "user" if msg.role == "user" else "model"
-                history.append({"role": role, "parts": [msg.content]})
-
-            chat = model.start_chat(history=history)
-            response = chat.send_message(latest_msg, stream=True)
-            for chunk in response:
+            stream = _gemini().models.generate_content_stream(model=model_name, contents=contents, config=config)
+            for chunk in stream:
                 if chunk.text:
                     yield chunk.text
         except Exception as e:

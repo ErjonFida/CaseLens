@@ -1,35 +1,90 @@
 # CaseLens
 
-**Question answering over legal contracts, measured end to end.** Upload
-contracts, filings or scanned documents, ask in plain language, and get answers
-that cite the file and page they came from. It runs fully offline on a local
-model, or with Gemini. Documents are private to the account that uploaded them.
-
-Every claim below is measured, on questions built from expert annotations of
-real contracts, and so are the ideas that did not work:
-
-- **Retrieval doubled without a new model.** recall@5 went from 0.340 to
-  **0.702** by reading which questions failed and why: weighting question words
-  by how rare they are across filenames, so a question that names its contract
-  finds it, then removing that name from the search so the cover page stops
-  winning. A question that names no contract still gets the dense baseline.
-- **A 4B model on a laptop comes close to Gemini.** Graded answer by answer,
-  the local `gemma4:e4b` gets 20 of 24 right to Gemini's 22, on the same
-  questions.
-- **The dangerous failure is measured and fixed.** Asked about a clause a
-  contract lacks, both models sometimes answered with an adjacent one. A model
-  judge calibrated against the graded answers counts it, and one prompt line
-  removed it from both paths that ship without adding a wrongful refusal.
+Question answering over legal contracts. Upload PDFs, text files or scans, ask
+a question, and the answer cites the file and page it came from. Answers come
+from Gemini or from a local model through Ollama, and each account sees only
+its own documents. Retrieval and answers are evaluated on questions built from
+CUAD's expert clause annotations.
 
 | | |
 |---|---|
 | **Live demo** | [Hugging Face Space](https://huggingface.co/spaces/Erjoniii/CaseLens): five CUAD contracts, no account needed |
-| **Evaluation** | [evals/README.md](evals/README.md) |
-| **Retrieval** | recall@5 **0.702**, MRR **0.566** ([report](evals/reports/name-scoped.json)) |
-| **Graded answers** | local `gemma4:e4b` 20 of 24, Gemini 22 of 24 ([workbook](evals/reports/faithfulness-grading-graded.xlsx)) |
-| **Local setup** | [Running it](#running-it) |
+| **Retrieval** | recall@5 0.702, MRR 0.566 ([report](evals/reports/name-scoped.json)) |
+| **Graded answers** | `gemma4:e4b` 20 of 24, Gemini 22 of 24 ([workbook](evals/reports/faithfulness-grading-graded.xlsx)) |
+| **Evaluation details** | [evals/README.md](evals/README.md) |
 
 [![The read-only demo answering when the Scoutcam agreement becomes effective, citing the file and page](docs/demo.gif)](https://huggingface.co/spaces/Erjoniii/CaseLens)
+
+## How it works
+
+**Ingestion.** PDF, TXT and image uploads up to 25 MB. PDF pages are read with
+pdfplumber, and a page with almost no text is OCR'd with Tesseract at 300 dpi,
+one page at a time. A multi-page TIFF becomes one page per frame. Uploads are
+indexed one at a time.
+
+**Indexing.** Pages are split into 1000-character chunks with 150 characters
+of overlap, embedded with `nomic-embed-text`, and stored in PostgreSQL with
+pgvector. Each chunk records the model that embedded it, and a query searches
+only chunks from the active model, since vectors from different models are not
+comparable.
+
+**Retrieval.** When a question names a document ("the Acme agreement"), the
+search is restricted to that document and the name is removed from the query
+(see [Name-scoping](#name-scoping)). Users can also select documents; a name
+in the question then narrows the selection further. The ten nearest chunks go
+to the model.
+
+**Answering.** The model streams an answer that cites filename and page. With
+Gemini, a single scoped document under 40k tokens is sent whole instead of as
+chunks. With Gemma it is not, because Gemma answered worse from whole
+documents.
+
+## Evaluation
+
+The suite calls the same scoping and retrieval code as the API.
+
+- **Corpus:** 69 commercial contracts from [CUAD](https://www.atticusprojectai.org/cuad), 5,574 chunks.
+- **Questions:** 100, derived from CUAD's clause annotations, which were
+  labelled by law students under attorney supervision. Ground truth is a
+  `(filename, page)` pair found by locating the annotated span. CUAD's
+  `is_impossible` annotations supply questions about clauses a contract lacks.
+
+| Metric | Dense | Name-scoped (shipped) |
+|---|---:|---:|
+| recall@5 | 0.340 | 0.702 |
+| recall@10 | 0.397 | 0.721 |
+| MRR | 0.298 | 0.566 |
+| exact_term | 0.419 | 0.790 |
+| semantic | 0.321 | 0.750 |
+| multi_document | 0.204 | 0.300 |
+| latency p50 / p95 | 113ms / 161ms | 96ms / 137ms |
+
+### Name-scoping
+
+`resolve_scope` matches question words against punctuation-stripped filenames
+before searching. Each word is weighted by 1 / (number of filenames containing
+it), so a party name that appears in one filename outweighs "agreement", which
+appears in all 69. Matching is by substring rather than token, because
+filenames mix forms like "MERITLIFEINSURANCECO_..." and "Principal Life
+Insurance Company - ...", and stemming breaks names ("BloomEnergy" becomes
+"bloomenergi"). The search is restricted only when one document wins by a
+clear margin.
+
+The matched title is then removed from the query. Left in, it pulled the cover
+page into the results: page 1 was in the top 5 for 10 of the 17 misses where
+the right document had been found. "When does the Scoutcam agreement become
+effective?" is searched within the Scoutcam contract as "When does the become
+effective?".
+
+67 of the 74 single-document questions are scoped, none to the wrong contract.
+The other 7 name a party with several contracts in the corpus and fall back to
+dense search, as does any question that names no document. Every gold question
+names its contract, so questions without a name get the dense number, not the
+name-scoped one.
+
+With five contracts selected and a question about one of them, searching all
+five scored recall@5 0.373. Matching the name within the selection first
+scored 0.860, and that is what the app does.
 
 ### What did not work
 
@@ -42,157 +97,31 @@ real contracts, and so are the ideas that did not work:
 | Whole documents, local model | worse than 10 chunks | a 4B model extracts less reliably from a full contract |
 | A regex for declines | precision 0.59 | it cannot tell a supported "no" from an assertion |
 
-Started in May as a ChromaDB and HTMX prototype, and rebuilt in September
-around a retriever that is measured before anything changes.
-
----
-
-## What it does
-
-**Ingests.** PDF, TXT and image uploads up to 25 MB. Digital PDFs are read with
-pdfplumber; when a page yields almost no text the file is treated as scanned and
-re-read through Tesseract, converted one page at a time so a large scan cannot
-exhaust memory.
-
-**Indexes.** Pages are split into overlapping chunks, embedded, and stored in
-PostgreSQL with pgvector. Each chunk records the model that embedded it, so
-changing embedding models hides stale vectors instead of silently comparing
-across two different vector spaces.
-
-**Retrieves and answers.** A question that names a document ("the Acme
-agreement") is matched against the user's filenames, and the search is
-restricted to that document with the name removed from the query. Users can
-also select the documents a question is about; a selection is searched as a
-whole unless the question names one of them. The ten nearest chunks go to the
-model, which streams an answer citing filename and page. With Gemini, a single
-scoped document under 40k tokens is sent whole instead of as chunks. Answers
-come from Gemini or from Gemma running locally through Ollama.
-
-**Isolates.** Every document and chunk belongs to a user, and indexing,
-retrieval and document selection all filter on that owner. Cross-tenant isolation has negative tests in
-`backend/test_e2e.py`.
-
----
-
-## Evaluation
-
-To measure retrieval quality the suite runs the same scoping and retrieval
-code the API calls, so the numbers describe the shipped retriever rather than
-a reimplementation of it.
-
-**Corpus:** 69 commercial contracts from [CUAD](https://www.atticusprojectai.org/cuad)
-(Contract Understanding Atticus Dataset), 5,574 chunks.
-
-**Questions:** 100, derived from CUAD's clause annotations — labelled by law
-students under attorney supervision. Ground truth is a `(filename, page)` pair
-found by locating each annotated span in the document, so no label points at a
-page nobody read. `is_impossible` annotations supply questions about clauses a
-contract lacks, where the right answer is that the clause is not there.
-
-`nomic-embed-text`, 1000/150 chunking. Name-scoped is what the API serves;
-dense is kept as the comparison point every change is measured against.
-
-| Metric | Dense | Name-scoped |
-|---|---:|---:|
-| recall@5 | 0.340 | **0.702** |
-| recall@10 | 0.397 | 0.721 |
-| MRR | 0.298 | **0.566** |
-| exact_term | 0.419 | 0.790 |
-| semantic | 0.321 | 0.750 |
-| multi_document | 0.204 | 0.300 |
-| latency p50 / p95 | 113ms / 161ms | 96ms / 137ms |
-
-**Name-scoping** resolves the contract from the question before searching, in
-`resolve_scope`, which both API endpoints call. A
-question that says "the {party} agreement" is matched against filenames, and
-when one document clearly wins, the vector search is restricted to it. Each
-question word is worth 1 / (number of filenames containing it), so the party
-name that appears in one filename outweighs "agreement", which appears in all
-69 — equal weighting had let any two "... Services Agreement" files tie with
-the one being asked about. Matching is substring containment on a
-punctuation-stripped filename rather than token matching, because the corpus
-mixes "MERITLIFEINSURANCECO_..." with "Principal Life Insurance Company - ...",
-and because stemming breaks names ("BloomEnergy" stems to "bloomenergi").
-
-Once a document is resolved, its title is removed from the query before it is
-embedded. Those words have done their job, and left in they pull the cover
-page — where the party name and "AGREEMENT" sit in large type — into slots the
-clause should have; page 1 was in the top 5 for 10 of 17 right-document
-misses. "When does the Scoutcam agreement become effective?" is searched
-within the Scoutcam contract as "When does the become effective?", which reads
-badly and embeds well: inside one document, the clause is the only thing left
-to find. Only the title *span* goes — the contiguous run of matched words
-ending at the last one — so a topic word that also sits in a filename keeps
-its own mention: "the termination terms in the Acme Termination Agreement"
-becomes "the termination terms in the".
-
-67 of the 74 single-document questions scope, none to the wrong contract; the
-7 that abstain name a party with several contracts in the corpus, where a tie
-is the right answer. Everything else falls back to unrestricted dense search,
-so nothing regresses when a query names no document. Scoping is also faster,
-because the scan is smaller.
-
-The gold set is templated from CUAD
-categories, so every question names its contract by construction. Real queries
-often do not, and those take the dense path and the dense number.
-
-**Selecting documents.** Users can pick the documents a question is about. In a
-simulation, five selected contracts and a question about one of them,
-searching all five scores recall@5 0.373 once the title is stripped: the
-stripped question no longer says which contract, and all five have the
-clause. Matching the name inside the selection and narrowing to that document
-scores 0.860. The picker ships with the second rule.
-
-**Hybrid retrieval was tried and rejected.** A `tsvector` channel fused with
-the vector channel by reciprocal rank scored recall@5 0.126, well under the
-dense baseline. Lexical alone scored 0.051 — near chance — because once the
-party name is removed the remaining terms ("date", "agreement", "governing
-law") appear in all contracts, and the party name is absent from the chunk
-bodies: it lives in the filename.
-
-**Reranking and other embedders were measured too.** Two cross-encoder
-rerankers ordered pages worse than plain vector distance, even with the right
-document handed over. `qwen3-embedding:4b` trades literal matching for
-paraphrase; fused with nomic by reciprocal rank it lifts recall@10 by 0.07,
-and is not shipped because it means a second 2.5 GB model in memory.
-
-Anything claimed as an improvement will be measured against the committed
-baseline report, one change at a time.
-
 ### Answers
 
-Recall says whether the right page reached the model;
-[`evals/faithfulness.py`](evals/faithfulness.py) measures what the model does
-with it. 290 answers, from the local `gemma4:e4b` and from Gemini, were each
-graded against the CUAD annotations:
+[`evals/faithfulness.py`](evals/faithfulness.py) grades answers against the
+CUAD annotations. 290 answers from `gemma4:e4b` and Gemini were graded:
 
-- The local 4B model is in the same range as the hosted one: 20 good answers
-  to Gemini's 22 on the same 24 questions.
-- Ten retrieved chunks beat five for both.
-- For Gemini, reading the whole document beats retrieval on contracts up to
-  40k tokens: it stops declining questions whose answer was in front of it.
-  For Gemma the whole document is worse; it extracts less reliably from a full
-  contract than from focused chunks. Both behaviours ship.
-- The failure that matters is substitution: asked about a clause the contract
-  lacks, a model answers with a nearby one. One line in the system prompt
-  removed it from both shipped paths (Gemini 2 to 0, Gemma 1 to 0) without
-  adding a wrongful decline.
+- On the same 24 questions, Gemma gave 20 good answers and Gemini 22.
+- Ten retrieved chunks beat five for both models.
+- Whole documents up to 40k tokens helped Gemini, which stopped declining
+  questions whose answer was in the text, and hurt Gemma.
+- Asked about a clause the contract lacks, both models sometimes answered with
+  a related clause instead. One line in the system prompt removed this
+  (Gemini 2 to 0, Gemma 1 to 0) without adding wrongful declines.
 
-Grading is deterministic where it can be and a model judge where it cannot:
-no regex tells a supported "no" from an assertion. The judge agrees with the
-graded answers on 94% of good/not-good calls, and its calibration, including
-where it disagrees, is in [evals/README.md](evals/README.md).
-
----
+Declines are graded by a model judge, since a regex cannot tell a supported
+"no" from an assertion. The judge agrees with the manual grades on 94% of
+good/not-good calls; its calibration is in [evals/README.md](evals/README.md).
 
 ## Running it
 
-Requires Docker and [Ollama](https://ollama.com) with `nomic-embed-text` pulled.
+Requires Python 3.11, Docker, and [Ollama](https://ollama.com).
 
 ```bash
 ollama pull nomic-embed-text
 cp .env.example .env          # set GEMINI_API_KEY for answer generation
-pip install -r backend/requirements.lock    # Python 3.11, every version pinned
+pip install -r backend/requirements.lock
 docker compose up -d db       # PostgreSQL 16 + pgvector
 cd backend ; alembic upgrade head
 ```
@@ -204,11 +133,9 @@ cd backend && uvicorn main:app --reload      # http://localhost:8000/docs
 cd frontend && npm install && npm run dev    # http://localhost:3000
 ```
 
-Embeddings run locally through Ollama by default, so indexing and the
-retrieval evaluation cost nothing and work offline. Only answer generation
-calls an API; to run fully offline, `ollama pull gemma4:e4b` and set
-`LLM_PROVIDER=ollama`. Set `EMBEDDING_PROVIDER=gemini` to embed with Gemini
-instead.
+Only answer generation calls an API. To run fully offline, `ollama pull
+gemma4:e4b` and set `LLM_PROVIDER=ollama`. `EMBEDDING_PROVIDER=gemini` embeds
+with Gemini instead of Ollama.
 
 ### Evaluation
 
@@ -218,19 +145,18 @@ python -m evals.run --label my-experiment   # report to evals/reports/
 python -m evals.faithfulness --cuad path/to/CUAD_v1.json   # answer-level eval
 ```
 
-See [evals/README.md](evals/README.md) for the gold-set format and how to
+[evals/README.md](evals/README.md) covers the gold-set format and how to
 reproduce the corpus.
 
 ### Deploying
 
-One container holds the whole application: the built frontend, the API,
-Tesseract, and Ollama with `nomic-embed-text`, so production retrieval is the
-retrieval that was measured. It runs as a Hugging Face Space against a Postgres
-with pgvector (Neon's free tier works), and answers come from Gemini.
+One container holds the frontend, the API, Tesseract, and Ollama with
+`nomic-embed-text`, so production uses the same embedder as the evaluation. It
+runs as a Hugging Face Space against Postgres with pgvector (Neon's free tier
+works), with Gemini answering.
 
-1. Create a Neon project and copy its connection string. From your machine,
-   create the schema and seed the read-only demo with its five CUAD contracts,
-   from any folder holding CUAD's PDFs (`evals/corpus` does):
+1. Create a Neon project. From your machine, create the schema and seed the
+   read-only demo from any folder holding CUAD's PDFs:
 
    ```bash
    cd backend
@@ -238,139 +164,89 @@ with pgvector (Neon's free tier works), and answers come from Gemini.
    DATABASE_URL="<neon url>" python seed_demo.py ../evals/corpus
    ```
 
-2. Create a Docker Space on Hugging Face. Under *Settings*, add the secrets
-   `DATABASE_URL`, `JWT_SECRET` and `GEMINI_API_KEY`, and the variables
+2. Create a Docker Space. Under *Settings*, add the secrets `DATABASE_URL`,
+   `JWT_SECRET` and `GEMINI_API_KEY`, and the variables
    `ENVIRONMENT=production`, `LLM_PROVIDER=gemini` and `REGISTRATION_OPEN=false`.
 
-3. Publish the committed code. git asks for a Hugging Face token with write
-   access:
+3. Publish the committed code (git asks for a Hugging Face token with write
+   access):
 
    ```bash
    deploy/huggingface/push.sh <hf-username>/<space-name>
    ```
 
-With registration closed, visitors can only use the demo account. It cannot
-upload or delete, and all its visitors together get `DEMO_DAILY_QUESTIONS`
-(200) questions a day, which bounds what the Space can spend of the Gemini key. If the Space logs warn that `X-Forwarded-For` came
-from an untrusted peer, set `TRUSTED_PROXIES` to that peer's network, or every
-visitor shares one rate-limit bucket.
+With registration closed, visitors can only use the demo account, which cannot
+upload or delete. All its visitors share `DEMO_DAILY_QUESTIONS` (200) questions
+a day, and each question carries at most ten earlier exchanges, which bounds
+Gemini spend. If the Space logs warn that `X-Forwarded-For` came from an
+untrusted peer, set `TRUSTED_PROXIES` to that network, or all visitors share
+one rate-limit bucket.
 
----
+## Design notes
 
-## Architecture
+**Ground truth is a page, never a chunk id.** Chunk ids change with the
+chunking configuration, so labels tied to them would break on the first
+chunking experiment, and the damage would look like a retrieval change.
 
-```text
-React 19 + Vite + Tailwind (shadcn/Radix)
-      |
-      v
-FastAPI  --  JWT auth - per-IP rate limits - streaming responses
-      |
-      +--> OCR pipeline -- pdfplumber, with page-by-page Tesseract fallback
-      |
-      +--> Embedding provider -- Ollama (local) or Gemini, swappable by config
-      |
-      +--> PostgreSQL 16 + pgvector -- chunks, embeddings, users, documents
-      |
-      +--> Answer generation -- Gemini, or Gemma locally via Ollama, streamed
-```
+**The eval validates its own labels.** A gold entry naming a document that is
+not in the corpus fails the run instead of scoring zero, since a mistyped
+filename and a real miss look the same once averaged.
+
+**Embeddings default to a local model.** A chunking sweep re-embeds the whole
+corpus, which against an API is slow, rate-limited and costly. Vectors are
+cached by content hash, so repeated runs embed only what changed.
+
+**The API and the eval share one prompt.** Both import the system prompt and
+context formats, so the answer eval measures the prompt that ships.
+
+## Stack
 
 | Layer | Choice |
 |---|---|
-| API | FastAPI, SQLAlchemy 2.0 async, Alembic |
+| API | FastAPI, SQLAlchemy 2, Alembic |
 | Database | PostgreSQL 16 with pgvector (untyped `vector`, width per embedding model) |
-| Embeddings | `nomic-embed-text` via Ollama, or `gemini-embedding-001`; `qwen3-embedding` measured, not shipped |
-| Generation | `gemma4:e4b` via Ollama, or Gemini (`gemini-flash-latest`); streamed |
-| OCR | pdfplumber, Tesseract + pdf2image fallback |
+| Embeddings | `nomic-embed-text` via Ollama, or `gemini-embedding-001` |
+| Generation | `gemma4:e4b` via Ollama, or Gemini (`gemini-flash-latest`) |
+| OCR | pdfplumber, Tesseract, pdf2image |
 | Frontend | Vite, React 19, TypeScript, Tailwind, Radix |
 | Auth | bcrypt, PyJWT, Bearer tokens |
 
-### Decisions worth explaining
-
-**Chunks record their embedding model.** Vectors from different models occupy
-different spaces, and comparing across them returns a ranking that is meaningless
-but entirely plausible-looking. Queries filter on the active model.
-
-**Embeddings default to a local model.** Beyond cost, this is what makes the
-evaluation reproducible: a chunking sweep re-embeds the whole corpus, and doing
-that against an API is slow, rate-limited and expensive. Vectors are cached by
-content hash, so repeated runs only embed what changed.
-
-**Ground truth is a page, never a chunk id.** Chunk ids are a property of the
-chunking configuration, and chunking is the first thing you change — labelling by
-chunk id invalidates the dataset on the first sweep, and the resulting movement
-looks like a retrieval change rather than broken labels.
-
-**The eval validates its own labels.** A gold entry naming a document not in the
-corpus fails the run instead of scoring zero. A mistyped filename and a genuine
-retrieval failure are indistinguishable once averaged.
-
-**A selection is a candidate set, not a scope.** Searching every selected
-document with the question's title stripped scored 0.373, because the stripped
-question no longer says which contract. The name match runs inside the
-selection first, and a title is only stripped once a single document is in
-scope.
-
-**Whole-document context is a per-provider setting.** A rule of "whatever fits
-in 60% of the window" would have sent Gemma the small documents where it
-measured worse, so the limit comes from the measurements instead: off for
-Ollama, 40k tokens for Gemini.
-
-**The API and the eval share one prompt.** The system prompt and context
-formats are imported by both, so the answer-level eval measures the prompt
-that ships.
-
----
-
 ## Security
 
-- Passwords hashed with bcrypt; sessions are signed JWTs (HS256) sent as a
-  Bearer header. There is no cookie authentication, so a cross-site request
-  cannot authenticate (`backend/test_csrf.py`), and CORS is pinned to
-  `ALLOWED_ORIGINS`.
-- Documents and chunks carry an owner; indexing, retrieval and document
-  selection all filter on it. Cross-tenant negative tests in
-  `backend/test_e2e.py`.
-- Rate limits on auth (10/min) and query (30/min) are counted in PostgreSQL,
+- Passwords are hashed with bcrypt, and an unknown email costs the same check
+  as a wrong password. Sessions are signed JWTs sent as a Bearer header; with
+  no cookie authentication, a cross-site request cannot authenticate
+  (`backend/test_csrf.py`). CORS is pinned to `ALLOWED_ORIGINS`.
+- Every document and chunk has an owner, and indexing, retrieval and document
+  selection filter on it (cross-tenant tests in `backend/test_e2e.py`).
+- Rate limits on auth (10/min) and queries (30/min) are counted in PostgreSQL,
   so they hold across workers. `X-Forwarded-For` is honoured only from
-  `TRUSTED_PROXIES`, so a client cannot choose its own bucket
-  (`backend/test_limits.py`).
-- Uploads are extension-allowlisted, filename-validated against path
-  traversal, and streamed to disk with the 25 MB cap enforced mid-stream.
-- Logins from an unrecognised device fingerprint trigger an email alert.
-
-See [Known limitations](#known-limitations) for what this does **not** do.
-
----
+  `TRUSTED_PROXIES` (`backend/test_limits.py`).
+- Uploads are extension-allowlisted and filename-validated. A request body over
+  the 25 MB cap is refused as it arrives, because the framework parses an
+  upload before the endpoint's sign-in check runs.
+- A login from an unrecognised device triggers an email alert.
 
 ## Known limitations
 
-Specific and current.
-
-1. **No vector index.** Retrieval is an exact scan, correct and fast enough at
-   5,574 chunks (~113ms p50), but it will not scale. An HNSW index is worth
-   adding once there is a latency number to improve on.
-
-2. **Substitution is reduced, not ruled out.** A prompt line removed it from
-   both shipped paths in the eval, but for the local model the fix is
-   probabilistic: a second sample of the same question led with the adjacent
-   clause again.
-
-3. **Tokens live in `localStorage`.** That rules out CSRF entirely, and leaves
-   the token readable by any script injected into the origin.
-
-4. **The gold set is small and templated.** 100 questions, each naming its
-   contract. A change has to move four or five answers to clear the noise, and
-   questions that name no document are under-represented.
-
----
+1. **No vector index.** Retrieval is an exact scan, fast enough at 5,574 chunks
+   but not at scale. An HNSW index is the next step once latency matters.
+2. **The prompt fix is probabilistic.** For the local model, a second sample of
+   the same question again led with the related clause instead of saying the
+   clause was missing.
+3. **Tokens live in `localStorage`.** That rules out CSRF, but any script
+   injected into the page could read them.
+4. **The gold set is small and templated.** A change has to move four or five
+   answers to clear the noise, and questions that name no document are
+   under-represented.
 
 ## Next
 
-In order:
-
-1. Section headings carried into chunks, then query rewriting, for the
-   remaining within-document misses.
+1. Carry section headings into chunks, then try query rewriting, for the
+   remaining misses within a document.
 2. A larger gold set, once retrieval stops moving.
+
+Started in May as a ChromaDB and HTMX prototype; rebuilt in September.
 
 ## Licence
 

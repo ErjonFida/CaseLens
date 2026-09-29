@@ -6,10 +6,8 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { DocumentIcon, DocumentStatusBadge } from './DocumentMeta';
+import { ACCEPTED_FILES, DocumentIcon, DocumentStatusBadge } from './DocumentMeta';
 import type { DocumentStatusMap } from '../../types';
-
-const ACCEPTED_FILES = '.pdf,.txt,.png,.jpg,.jpeg,.tiff';
 
 interface Props {
   documents: string[];

@@ -61,17 +61,12 @@ export default function Dashboard() {
         setIsDemo(Boolean(me.is_demo));
         await loadDocuments();
       } catch (err: any) {
-        if (cancelled) return;
-        if (err?.status === 401) {
-          removeStoredToken();
-          navigate('/login');
-          return;
-        }
+        if (cancelled || err?.status === 401) return; // fetchWithAuth is already on its way to /login
         // A network failure is not an auth failure: keep the session and say the
-        // backend is unreachable, rather than bouncing to /login where signing
+        // server is unreachable, rather than bouncing to /login where signing
         // in cannot work either.
         console.error('Failed to load user data:', err);
-        toast.error('Cannot reach the backend API. Is the server running on port 8000?');
+        toast.error('The server could not be reached. Try again in a moment.');
       }
     })();
 

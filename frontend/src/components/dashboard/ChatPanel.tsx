@@ -224,7 +224,7 @@ export default function ChatPanel({
           </form>
 
           <div className="flex items-center justify-between text-[11px] text-muted-foreground mt-2 px-1">
-            <span>Powered by Google Gemini • Responses cite source files &amp; pages</span>
+            <span>Responses cite source files &amp; pages</span>
             {messages.length > 0 && (
               <button
                 type="button"

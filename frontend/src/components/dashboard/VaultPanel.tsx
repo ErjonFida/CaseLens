@@ -3,10 +3,8 @@ import { FolderOpen, Search, Trash2, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
-import { DocumentIcon, DocumentStatusBadge } from './DocumentMeta';
+import { ACCEPTED_FILES, DocumentIcon, DocumentStatusBadge } from './DocumentMeta';
 import type { DocumentStatusMap } from '../../types';
-
-const ACCEPTED_FILES = '.pdf,.txt,.png,.jpg,.jpeg,.tiff';
 
 interface Props {
   documents: string[];

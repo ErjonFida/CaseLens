@@ -19,7 +19,10 @@ import {
 import { Badge } from '@/components/ui/badge';
 import type { DocumentStatus } from '../../types';
 
-const IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'tiff', 'bmp'];
+const IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'tif', 'tiff', 'bmp'];
+
+/** The upload picker's filter: ALLOWED_FILE_EXTENSIONS in backend/config.py. */
+export const ACCEPTED_FILES = ['.pdf', '.txt', ...IMAGE_EXTENSIONS.map((e) => `.${e}`)].join(',');
 
 export function DocumentIcon({ filename }: { filename: string }) {
   const ext = filename.split('.').pop()?.toLowerCase();

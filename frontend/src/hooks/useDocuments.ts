@@ -13,7 +13,11 @@ import * as api from '../api/client';
 import type { DocumentStatusMap } from '../types';
 
 const POLL_INTERVAL_MS = 2000;
-const POLL_MAX_ATTEMPTS = 30;
+// Scanned documents are OCR'd page by page and uploads wait their turn, so a
+// job can take many minutes. The server forgets a status an hour after its
+// last update (_STATUS_TTL in backend/legal_api/api.py), which bounds the wait.
+const POLL_GIVE_UP_MS = 60 * 60 * 1000;
+const POLL_MAX_FAILURES = 5;
 
 export function useDocuments() {
   const [documents, setDocuments] = useState<string[]>([]);
@@ -21,7 +25,7 @@ export function useDocuments() {
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Polling runs for up to a minute. Without this, navigating away mid-upload
+  // Polling can run for many minutes. Without this, navigating away mid-upload
   // leaves the loop running, updating state and firing toasts for a screen that
   // is gone. React 18 no longer warns about that, so it fails silently.
   const mounted = useRef(true);
@@ -61,13 +65,16 @@ export function useDocuments() {
 
   const poll = useCallback(
     async (filename: string) => {
-      for (let attempt = 0; attempt < POLL_MAX_ATTEMPTS; attempt++) {
+      const deadline = Date.now() + POLL_GIVE_UP_MS;
+      let failures = 0;
+      while (Date.now() < deadline) {
         await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
         if (!mounted.current) return;
 
         try {
           const status = await api.getDocumentStatus(filename);
           if (!mounted.current) return;
+          failures = 0;
 
           setStatuses((prev) => ({ ...prev, [filename]: status }));
 
@@ -80,8 +87,13 @@ export function useDocuments() {
             toast.error(`Indexing failed for "${filename}": ${status}`);
             return;
           }
+          if (status === 'unknown') return; // deleted meanwhile, or forgotten by the server
         } catch {
-          return;
+          // One dropped request is not a failed upload; several in a row is an outage.
+          if (++failures >= POLL_MAX_FAILURES) {
+            if (mounted.current) toast.error(`Lost track of "${filename}". Refresh the list to see if it finished.`);
+            return;
+          }
         }
       }
     },

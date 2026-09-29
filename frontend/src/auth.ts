@@ -18,5 +18,12 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
-  return fetch(url, { ...options, headers });
+  const res = await fetch(url, { ...options, headers });
+  // A token the server stopped accepting (they expire) ends the session
+  // wherever that is noticed, not only on the dashboard's first load.
+  if (res.status === 401 && token) {
+    removeStoredToken();
+    window.location.assign('/login');
+  }
+  return res;
 };

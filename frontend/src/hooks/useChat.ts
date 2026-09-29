@@ -16,6 +16,10 @@ import type { ChatMessage } from '../types';
 const timestamp = () =>
   new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+// The most the API accepts with one question (MAX_CHAT_MESSAGES in
+// backend/legal_api/schemas.py): ten exchanges and the question itself.
+const HISTORY_SENT = 21;
+
 export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -62,7 +66,7 @@ export function useChat() {
 
       try {
         const reader = await api.openChatStream(
-          history.map((m) => ({ role: m.role, content: m.content })),
+          history.slice(-HISTORY_SENT).map((m) => ({ role: m.role, content: m.content })),
           controller.signal,
           documents
         );
@@ -77,11 +81,13 @@ export function useChat() {
         }
       } catch (err: any) {
         if (err?.name === 'AbortError') return;
-        const reason = err?.message || 'Unable to reach the backend API.';
+        // The server's own message, when it sent one, is the whole story (the
+        // demo's daily allowance, say). Only a request that never got an
+        // answer points at the server itself.
+        const reached = err instanceof api.ApiError;
+        const reason = reached ? err.message : 'The server could not be reached.';
         toast.error(reason);
-        rewrite(
-          `**Request failed**\n\n${reason}\n\nNo answer was generated. Check that the FastAPI server is running on port 8000 and that its logs show no errors.`
-        );
+        rewrite(`**Request failed**\n\n${reason}\n\nNo answer was generated.`);
       } finally {
         setIsGenerating(false);
         abortRef.current = null;

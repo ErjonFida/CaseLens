@@ -1,11 +1,3 @@
-export interface UserProfile {
-  email: string;
-  first_name?: string;
-  last_name?: string;
-  company?: string;
-  phone_number?: string;
-}
-
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
@@ -23,11 +15,6 @@ export type DocumentStatus =
 
 export type DocumentStatusMap = Record<string, DocumentStatus>;
 
-export interface DocumentStatusResponse {
-  filename: string;
-  status: DocumentStatus;
-}
-
 export interface SearchContext {
   text: string;
   metadata: {
@@ -35,8 +22,4 @@ export interface SearchContext {
     page?: number;
     [key: string]: any;
   };
-}
-
-export interface SearchResponse {
-  contexts: SearchContext[];
 }

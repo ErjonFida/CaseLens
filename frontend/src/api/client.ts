@@ -21,7 +21,8 @@ export class ApiError extends Error {
 
 async function detailOf(res: Response, fallback: string): Promise<string> {
   const body = await res.json().catch(() => ({}));
-  return body?.detail || fallback;
+  // A validation error's detail is a list of objects, not a sentence.
+  return typeof body?.detail === 'string' ? body.detail : fallback;
 }
 
 async function expectOk(res: Response, fallback: string): Promise<Response> {
@@ -118,8 +119,7 @@ export async function openChatStream(
 }
 
 export async function logout(): Promise<void> {
-  // Uses the authenticated helper like every other call: logout currently only
-  // clears a cookie, but an endpoint that later needs the bearer token should
-  // not be the one place that does not send it.
+  // Tokens are stateless, so the server has nothing to clear today; the call
+  // stays so that an endpoint which later revokes tokens already gets it.
   await fetchWithAuth('/api/logout', { method: 'POST' }).catch(() => undefined);
 }

@@ -112,6 +112,10 @@ class Settings(BaseSettings):
     # visitors: each one is a Gemini call on the deployer's key.
     DEMO_DAILY_QUESTIONS: int = 200
 
+    # Off on a public deployment, where the demo is the way in: an account
+    # made through /api/register can upload and has no daily question cap.
+    REGISTRATION_OPEN: bool = True
+
     # The built frontend, served by the API itself when set, so one container
     # is the whole application. Unset in development, where Vite serves it.
     STATIC_DIR: str = ""

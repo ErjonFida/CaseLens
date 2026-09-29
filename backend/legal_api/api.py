@@ -81,9 +81,10 @@ def _whole_document(scope: list[int] | None, user: User, session) -> str | None:
 
 @router.get("/api/health")
 async def health(db: AsyncSession = Depends(get_db)):
-    """Liveness, and whether a demo account is seeded - the sign-in page asks."""
+    """Liveness, whether a demo account is seeded, and whether registration is
+    open - the sign-in page asks."""
     demo = (await db.execute(select(User.id).where(User.is_demo.is_(True)).limit(1))).first() is not None
-    return {"status": "online", "demo": demo, "docs_url": "/docs"}
+    return {"status": "online", "demo": demo, "registration": settings.REGISTRATION_OPEN, "docs_url": "/docs"}
 
 
 def _writable(user: User) -> None:
@@ -231,6 +232,8 @@ _SAFE_FILENAME_RE = re.compile(r'^[\w\-. ]+$')
 
 @router.post("/api/register")
 async def register(request: Request, payload: RegisterRequest, db: AsyncSession = Depends(get_db)):
+    if not settings.REGISTRATION_OPEN:
+        raise HTTPException(status_code=403, detail="Registration is closed on this server")
     auth_limiter.check(_client_ip(request))
 
     if payload.password != payload.confirm_password:

@@ -74,6 +74,20 @@ def test_demo_account_is_read_only_and_capped():
         _sql("DELETE FROM users WHERE email = :e", e=email)
 
 
+def test_registration_can_be_closed():
+    password = "correct horse"
+    payload = {"email": f"closed-{uuid.uuid4()}@example.com", "password": password, "confirm_password": password,
+               "first_name": "Alice", "last_name": "Smith", "company": "ACME Legal", "phone_number": "+1 (555) 019-2834"}
+    settings.REGISTRATION_OPEN = False
+    try:
+        with TestClient(app) as client:
+            assert client.get("/api/health").json()["registration"] is False
+            register = client.post("/api/register", json=payload)
+            assert register.status_code == 403, register.text
+    finally:
+        settings.REGISTRATION_OPEN = True
+
+
 def test_one_container_serves_the_app_and_the_api():
     with TestClient(app) as client:
         assert "CaseLens" in client.get("/").text
@@ -87,5 +101,6 @@ if __name__ == "__main__":
     test_trusted_proxy_can_be_a_range()
     test_neon_url_works_for_both_drivers()
     test_demo_account_is_read_only_and_capped()
+    test_registration_can_be_closed()
     test_one_container_serves_the_app_and_the_api()
     print("ok")

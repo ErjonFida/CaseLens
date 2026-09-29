@@ -37,8 +37,9 @@ export async function getCurrentUser(): Promise<{ email: string; is_demo?: boole
   return res.json();
 }
 
-/** Liveness, and whether this server has a demo account to offer. No sign-in needed. */
-export async function getHealth(): Promise<{ status: string; demo: boolean }> {
+/** Liveness, whether this server has a demo account to offer, and whether it
+ *  takes registrations. No sign-in needed. */
+export async function getHealth(): Promise<{ status: string; demo: boolean; registration: boolean }> {
   const res = await fetch('/api/health');
   await expectOk(res, 'The server is not responding');
   return res.json();

@@ -18,10 +18,18 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [demoAvailable, setDemoAvailable] = useState(false);
   const [demoLoading, setDemoLoading] = useState(false);
+  const [registrationOpen, setRegistrationOpen] = useState(false);
 
   // Offer the demo only where one is seeded; a local install usually has none.
+  // Registration is closed on the public demo deployment.
   useEffect(() => {
-    api.getHealth().then((h) => setDemoAvailable(h.demo)).catch(() => undefined);
+    api
+      .getHealth()
+      .then((h) => {
+        setDemoAvailable(h.demo);
+        setRegistrationOpen(h.registration);
+      })
+      .catch(() => undefined);
   }, []);
 
   const handleDemo = async () => {
@@ -145,12 +153,14 @@ export default function Login() {
               </Button>
             )}
 
-            <p className="text-center text-xs text-muted-foreground mt-2">
-              Don't have an account yet?{' '}
-              <Link to="/register" className="text-primary hover:underline font-medium">
-                Register here
-              </Link>
-            </p>
+            {registrationOpen && (
+              <p className="text-center text-xs text-muted-foreground mt-2">
+                Don't have an account yet?{' '}
+                <Link to="/register" className="text-primary hover:underline font-medium">
+                  Register here
+                </Link>
+              </p>
+            )}
           </CardFooter>
         </form>
       </Card>

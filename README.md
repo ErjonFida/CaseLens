@@ -240,7 +240,7 @@ with pgvector (Neon's free tier works), and answers come from Gemini.
 
 2. Create a Docker Space on Hugging Face. Under *Settings*, add the secrets
    `DATABASE_URL`, `JWT_SECRET` and `GEMINI_API_KEY`, and the variables
-   `ENVIRONMENT=production` and `LLM_PROVIDER=gemini`.
+   `ENVIRONMENT=production`, `LLM_PROVIDER=gemini` and `REGISTRATION_OPEN=false`.
 
 3. Publish the committed code. git asks for a Hugging Face token with write
    access:
@@ -249,9 +249,9 @@ with pgvector (Neon's free tier works), and answers come from Gemini.
    deploy/huggingface/push.sh <hf-username>/<space-name>
    ```
 
-The demo account cannot upload or delete, and all its visitors together get
-`DEMO_DAILY_QUESTIONS` (200) questions a day, which bounds what the demo can
-spend of the Gemini key. If the Space logs warn that `X-Forwarded-For` came
+With registration closed, visitors can only use the demo account. It cannot
+upload or delete, and all its visitors together get `DEMO_DAILY_QUESTIONS`
+(200) questions a day, which bounds what the Space can spend of the Gemini key. If the Space logs warn that `X-Forwarded-For` came
 from an untrusted peer, set `TRUSTED_PROXIES` to that peer's network, or every
 visitor shares one rate-limit bucket.
 

@@ -23,11 +23,13 @@ real contracts, and so are the ideas that did not work:
 
 | | |
 |---|---|
-| **Live demo** | _not yet deployed_ |
+| **Live demo** | [Hugging Face Space](https://huggingface.co/spaces/Erjoniii/CaseLens): five CUAD contracts, no account needed |
 | **Evaluation** | [evals/README.md](evals/README.md) |
 | **Retrieval** | recall@5 **0.702**, MRR **0.566** ([report](evals/reports/name-scoped.json)) |
 | **Graded answers** | local `gemma4:e4b` 20 of 24, Gemini 22 of 24 ([workbook](evals/reports/faithfulness-grading-graded.xlsx)) |
 | **Local setup** | [Running it](#running-it) |
+
+[![The read-only demo answering when the Scoutcam agreement becomes effective, citing the file and page](docs/demo.gif)](https://huggingface.co/spaces/Erjoniii/CaseLens)
 
 ### What did not work
 
@@ -366,10 +368,9 @@ Specific and current.
 
 In order:
 
-1. Deploy, with Gemini answering.
-2. Section headings carried into chunks, then query rewriting, for the
+1. Section headings carried into chunks, then query rewriting, for the
    remaining within-document misses.
-3. A larger gold set, once retrieval stops moving.
+2. A larger gold set, once retrieval stops moving.
 
 ## Licence
 

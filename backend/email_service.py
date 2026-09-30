@@ -28,15 +28,10 @@ SMTP_SENDER = os.environ.get("SMTP_SENDER")
 
 def send_email(to_email: str, subject: str, html_content: str) -> bool:
 
-    is_configured = all([SMTP_HOST, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD, SMTP_SENDER])
-    is_placeholder = (
-        SMTP_USERNAME == "email" or 
-        SMTP_SENDER == "email@gmail.com" or 
-        SMTP_PASSWORD == "password"
-    )
-
-    if not is_configured or is_placeholder:
-        logger.warning("SMTP is not configured or uses placeholders. Logging email to console and local log file.")
+    # .env.example leaves the SMTP settings commented out, so unset means not
+    # configured; guessing at placeholder values missed the ones it shipped.
+    if not all([SMTP_HOST, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD, SMTP_SENDER]):
+        logger.warning("SMTP is not configured. Logging email to console and local log file.")
         logger.info("--------------------------------------------------")
         logger.info(f"TO: {to_email}")
         logger.info(f"SUBJECT: {subject}")
@@ -67,15 +62,13 @@ def send_email(to_email: str, subject: str, html_content: str) -> bool:
 
     try:
         port = int(SMTP_PORT)
-        if port == 465:
-            server = smtplib.SMTP_SSL(SMTP_HOST, port)
-        else:
-            server = smtplib.SMTP(SMTP_HOST, port)
-            server.starttls()
-            
-        server.login(SMTP_USERNAME, SMTP_PASSWORD)
-        server.sendmail(SMTP_SENDER, to_email, msg.as_string())
-        server.quit()
+        # A timeout, or an unresponsive server holds the sending thread forever.
+        smtp = smtplib.SMTP_SSL if port == 465 else smtplib.SMTP
+        with smtp(SMTP_HOST, port, timeout=10) as server:
+            if port != 465:
+                server.starttls()
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            server.sendmail(SMTP_SENDER, to_email, msg.as_string())
         logger.info(f"Email sent successfully to {to_email}")
         return True
     except Exception as e:

@@ -121,7 +121,7 @@ class Settings(BaseSettings):
     STATIC_DIR: str = ""
 
     UPLOAD_DIR: str = str(BASE_DIR / "uploads")
-    ALLOWED_FILE_EXTENSIONS: set[str] = {".pdf", ".txt", ".png", ".jpg", ".jpeg", ".tiff", ".bmp"}
+    ALLOWED_FILE_EXTENSIONS: set[str] = {".pdf", ".txt", ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp"}
     MAX_FILE_SIZE_BYTES: int = 25 * 1024 * 1024
 
     model_config = {"env_file": env_path, "extra": "ignore"}

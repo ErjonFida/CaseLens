@@ -1,13 +1,19 @@
 import os
 import re
 import logging
-from PIL import Image
+from PIL import Image, ImageSequence
 import pdfplumber
-from pdf2image import convert_from_path
+from pdf2image import convert_from_path, pdfinfo_from_path
 import sys
 import pytesseract
 
 logger = logging.getLogger("ocr_extractor")
+
+# A PDF page with less native text than this is taken for a scan - or a scan
+# whose text layer holds only a stamp or header - and read through OCR.
+MIN_PAGE_CHARS = 100
+# Tesseract's accuracy on small print drops well below 300 dpi.
+OCR_DPI = 300
 
 if sys.platform.startswith('win'):
     _default_tesseract = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -77,92 +83,59 @@ def extract_text_from_txt(file_path: str) -> str:
         return f.read()
 
 
-def extract_text_from_image(file_path: str) -> str:
+def extract_pages_from_image(file_path: str) -> list[dict]:
+    """One page per frame: a scanned TIFF often holds the whole document."""
     logger.info(f"Performing OCR on image: {file_path}")
-    try:
-        img = Image.open(file_path)
-        text = pytesseract.image_to_string(img)
-        return text
-    except Exception as e:
-        logger.error(f"Error during image OCR for {file_path}: {e}")
-        raise e
+    pages = []
+    with Image.open(file_path) as img:
+        for page_num, frame in enumerate(ImageSequence.Iterator(img), 1):
+            text = normalize_text(pytesseract.image_to_string(frame.copy()))
+            if text:
+                pages.append({"page": page_num, "text": text})
+    return pages
 
 
-def _get_pdf_page_count(file_path: str) -> int:
+def _ocr_pdf_page(file_path: str, page_num: int, poppler_dir: str | None) -> str:
+    # One page at a time, so a large scan cannot exhaust memory.
+    images = convert_from_path(file_path, dpi=OCR_DPI, first_page=page_num, last_page=page_num,
+                               poppler_path=poppler_dir)
     try:
-        with pdfplumber.open(file_path) as pdf:
-            return len(pdf.pages)
-    except Exception:
-        return 0
+        return pytesseract.image_to_string(images[0]) if images else ""
+    finally:
+        for image in images:
+            image.close()
 
 
 def extract_pages_from_pdf(file_path: str) -> list[dict]:
+    """Native text where a page has a text layer, OCR where it has too little.
 
+    Decided page by page: a scanned contract with a digital cover page, or a
+    signed scan carrying a text stamp, has a text layer on some pages only.
+    """
     logger.info(f"Processing PDF: {file_path}")
-    pages_data = []
-    
+    poppler_dir = find_poppler_path()
     try:
         with pdfplumber.open(file_path) as pdf:
-            for page_num, page in enumerate(pdf.pages, 1):
-                page_text = page.extract_text()
-                if page_text:
-                    pages_data.append({
-                        "page": page_num,
-                        "text": normalize_text(page_text)
-                    })
+            native = [page.extract_text() or "" for page in pdf.pages]
     except Exception as e:
-        logger.warning(f"Native PDF extraction failed/errored for {file_path}: {e}")
-    
-    full_native_text = "".join([p["text"] for p in pages_data])
-    
-    if len(full_native_text.strip()) > 100:
-        logger.info(f"Successfully extracted native text from PDF: {file_path} ({len(full_native_text)} chars)")
-        return pages_data
-        
-    logger.info(f"Native extraction returned too little text. Falling back to OCR for PDF: {file_path}")
-    pages_data = []
-    try:
-        poppler_dir = find_poppler_path()
-        if poppler_dir:
-            logger.info(f"Using Poppler path: {poppler_dir}")
+        logger.warning(f"Native PDF extraction failed for {file_path}, reading every page through OCR: {e}")
+        native = [""] * pdfinfo_from_path(file_path, poppler_path=poppler_dir)["Pages"]
 
-        total_pages = _get_pdf_page_count(file_path)
-        if total_pages == 0:
-            total_pages = 1
-            
-        logger.info(f"OCR: processing {total_pages} pages one at a time.")
-        for page_num in range(1, total_pages + 1):
-            logger.info(f"Running OCR on page {page_num}/{total_pages}")
+    pages, ocr_pages = [], 0
+    for page_num, raw in enumerate(native, 1):
+        text = normalize_text(raw)
+        if len(text) < MIN_PAGE_CHARS:
+            ocr_pages += 1
             try:
-                convert_kwargs = {
-                    "pdf_path": file_path,
-                    "dpi": 150,
-                    "first_page": page_num,
-                    "last_page": page_num,
-                }
-                if poppler_dir:
-                    convert_kwargs["poppler_path"] = poppler_dir
-                    
-                page_images = convert_from_path(**convert_kwargs)
-                if page_images:
-                    page_text = pytesseract.image_to_string(page_images[0])
-                    # Explicitly close/delete the PIL image to free memory
-                    page_images[0].close()
-                    del page_images
-                    
-                    if page_text:
-                        pages_data.append({
-                            "page": page_num,
-                            "text": normalize_text(page_text)
-                        })
-            except Exception as page_err:
-                logger.warning(f"OCR failed for page {page_num}: {page_err}")
-                continue
-                
-        return pages_data
-    except Exception as e:
-        logger.error(f"Failed to perform OCR on PDF {file_path}: {e}")
-        raise e
+                ocr_text = normalize_text(_ocr_pdf_page(file_path, page_num, poppler_dir))
+            except Exception as e:
+                logger.warning(f"OCR failed for page {page_num} of {file_path}: {e}")
+                ocr_text = ""
+            text = max(text, ocr_text, key=len)
+        if text:
+            pages.append({"page": page_num, "text": text})
+    logger.info(f"Extracted {len(pages)} of {len(native)} pages from {file_path}, {ocr_pages} through OCR")
+    return pages
 
 
 def extract_document_pages(file_path: str) -> list[dict]:
@@ -177,9 +150,8 @@ def extract_document_pages(file_path: str) -> list[dict]:
         return [{"page": 1, "text": normalize_text(raw_text)}]
     elif ext == '.pdf':
         return extract_pages_from_pdf(file_path)
-    elif ext in ['.png', '.jpg', '.jpeg', '.tiff', '.bmp']:
-        raw_text = extract_text_from_image(file_path)
-        return [{"page": 1, "text": normalize_text(raw_text)}]
+    elif ext in ['.png', '.jpg', '.jpeg', '.tif', '.tiff', '.bmp']:
+        return extract_pages_from_image(file_path)
     else:
         logger.warning(f"Unsupported extension '{ext}'. Trying generic text reader.")
         raw_text = extract_text_from_txt(file_path)

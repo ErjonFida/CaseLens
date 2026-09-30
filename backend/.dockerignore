@@ -1,0 +1,5 @@
+# Local data: uploaded documents and the email log must not be baked into an image.
+uploads/
+db/
+__pycache__/
+*.pyc

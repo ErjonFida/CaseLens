@@ -5,16 +5,13 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
+# No compiler: every locked package ships a wheel for this image.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
     curl \
-    git \
     tesseract-ocr \
     tesseract-ocr-eng \
     poppler-utils \
     && rm -rf /var/lib/apt/lists/*
-
-RUN pip install --no-cache-dir --upgrade pip
 
 COPY requirements.lock .
 RUN pip install --no-cache-dir -r requirements.lock

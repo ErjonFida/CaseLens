@@ -9,7 +9,7 @@ echo.
 where python >nul 2>nul
 if %errorlevel% neq 0 (
     echo [ERROR] Python was not found in your system PATH.
-    echo Please install Python 3.10+ and make sure to check "Add Python to PATH".
+    echo Please install Python 3.11+ and make sure to check "Add Python to PATH".
     pause
     exit /b 1
 )
@@ -33,7 +33,7 @@ if not exist .env (
 :: Install dependencies
 echo Installing requirements...
 cd backend
-python -m pip install -r requirements.txt
+python -m pip install -r requirements.lock
 if %errorlevel% neq 0 (
     echo [ERROR] Failed to install Python dependencies.
     pause

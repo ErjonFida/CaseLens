@@ -22,14 +22,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Ollama embeds questions with nomic-embed-text, the model the retrieval numbers
-# were measured with. The Space has no GPU, so drop the GPU libraries it ships.
-RUN curl -fsSL https://ollama.com/install.sh | sh \
+# were measured with. Both are pinned, like the Python lock, so a rebuild cannot
+# swap the embedder underneath the measurements. The Space has no GPU, so drop
+# the GPU libraries Ollama ships.
+RUN curl -fsSL https://ollama.com/install.sh | OLLAMA_VERSION=0.34.4 sh \
     && rm -rf /usr/local/lib/ollama/cuda_* /usr/local/lib/ollama/rocm*
 
-# Pull the model at build time, so a cold start does not download it.
+# Pull the model at build time, so a cold start does not download it. v1.5 is
+# the weights `latest` pointed at when measured (layer 970aa74c0a90); copied to
+# the bare name, which is what the chunks in the database are tagged with.
 RUN ollama serve > /dev/null 2>&1 & \
     for i in $(seq 1 30); do curl -sf http://127.0.0.1:11434/api/tags > /dev/null && break; sleep 1; done; \
-    ollama pull nomic-embed-text
+    ollama pull nomic-embed-text:v1.5 && ollama cp nomic-embed-text:v1.5 nomic-embed-text
 
 WORKDIR /app
 COPY backend/requirements.lock .

@@ -20,7 +20,8 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://legal_user:legal_password@localhost:5432/legal_db
-      JWT_SECRET: ci-not-a-real-secret
+      # 32+ bytes: PyJWT warns about shorter HMAC keys.
+      JWT_SECRET: ci-only-not-a-real-secret-0123456789
 
     steps:
       - uses: actions/checkout@v4
@@ -51,3 +52,23 @@ jobs:
 
       - run: python test_deploy.py
         working-directory: backend
+
+      - run: python test_ocr.py
+        working-directory: backend
+
+  # The Space's Docker build runs the same two commands, so a type error fails
+  # here, on the push, instead of in a deploy.
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build

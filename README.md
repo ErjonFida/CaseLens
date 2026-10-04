@@ -9,7 +9,7 @@ CUAD's expert clause annotations.
 | | |
 |---|---|
 | **Live demo** | [Hugging Face Space](https://huggingface.co/spaces/Erjoniii/CaseLens): five CUAD contracts, no account needed |
-| **Retrieval** | recall@5 0.702, MRR 0.566 ([report](evals/reports/name-scoped.json)) |
+| **Retrieval** | recall@5 0.702, MRR 0.568 ([report](evals/reports/name-scoped.json)) |
 | **Graded answers** | `gemma4:e4b` 20 of 24, Gemini 22 of 24 ([workbook](evals/reports/faithfulness-grading-graded.xlsx)) |
 | **Evaluation details** | [evals/README.md](evals/README.md) |
 
@@ -43,7 +43,7 @@ documents.
 
 The suite calls the same scoping and retrieval code as the API.
 
-- **Corpus:** 69 commercial contracts from [CUAD](https://www.atticusprojectai.org/cuad), 5,574 chunks.
+- **Corpus:** 69 commercial contracts from [CUAD](https://www.atticusprojectai.org/cuad), 5,583 chunks.
 - **Questions:** 100, derived from CUAD's clause annotations, which were
   labelled by law students under attorney supervision. Ground truth is a
   `(filename, page)` pair found by locating the annotated span. CUAD's
@@ -52,12 +52,12 @@ The suite calls the same scoping and retrieval code as the API.
 | Metric | Dense | Name-scoped (shipped) |
 |---|---:|---:|
 | recall@5 | 0.340 | 0.702 |
-| recall@10 | 0.397 | 0.721 |
-| MRR | 0.298 | 0.566 |
+| recall@10 | 0.397 | 0.733 |
+| MRR | 0.298 | 0.568 |
 | exact_term | 0.419 | 0.790 |
 | semantic | 0.321 | 0.750 |
 | multi_document | 0.204 | 0.300 |
-| latency p50 / p95 | 113ms / 161ms | 96ms / 137ms |
+| latency p50 / p95 | 50ms / 58ms | 37ms / 55ms |
 
 ### Name-scoping
 
@@ -95,6 +95,8 @@ scored 0.860, and that is what the app does.
 | Larger embedding models | a trade | Qwen3 gained on paraphrase and lost more on exact terms |
 | Fusing two embedders | recall@10 +0.07 | real, but not worth a second 2.5 GB model in memory |
 | Whole documents, local model | worse than 10 chunks | a 4B model extracts less reliably from a full contract |
+| Section headings in chunks | recall@5 0.674 | a heading's words dilute the literal dates and names that exact-term questions match on |
+| Query rewriting (HyDE) | recall@5 0.614 | the rewritten clause invents specifics in place of the question's literal terms, and adds 3s a question |
 | A regex for declines | precision 0.59 | it cannot tell a supported "no" from an assertion |
 
 ### Answers
@@ -229,7 +231,7 @@ context formats, so the answer eval measures the prompt that ships.
 
 ## Known limitations
 
-1. **No vector index.** Retrieval is an exact scan, fast enough at 5,574 chunks
+1. **No vector index.** Retrieval is an exact scan, fast enough at 5,583 chunks
    but not at scale. An HNSW index is the next step once latency matters.
 2. **The prompt fix is probabilistic.** For the local model, a second sample of
    the same question again led with the related clause instead of saying the
@@ -242,9 +244,7 @@ context formats, so the answer eval measures the prompt that ships.
 
 ## Next
 
-1. Carry section headings into chunks, then try query rewriting, for the
-   remaining misses within a document.
-2. A larger gold set, once retrieval stops moving.
+1. A larger gold set, once retrieval stops moving.
 
 Started in May as a ChromaDB and HTMX prototype; rebuilt in September.
 

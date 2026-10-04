@@ -65,7 +65,13 @@ averaged.
 | Retriever | recall@5 | MRR |
 |---|---:|---:|
 | `dense` | 0.340 | 0.298 |
-| `scoped` | 0.702 | 0.566 |
+| `scoped` | 0.702 | 0.568 |
+
+`scoped` was re-measured after text extraction started OCR-ing each page that
+lacks a text layer rather than only wholly scanned files: 20 of 5,583 chunks
+changed, recall@10 went 0.721 → 0.733 and MRR 0.566 → 0.568. Its p50 latency
+fell from 96ms to 37ms with migration 008's index on `document_chunks.document_id`,
+which a scoped search now uses instead of scanning every chunk.
 
 Read `scoped` with its caveat: `cuad_import` templates every question as
 "the {party} agreement", so all 100 name their contract by construction. 67 of
@@ -190,6 +196,48 @@ scope: the name match still runs inside it, and a title is never stripped
 while the scope holds more than one document. Shipped as the document picker
 (`resolve_scope`); through that code path the same draws score 0.860 at k=5
 and 0.876 at k=10, narrowing to one document on all 100 questions.
+
+**Section headings were measured and rejected.** 11 of the 17 misses reach
+the right contract and pick the wrong page, so each chunk was embedded with
+the heading it sits under: `ARTICLE`/`Section` divisions, numbered headings
+such as "4.1 Ownership of Trademarks.", and short all-caps titles, carried
+across page breaks, with lines that repeat on three or more pages (running
+headers and footers) excluded. The stored chunk text was unchanged and chunk
+boundaries were identical, so only the embedding input differed.
+
+| scoped | no headings | + article > section | + innermost heading |
+|---|---:|---:|---:|
+| recall@5 | **0.702** | 0.674 | 0.662 |
+| recall@10 | 0.733 | 0.729 | 0.733 |
+| MRR | **0.568** | 0.558 | 0.560 |
+| exact_term | **0.790** | 0.726 | 0.694 |
+| semantic | 0.750 | 0.745 | 0.745 |
+
+Headings fixed questions a heading names, the licence grant and the
+assignment clause, and lost more `exact_term` questions, whose answer is a
+literal date, amount or name that the heading's words dilute. Most of the
+within-document misses were never reachable this way: 7 of the 11 ask for a
+date or the parties, which sit in the preamble on page 1, before any heading
+(`reports/headings-breadcrumb.json`, `reports/headings-innermost.json`).
+
+**Query rewriting was measured and rejected.** `gemma4:e4b` rewrote each
+question as the contract clause that would answer it (HyDE), and the scoped
+search used that clause in three ways:
+
+| scoped | question | + clause | clause as query | clause as document |
+|---|---:|---:|---:|---:|
+| recall@5 | **0.702** | 0.614 | 0.616 | 0.595 |
+| recall@10 | **0.733** | 0.678 | 0.645 | 0.623 |
+| MRR | 0.568 | **0.577** | 0.515 | 0.467 |
+| exact_term | **0.790** | 0.571 | 0.571 | 0.571 |
+| semantic | 0.750 | 0.731 | 0.752 | 0.709 |
+
+The model writes a plausible clause with invented specifics - "[Insert
+Date]", "the laws of the State of Delaware" - in place of the literal terms
+nomic matches best, so `exact_term` falls by a quarter while `semantic`, where
+rewriting was meant to help, does not move. It also adds 3.0s per question at
+p50 on CPU with thinking off; with Ollama's default thinking on it was 25s
+(`reports/rewrite-hyde-gemma4-e4b.json`, which records the prompt).
 
 ## Answer-time faithfulness
 

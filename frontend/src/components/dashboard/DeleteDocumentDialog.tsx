@@ -21,11 +21,10 @@ export default function DeleteDocumentDialog({ filename, isDeleting, onCancel, o
     <Dialog open={!!filename} onOpenChange={(open) => !open && onCancel()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Case Document</DialogTitle>
+          <DialogTitle>Delete this document?</DialogTitle>
           <DialogDescription>
-            Are you sure you want to remove{' '}
-            <strong className="text-foreground">{filename}</strong>? This will erase all document
-            data permanently.
+            <strong className="text-foreground">{filename}</strong> and everything indexed from it
+            will be deleted. This can't be undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="gap-2 sm:gap-0">
@@ -33,7 +32,7 @@ export default function DeleteDocumentDialog({ filename, isDeleting, onCancel, o
             Cancel
           </Button>
           <Button variant="destructive" onClick={onConfirm} loading={isDeleting}>
-            Confirm Deletion
+            Delete document
           </Button>
         </DialogFooter>
       </DialogContent>

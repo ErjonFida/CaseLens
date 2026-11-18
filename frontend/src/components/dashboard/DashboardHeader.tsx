@@ -2,7 +2,6 @@ import { BookOpen, Copy, FolderOpen, LogOut, MessageSquare, Scale, Search } from
 import { toast } from 'sonner';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -46,9 +45,6 @@ export default function DashboardHeader({ userEmail, activeTab, onTabChange, onS
             <h1 className="text-sm font-bold tracking-tight text-foreground">
               CaseLens
             </h1>
-            <Badge variant="outline" className="hidden xl:inline-flex text-[10px] py-0 px-1.5 font-normal">
-              RAG Assistant
-            </Badge>
           </div>
         </div>
       </div>
@@ -57,15 +53,15 @@ export default function DashboardHeader({ userEmail, activeTab, onTabChange, onS
         <TabsList className="h-8">
           <TabsTrigger value="chat" className="text-xs gap-1.5 h-7">
             <MessageSquare className="w-3.5 h-3.5" />
-            <span className="sr-only xl:not-sr-only whitespace-nowrap">AI Assistant</span>
+            <span className="sr-only lg:not-sr-only">Ask</span>
           </TabsTrigger>
           <TabsTrigger value="search" className="text-xs gap-1.5 h-7">
             <Search className="w-3.5 h-3.5" />
-            <span className="sr-only xl:not-sr-only whitespace-nowrap">RAG Explorer</span>
+            <span className="sr-only lg:not-sr-only">Search</span>
           </TabsTrigger>
           <TabsTrigger value="vault" className="text-xs gap-1.5 h-7">
             <BookOpen className="w-3.5 h-3.5" />
-            <span className="sr-only xl:not-sr-only whitespace-nowrap">Document Vault</span>
+            <span className="sr-only lg:not-sr-only">Documents</span>
           </TabsTrigger>
         </TabsList>
       </Tabs>
@@ -79,13 +75,13 @@ export default function DashboardHeader({ userEmail, activeTab, onTabChange, onS
                   {userEmail ? userEmail.slice(0, 2).toUpperCase() : 'LA'}
                 </AvatarFallback>
               </Avatar>
-              <span className="hidden sm:inline-block max-w-[140px] truncate text-foreground font-medium">
+              <span className="hidden lg:inline-block max-w-[140px] truncate text-foreground font-medium">
                 {userEmail || 'Account'}
               </span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>Practitioner Profile</DropdownMenuLabel>
+            <DropdownMenuLabel>Signed in as</DropdownMenuLabel>
             <div className="px-2.5 py-1 text-xs text-muted-foreground truncate">{userEmail}</div>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -95,14 +91,14 @@ export default function DashboardHeader({ userEmail, activeTab, onTabChange, onS
               }}
               className="gap-2 text-xs"
             >
-              <Copy className="w-3.5 h-3.5" /> Copy Email
+              <Copy className="w-3.5 h-3.5" /> Copy email
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={onSignOut}
               className="gap-2 text-xs text-destructive hover:text-destructive"
             >
-              <LogOut className="w-3.5 h-3.5" /> Sign Out
+              <LogOut className="w-3.5 h-3.5" /> Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

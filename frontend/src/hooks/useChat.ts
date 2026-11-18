@@ -33,7 +33,7 @@ export function useChat() {
     abortRef.current?.abort();
     abortRef.current = null;
     setIsGenerating(false);
-    toast.info('Response generation stopped');
+    toast.info('Answer stopped');
   }, []);
 
   const clear = useCallback(() => setMessages([]), []);
@@ -85,9 +85,9 @@ export function useChat() {
         // demo's daily allowance, say). Only a request that never got an
         // answer points at the server itself.
         const reached = err instanceof api.ApiError;
-        const reason = reached ? err.message : 'The server could not be reached.';
+        const reason = reached ? err.message : "Couldn't reach the server. Check your connection and try again.";
         toast.error(reason);
-        rewrite(`**Request failed**\n\n${reason}\n\nNo answer was generated.`);
+        rewrite(`**Couldn't get an answer.**\n\n${reason}`);
       } finally {
         setIsGenerating(false);
         abortRef.current = null;
@@ -97,10 +97,13 @@ export function useChat() {
   );
 
   const copyMessage = useCallback((id: string, content: string) => {
-    navigator.clipboard.writeText(content);
-    setCopiedMessageId(id);
-    toast.success('Copied to clipboard');
-    setTimeout(() => setCopiedMessageId(null), 2000);
+    navigator.clipboard.writeText(content).then(
+      () => {
+        setCopiedMessageId(id);
+        setTimeout(() => setCopiedMessageId(null), 2000);
+      },
+      () => toast.error("Couldn't copy. Select the text and copy it instead.")
+    );
   }, []);
 
   return { messages, isGenerating, copiedMessageId, send, stop, clear, copyMessage };

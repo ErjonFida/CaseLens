@@ -34,7 +34,7 @@ async function expectOk(res: Response, fallback: string): Promise<Response> {
 
 export async function getCurrentUser(): Promise<{ email: string; is_demo?: boolean }> {
   const res = await fetchWithAuth('/api/me');
-  await expectOk(res, 'Could not load your account');
+  await expectOk(res, "Couldn't load your account. Sign in again.");
   return res.json();
 }
 
@@ -42,21 +42,21 @@ export async function getCurrentUser(): Promise<{ email: string; is_demo?: boole
  *  takes registrations. No sign-in needed. */
 export async function getHealth(): Promise<{ status: string; demo: boolean; registration: boolean }> {
   const res = await fetch('/api/health');
-  await expectOk(res, 'The server is not responding');
+  await expectOk(res, "The server isn't responding. Try again in a moment.");
   return res.json();
 }
 
 /** Sign in to the shared read-only demo account; returns its token. */
 export async function startDemo(): Promise<string> {
   const res = await fetch('/api/demo', { method: 'POST' });
-  await expectOk(res, 'The demo is not available');
+  await expectOk(res, "The demo isn't available right now. Try again later.");
   const data = await res.json();
   return data.access_token;
 }
 
 export async function listDocuments(): Promise<string[]> {
   const res = await fetchWithAuth('/api/documents');
-  await expectOk(res, 'Could not load documents');
+  await expectOk(res, "Couldn't load your documents. Refresh to try again.");
   const data = await res.json();
   return data.documents || [];
 }
@@ -65,13 +65,13 @@ export async function uploadDocument(file: File): Promise<{ filename: string }> 
   const body = new FormData();
   body.append('file', file);
   const res = await fetchWithAuth('/api/upload', { method: 'POST', body });
-  await expectOk(res, 'Upload failed');
+  await expectOk(res, 'Upload failed. Try again.');
   return res.json();
 }
 
 export async function getDocumentStatus(filename: string): Promise<string> {
   const res = await fetchWithAuth(`/api/status/${encodeURIComponent(filename)}`);
-  await expectOk(res, 'Could not read processing status');
+  await expectOk(res, "Couldn't check the indexing status.");
   const data = await res.json();
   return data.status || 'unknown';
 }
@@ -80,7 +80,7 @@ export async function deleteDocument(filename: string): Promise<void> {
   const res = await fetchWithAuth(`/api/documents/${encodeURIComponent(filename)}`, {
     method: 'DELETE',
   });
-  await expectOk(res, 'Failed to delete document');
+  await expectOk(res, "Couldn't delete the document. Try again.");
 }
 
 /** `documents` is the user's selection; empty searches all of their documents. */
@@ -90,7 +90,7 @@ export async function searchDocuments(query: string, documents: string[] = []): 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query, documents }),
   });
-  await expectOk(res, 'Search failed');
+  await expectOk(res, 'Search failed. Try again.');
   const data = await res.json();
   return data.contexts || [];
 }
@@ -111,9 +111,9 @@ export async function openChatStream(
     body: JSON.stringify({ messages, documents }),
     signal,
   });
-  await expectOk(res, `Backend returned ${res.status} ${res.statusText}`);
+  await expectOk(res, `The server returned an error (${res.status}). Try again.`);
   if (!res.body) {
-    throw new ApiError('Streaming is not supported by this browser', 0);
+    throw new ApiError("This browser can't stream answers. Try a current Chrome, Firefox or Safari.", 0);
   }
   return res.body.getReader();
 }

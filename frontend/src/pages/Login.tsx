@@ -8,7 +8,6 @@ import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Scale, ShieldAlert, ArrowRight, Sparkles } from 'lucide-react';
-import { toast } from 'sonner';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -39,7 +38,7 @@ export default function Login() {
       setStoredToken(await api.startDemo());
       navigate('/');
     } catch (err: any) {
-      setError(err.message || 'The demo is not available');
+      setError(err.message || "The demo isn't available right now. Try again later.");
     } finally {
       setDemoLoading(false);
     }
@@ -59,19 +58,18 @@ export default function Login() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.detail || 'Invalid email or password');
+        throw new Error(data.detail || 'The email or password is wrong.');
       }
 
       const data = await res.json();
       if (data.access_token) {
         setStoredToken(data.access_token);
-        toast.success('Welcome back to CaseLens');
         navigate('/');
       } else {
-        throw new Error('No access token received from server');
+        throw new Error('Sign-in failed. Try again.');
       }
     } catch (err: any) {
-      setError(err.message || 'An unexpected authentication error occurred');
+      setError(err.message || 'Sign-in failed. Try again.');
     } finally {
       setLoading(false);
     }
@@ -79,9 +77,6 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
 
       <Card className="w-full max-w-md border-border/80 bg-card/90 backdrop-blur-xl shadow-2xl relative z-10">
         <CardHeader className="text-center space-y-3 pb-6">
@@ -91,7 +86,7 @@ export default function Login() {
           <div>
             <CardTitle className="text-2xl font-bold tracking-tight">CaseLens</CardTitle>
             <CardDescription className="text-muted-foreground mt-1">
-              Sign in to access your confidential case documents and intelligence
+              Sign in to ask questions about your documents.
             </CardDescription>
           </div>
         </CardHeader>
@@ -106,7 +101,7 @@ export default function Login() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -136,7 +131,7 @@ export default function Login() {
 
           <CardFooter className="flex flex-col space-y-3 pt-2">
             <Button type="submit" className="w-full font-semibold h-11" loading={loading}>
-              Sign In
+              Sign in
               {!loading && <ArrowRight className="ml-1 w-4 h-4" />}
             </Button>
 
@@ -155,9 +150,9 @@ export default function Login() {
 
             {registrationOpen && (
               <p className="text-center text-xs text-muted-foreground mt-2">
-                Don't have an account yet?{' '}
+                No account yet?{' '}
                 <Link to="/register" className="text-primary hover:underline font-medium">
-                  Register here
+                  Create one
                 </Link>
               </p>
             )}

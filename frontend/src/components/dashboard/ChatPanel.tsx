@@ -1,14 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import ReactMarkdown, { defaultUrlTransform, type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Check, Copy, Scale, Send, Sparkles, Square } from 'lucide-react';
+import { Check, Copy, Scale, Send, Square } from 'lucide-react';
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+import { citationsIn, linkCitations, parseCitation, type Citation } from '../../lib/citations';
 import type { ChatMessage } from '../../types';
+import SourcePanel, { type OpenCitation } from './SourcePanel';
 
 const PROMPT_SUGGESTIONS = [
   'Summarize the key indemnification obligations in the documents',
@@ -27,12 +28,53 @@ const DEMO_SUGGESTIONS = [
   'What insurance must be carried under the Merit Life Insurance agreement?',
 ];
 
+// A context, not a closure, keeps AnswerLink one stable component; a new one
+// per render would remount every chip on every streamed token.
+const CitationContext = createContext<{
+  open: Citation | null;
+  onOpen: (citation: Citation, chip: HTMLElement) => void;
+}>({ open: null, onOpen: () => undefined });
+
+function CitationChip({ citation: c }: { citation: Citation }) {
+  const { open, onOpen } = useContext(CitationContext);
+  const isOpen = open?.filename === c.filename && open.page === c.page && open.claim === c.claim;
+  return (
+    <button
+      type="button"
+      onClick={(e) => onOpen(c, e.currentTarget)}
+      aria-pressed={isOpen}
+      aria-label={`Open page ${c.page} of ${c.filename}`}
+      title={`${c.filename}, page ${c.page}`}
+      className={`inline-flex items-baseline gap-1 max-w-[18rem] mx-0.5 px-1.5 rounded-md border text-xs font-medium align-baseline cursor-pointer transition-colors ${
+        isOpen
+          ? 'bg-primary text-primary-foreground border-primary'
+          : 'bg-primary/10 text-primary border-primary/30 hover:bg-primary/20'
+      }`}
+    >
+      <span className="shrink-0">p.&nbsp;{c.page}</span>
+      <span className="truncate opacity-80">{c.filename.replace(/\.[^.]+$/, '')}</span>
+    </button>
+  );
+}
+
+function AnswerLink({ href, children }: { href?: string; children?: React.ReactNode }) {
+  const c = href ? parseCitation(href) : null;
+  if (c) return <CitationChip citation={c} />;
+  return (
+    <a href={href} target="_blank" rel="noreferrer" className="underline">
+      {children}
+    </a>
+  );
+}
+
+const answerComponents: Components = { a: AnswerLink };
+const answerUrlTransform = (url: string) => (url.startsWith('cite:') ? url : defaultUrlTransform(url));
+
 interface Props {
   messages: ChatMessage[];
   isGenerating: boolean;
   copiedMessageId: string | null;
-  userEmail: string;
-  documentCount: number;
+  documents: string[];
   selectedCount: number;
   isDemo: boolean;
   onSend: (text: string) => void;
@@ -45,8 +87,7 @@ export default function ChatPanel({
   messages,
   isGenerating,
   copiedMessageId,
-  userEmail,
-  documentCount,
+  documents,
   selectedCount,
   isDemo,
   onSend,
@@ -56,6 +97,22 @@ export default function ChatPanel({
 }: Props) {
   const [input, setInput] = useState('');
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const [source, setSource] = useState<OpenCitation | null>(null);
+  const sourceCache = useRef(new Map()).current;
+  const sourceOpener = useRef<HTMLElement | null>(null);
+  const closeSource = () => {
+    setSource(null);
+    sourceOpener.current?.focus();
+  };
+  const documentCount = documents.length;
+
+  const exchanges: { question?: ChatMessage; answer?: ChatMessage }[] = [];
+  for (const m of messages) {
+    const last = exchanges[exchanges.length - 1];
+    if (m.role === 'user') exchanges.push({ question: m });
+    else if (last && !last.answer) last.answer = m;
+    else exchanges.push({ answer: m });
+  }
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -68,176 +125,184 @@ export default function ChatPanel({
   };
 
   return (
-    <main className="flex-1 flex flex-col min-h-0 relative">
-      <ScrollArea className="flex-1 px-3 py-4 sm:px-6 sm:py-6">
-        <div className="max-w-4xl mx-auto space-y-6">
-          {messages.length === 0 ? (
-            <div className="py-12 px-4 text-center max-w-xl mx-auto">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/25 flex items-center justify-center text-primary mx-auto mb-4 shadow-sm">
-                <Scale className="w-8 h-8" />
-              </div>
-              <h2 className="text-xl font-bold tracking-tight text-foreground">Welcome to CaseLens</h2>
-              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                Ask complex legal questions across your uploaded agreements, court briefs, and
-                statutory files. All answers strictly cite matching context and page numbers.
-              </p>
-
-              <div className="mt-8 text-left">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
-                  <Sparkles className="w-3.5 h-3.5 text-primary" /> Suggested Inquiries
+    <div className="flex-1 flex min-h-0">
+      <main className="flex-1 flex flex-col min-h-0 min-w-0 relative">
+        <ScrollArea className="flex-1 px-3 py-4 sm:px-6 sm:py-6">
+          <div className="max-w-3xl mx-auto">
+            {messages.length === 0 ? (
+              <div className="py-12 px-4 text-center max-w-xl mx-auto">
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/25 flex items-center justify-center text-primary mx-auto mb-4 shadow-sm">
+                  <Scale className="w-8 h-8" />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {(isDemo ? DEMO_SUGGESTIONS : PROMPT_SUGGESTIONS).map((prompt) => (
-                    <button
-                      key={prompt}
-                      type="button"
-                      onClick={() => submit(prompt)}
-                      className="p-3 rounded-lg border border-border/80 bg-card/60 hover:bg-accent/40 hover:border-primary/40 text-left transition-all group cursor-pointer"
-                    >
-                      <p className="text-xs font-medium text-foreground group-hover:text-primary transition-colors">
-                        {prompt}
-                      </p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ) : (
-            messages.map((m) => {
-              const isUser = m.role === 'user';
-              return (
-                <div
-                  key={m.id}
-                  className={`flex gap-3.5 ${isUser ? 'justify-end' : 'justify-start'}`}
-                >
-                  {!isUser && (
-                    <Avatar className="h-8 w-8 mt-1 shrink-0 border border-primary/20">
-                      <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
-                        <Scale className="w-4 h-4" />
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
+                <h2 className="text-xl font-bold tracking-tight text-foreground">
+                  {isDemo ? 'Ask about the demo contracts' : 'Ask about your documents'}
+                </h2>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                  Every answer cites the file and page it came from, and each citation opens
+                  the passage.
+                </p>
 
-                  <div className="max-w-[82%] group relative space-y-1">
-                    <div
-                      className={`p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${
-                        isUser
-                          ? 'bg-primary text-primary-foreground rounded-tr-none'
-                          : 'bg-card border border-border text-card-foreground rounded-tl-none'
-                      }`}
-                    >
-                      {isUser ? (
-                        <p className="whitespace-pre-wrap">{m.content}</p>
-                      ) : (
-                        <div className="answer">
-                          {m.content ? (
-                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
-                          ) : (
-                            <div className="flex items-center gap-2 text-muted-foreground py-1">
-                              <Sparkles className="w-4 h-4 animate-spin text-primary" />
-                              <span className="text-xs">
-                                Analyzing case context and formulating legal response...
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-
-                    {!isUser && m.content && (
-                      <div className="flex items-center gap-2 px-1 pt-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity">
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          onClick={() => onCopy(m.id, m.content)}
-                          aria-label="Copy answer"
-                          className="h-6 w-6 text-muted-foreground hover:text-foreground"
-                        >
-                          {copiedMessageId === m.id ? (
-                            <Check className="w-3 h-3 text-emerald-400" />
-                          ) : (
-                            <Copy className="w-3 h-3" />
-                          )}
-                        </Button>
-                        <span className="text-[10px] text-muted-foreground">
-                          {copiedMessageId === m.id ? 'Copied' : 'Copy'}
-                        </span>
-                      </div>
-                    )}
+                <div className="mt-8 text-left">
+                  <div className="text-xs font-medium text-muted-foreground mb-3">
+                    Try one of these
                   </div>
-
-                  {isUser && (
-                    <Avatar className="h-8 w-8 mt-1 shrink-0 border border-border">
-                      <AvatarFallback className="bg-secondary text-secondary-foreground text-xs font-bold">
-                        {userEmail ? userEmail.slice(0, 1).toUpperCase() : 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {(isDemo ? DEMO_SUGGESTIONS : PROMPT_SUGGESTIONS).map((prompt) => (
+                      <button
+                        key={prompt}
+                        type="button"
+                        onClick={() => submit(prompt)}
+                        className="p-3 rounded-lg border border-border/80 bg-card/60 hover:bg-accent/40 hover:border-primary/40 text-left transition-all group cursor-pointer"
+                      >
+                        <p className="text-xs font-medium text-foreground group-hover:text-primary transition-colors">
+                          {prompt}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              );
-            })
-          )}
-          <div ref={bottomRef} />
-        </div>
-      </ScrollArea>
+              </div>
+            ) : (
+              exchanges.map(({ question, answer }, n) => {
+                const streaming = isGenerating && n === exchanges.length - 1;
+                const linked = answer?.content ? linkCitations(answer.content, documents) : '';
+                const sources = streaming ? [] : citationsIn(linked);
+                const copied = answer && copiedMessageId === answer.id;
+                return (
+                  <article
+                    key={(question ?? answer)!.id}
+                    className={n > 0 ? 'mt-8 pt-8 border-t border-border' : ''}
+                  >
+                    {question && (
+                      <h2 className="text-[17px] leading-snug font-semibold text-foreground whitespace-pre-wrap">
+                        {question.content}
+                      </h2>
+                    )}
 
-      <div className="p-3 sm:p-4 border-t border-border bg-card/40 backdrop-blur-md">
-        <div className="max-w-4xl mx-auto">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              submit(input);
-            }}
-            className="relative flex items-center"
-          >
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={
-                documentCount === 0
-                  ? 'Upload a document first, then ask questions...'
-                  : selectedCount > 0
-                    ? `Ask about the ${selectedCount} selected ${selectedCount === 1 ? 'document' : 'documents'}...`
-                    : 'Ask any legal question based on your uploaded case files...'
-              }
-              disabled={isGenerating}
-              className="pr-24 py-6 rounded-xl bg-card border-border shadow-inner text-sm focus-visible:ring-primary"
-            />
+                    {answer && (
+                      <CitationContext.Provider
+                        value={{
+                          open: source,
+                          onOpen: (c, chip) => {
+                            sourceOpener.current = chip;
+                            setSource({ ...c, question: question?.content ?? '' });
+                          },
+                        }}
+                      >
+                        {answer.content ? (
+                          <div className="answer mt-3 max-w-[70ch] text-[15px] leading-[1.65] text-foreground/90">
+                            <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
+                              urlTransform={answerUrlTransform}
+                              components={answerComponents}
+                            >
+                              {linked}
+                            </ReactMarkdown>
+                          </div>
+                        ) : (
+                          <p className={`mt-3 text-sm text-muted-foreground ${streaming ? 'animate-pulse' : ''}`}>
+                            {streaming ? 'Reading the contracts…' : 'Stopped before an answer arrived.'}
+                          </p>
+                        )}
 
-            <div className="absolute right-2 flex items-center gap-1.5">
-              {isGenerating ? (
-                <Button
+                        {answer.content && !streaming && (
+                          <div className="mt-5 flex flex-wrap items-end gap-x-6 gap-y-3">
+                            {sources.length > 0 && (
+                              <div className="min-w-0 flex-1">
+                                <h3 className="text-xs font-medium text-muted-foreground">Sources</h3>
+                                <ul className="mt-1.5 flex flex-wrap gap-1.5 -mx-0.5">
+                                  {sources.map((c) => (
+                                    <li key={`${c.filename}/${c.page}`} className="min-w-0">
+                                      <CitationChip citation={c} />
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => onCopy(answer.id, answer.content)}
+                              className="ml-auto h-8 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+                            >
+                              {copied ? <Check className="w-3.5 h-3.5 text-primary" /> : <Copy className="w-3.5 h-3.5" />}
+                              {copied ? 'Copied' : 'Copy answer'}
+                            </Button>
+                          </div>
+                        )}
+                      </CitationContext.Provider>
+                    )}
+                  </article>
+                );
+              })
+            )}
+            <div ref={bottomRef} />
+          </div>
+        </ScrollArea>
+
+        <div className="p-3 sm:p-4 border-t border-border bg-card/40 backdrop-blur-md">
+          <div className="max-w-3xl mx-auto">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                submit(input);
+              }}
+              className="relative flex items-center"
+            >
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={
+                  documentCount === 0
+                    ? 'Upload a document to start asking'
+                    : selectedCount > 0
+                      ? `Ask about the ${selectedCount} selected ${selectedCount === 1 ? 'document' : 'documents'}`
+                      : 'Ask a question about your documents'
+                }
+                disabled={isGenerating}
+                className="pr-24 py-6 rounded-xl bg-card border-border shadow-inner text-sm focus-visible:ring-primary"
+              />
+
+              <div className="absolute right-2 flex items-center gap-1.5">
+                {isGenerating ? (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={onStop}
+                    className="h-8 gap-1 text-xs font-medium"
+                  >
+                    <Square className="w-3.5 h-3.5 fill-current" />
+                    Stop
+                  </Button>
+                ) : (
+                  <Button type="submit" aria-label="Send question" disabled={!input.trim()} size="sm" className="h-8 w-9 p-0 font-medium">
+                    <Send className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+            </form>
+
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground mt-2 px-1">
+              <span>Answers cite the file and page they came from</span>
+              {messages.length > 0 && (
+                <button
                   type="button"
-                  variant="destructive"
-                  size="sm"
-                  onClick={onStop}
-                  className="h-8 gap-1 text-xs font-medium"
+                  onClick={() => {
+                    setSource(null);
+                    onClear();
+                  }}
+                  className="hover:text-destructive underline decoration-dotted transition-colors cursor-pointer"
                 >
-                  <Square className="w-3.5 h-3.5 fill-current" />
-                  Stop
-                </Button>
-              ) : (
-                <Button type="submit" aria-label="Send question" disabled={!input.trim()} size="sm" className="h-8 w-9 p-0 font-medium">
-                  <Send className="w-4 h-4" />
-                </Button>
+                  Clear conversation
+                </button>
               )}
             </div>
-          </form>
-
-          <div className="flex items-center justify-between text-[11px] text-muted-foreground mt-2 px-1">
-            <span>Responses cite source files &amp; pages</span>
-            {messages.length > 0 && (
-              <button
-                type="button"
-                onClick={onClear}
-                className="hover:text-destructive underline decoration-dotted transition-colors cursor-pointer"
-              >
-                Clear Conversation
-              </button>
-            )}
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+
+      {source && <SourcePanel citation={source} cache={sourceCache} onClose={closeSource} />}
+    </div>
   );
 }

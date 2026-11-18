@@ -31,10 +31,10 @@ export default function SearchPanel({
     <main className="flex-1 flex flex-col min-h-0 p-4 sm:p-6 overflow-y-auto">
       <div className="max-w-4xl w-full mx-auto space-y-6">
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-foreground">Document Explorer</h2>
+          <h2 className="text-xl font-bold tracking-tight text-foreground">Search</h2>
           <p className="text-xs text-muted-foreground mt-1">
-            Search the knowledge base directly to inspect relevant text segments, page numbers, and
-            exact citations.
+            Find passages in your documents without asking for an answer. Each result shows
+            its file and page.
           </p>
         </div>
 
@@ -52,12 +52,12 @@ export default function SearchPanel({
                 <Input
                   value={query}
                   onChange={(e) => onQueryChange(e.target.value)}
-                  placeholder="Search for legal terms, clauses (e.g. relevant parties, supposed breaches, relevant laws)..."
+                  placeholder="A clause, term or party, e.g. termination notice"
                   className="pl-9 h-10 bg-background"
                 />
               </div>
               <Button type="submit" loading={isSearching} disabled={!query.trim()}>
-                Search Segments
+                Search
               </Button>
             </form>
           </CardContent>
@@ -68,9 +68,6 @@ export default function SearchPanel({
             <Card key={idx} className="border-border/80 bg-card/80 shadow-sm">
               <CardHeader className="p-4 pb-2 flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
                 <div className="flex items-center gap-2 min-w-0">
-                  <Badge variant="info" className="text-xs shrink-0">
-                    Match #{idx + 1}
-                  </Badge>
                   <span className="text-xs font-semibold text-foreground truncate">
                     {result.metadata?.filename || 'Document'}
                   </span>
@@ -87,11 +84,11 @@ export default function SearchPanel({
                   onClick={() => onAnalyse(result)}
                   className="text-xs gap-1 h-7 text-primary hover:text-primary"
                 >
-                  <MessageSquare className="w-3 h-3" /> Analyze in Chat
+                  <MessageSquare className="w-3 h-3" /> Ask about this passage
                 </Button>
               </CardHeader>
               <CardContent className="p-4 pt-2">
-                <p className="text-xs text-muted-foreground whitespace-pre-wrap leading-relaxed bg-background/50 p-3 rounded-lg border border-border/50 font-mono">
+                <p className="contract text-foreground/90 whitespace-pre-wrap bg-background/50 p-4 rounded-lg border border-border/50">
                   {result.text}
                 </p>
               </CardContent>
@@ -101,9 +98,9 @@ export default function SearchPanel({
           {hasRun && results.length === 0 && !isSearching && (
             <div className="text-center py-12 text-muted-foreground">
               <Search className="w-8 h-8 mx-auto mb-2 opacity-30" />
-              <p className="text-sm font-medium">No semantic matches found</p>
+              <p className="text-sm font-medium">No passages matched</p>
               <p className="text-xs mt-1">
-                Try broadening your search query or uploading additional documents.
+                Try different words, or check that the document has finished indexing.
               </p>
             </div>
           )}

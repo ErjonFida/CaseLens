@@ -79,19 +79,19 @@ export function useDocuments() {
           setStatuses((prev) => ({ ...prev, [filename]: status }));
 
           if (status === 'completed') {
-            toast.success(`"${filename}" successfully indexed for AI analysis`);
+            toast.success(`${filename} is ready to ask about.`);
             await refresh();
             return;
           }
           if (status.startsWith('error')) {
-            toast.error(`Indexing failed for "${filename}": ${status}`);
+            toast.error(`Couldn't index ${filename}: ${status.replace(/^error:\s*/, '')}. Delete it and upload it again.`);
             return;
           }
           if (status === 'unknown') return; // deleted meanwhile, or forgotten by the server
         } catch {
           // One dropped request is not a failed upload; several in a row is an outage.
           if (++failures >= POLL_MAX_FAILURES) {
-            if (mounted.current) toast.error(`Lost track of "${filename}". Refresh the list to see if it finished.`);
+            if (mounted.current) toast.error(`Lost track of ${filename}. Refresh the list to see if it finished.`);
             return;
           }
         }
@@ -106,10 +106,10 @@ export function useDocuments() {
       setStatuses((prev) => ({ ...prev, [file.name]: 'queued' }));
       try {
         const { filename } = await api.uploadDocument(file);
-        toast.info(`Uploaded "${filename}". Processing & indexing...`);
+        toast.info(`Uploaded ${filename}. Indexing can take a few minutes for scans.`);
         void poll(filename);
       } catch (err: any) {
-        toast.error(err?.message || 'Upload failed');
+        toast.error(err?.message || `Couldn't upload ${file.name}. Try again.`);
         forget(file.name);
       } finally {
         if (mounted.current) setUploading(false);
@@ -124,7 +124,7 @@ export function useDocuments() {
       if (!mounted.current) return;
       setDocuments((prev) => prev.filter((d) => d !== filename));
       forget(filename);
-      toast.success(`Removed "${filename}" from document vault`);
+      toast.success(`Deleted ${filename}`);
     },
     [forget]
   );

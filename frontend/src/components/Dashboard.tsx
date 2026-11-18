@@ -69,7 +69,7 @@ export default function Dashboard() {
         // server is unreachable, rather than bouncing to /login where signing
         // in cannot work either.
         console.error('Failed to load user data:', err);
-        toast.error('The server could not be reached. Try again in a moment.');
+        toast.error("Couldn't reach the server. Try again in a moment.");
       }
     })();
 
@@ -81,7 +81,7 @@ export default function Dashboard() {
   const handleSignOut = useCallback(async () => {
     await api.logout();
     removeStoredToken();
-    toast.info('Signed out successfully');
+    toast.info('Signed out');
     navigate('/login');
   }, [navigate]);
 
@@ -92,26 +92,24 @@ export default function Dashboard() {
       await docs.remove(docToDelete);
       setSelected((prev) => prev.filter((d) => d !== docToDelete));
     } catch (err: any) {
-      toast.error(err?.message || 'Error deleting document');
+      toast.error(err?.message || `Couldn't delete ${docToDelete}. Try again.`);
     } finally {
       setIsDeleting(false);
       setDocToDelete(null);
     }
   }, [docToDelete, docs]);
 
-  // Cross-panel: send a retrieved passage to the assistant and follow it there.
   const handleAnalyse = useCallback(
     (result: SearchContext) => {
       setActiveTab('chat');
       chat.send(
-        `Based on "${result.metadata?.filename}" (Page ${result.metadata?.page}):\n\n"${result.text.slice(0, 200)}..."\n\nPlease analyze this clause in detail.`,
+        `Explain this passage from ${result.metadata?.filename}, page ${result.metadata?.page}:\n\n"${result.text.slice(0, 200)}…"`,
         [result.metadata.filename]
       );
     },
     [chat]
   );
 
-  // Cross-panel: look up a document's segments from the vault.
   const handleFindSegments = useCallback(
     (filename: string) => {
       search.setQuery(filename);
@@ -140,7 +138,6 @@ export default function Dashboard() {
     <div className="flex h-screen w-full bg-background overflow-hidden text-foreground antialiased">
       <div className="hidden md:flex">{sidebar}</div>
 
-      {/* Below md the sidebar would leave the panels no room, so it is a drawer. */}
       <Sheet.Root open={docsOpen} onOpenChange={setDocsOpen}>
         <Sheet.Portal>
           <DialogOverlay className="md:hidden" />
@@ -165,8 +162,7 @@ export default function Dashboard() {
             messages={chat.messages}
             isGenerating={chat.isGenerating}
             copiedMessageId={chat.copiedMessageId}
-            userEmail={userEmail}
-            documentCount={docs.documents.length}
+            documents={docs.documents}
             selectedCount={selection.length}
             isDemo={isDemo}
             onSend={(text) => chat.send(text, selection)}

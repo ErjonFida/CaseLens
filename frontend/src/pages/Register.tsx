@@ -33,12 +33,12 @@ export default function Register() {
     setSuccess('');
 
     if (formData.password !== formData.confirm_password) {
-      setError('Passwords do not match');
+      setError("The passwords don't match.");
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Password should be at least 6 characters long');
+      setError('Use at least 6 characters for the password.');
       return;
     }
 
@@ -53,16 +53,16 @@ export default function Register() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.detail || 'Registration failed. Email may already be in use.');
+        throw new Error(data.detail || "Couldn't create the account. That email may already be registered.");
       }
 
-      setSuccess('Account created successfully! Redirecting to login...');
-      toast.success('Registration successful. Please sign in.');
+      setSuccess('Account created. Taking you to sign in…');
+      toast.success('Account created. Sign in to continue.');
       setTimeout(() => {
         navigate('/login');
       }, 1800);
     } catch (err: any) {
-      setError(err.message || 'Registration failed');
+      setError(err.message || "Couldn't create the account. Try again.");
     } finally {
       setLoading(false);
     }
@@ -70,9 +70,6 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden py-12">
-      {/* Background ambient accents */}
-      <div className="absolute top-1/6 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/6 -right-40 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
 
       <Card className="w-full max-w-xl border-border/80 bg-card/90 backdrop-blur-xl shadow-2xl relative z-10">
         <CardHeader className="text-center space-y-3 pb-6">
@@ -80,7 +77,7 @@ export default function Register() {
             <Scale className="w-7 h-7" />
           </div>
           <div>
-            <CardTitle className="text-2xl font-bold tracking-tight">Create Practitioner Account</CardTitle>
+            <CardTitle className="text-2xl font-bold tracking-tight">Create an account</CardTitle>
             <CardDescription className="text-muted-foreground mt-1">
               Create an account to upload and search your documents.
             </CardDescription>
@@ -105,7 +102,7 @@ export default function Register() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="first_name">First Name</Label>
+                <Label htmlFor="first_name">First name</Label>
                 <Input
                   id="first_name"
                   name="first_name"
@@ -116,7 +113,7 @@ export default function Register() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="last_name">Last Name</Label>
+                <Label htmlFor="last_name">Last name</Label>
                 <Input
                   id="last_name"
                   name="last_name"
@@ -130,7 +127,7 @@ export default function Register() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="company">Law Firm / Company</Label>
+                <Label htmlFor="company">Firm or company</Label>
                 <Input
                   id="company"
                   name="company"
@@ -141,7 +138,7 @@ export default function Register() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone_number">Phone Number</Label>
+                <Label htmlFor="phone_number">Phone number</Label>
                 <Input
                   id="phone_number"
                   name="phone_number"
@@ -155,7 +152,7 @@ export default function Register() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Work Email</Label>
+              <Label htmlFor="email">Work email</Label>
               <Input
                 id="email"
                 name="email"
@@ -183,7 +180,7 @@ export default function Register() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirm_password">Confirm Password</Label>
+                <Label htmlFor="confirm_password">Confirm password</Label>
                 <Input
                   id="confirm_password"
                   name="confirm_password"
@@ -200,14 +197,14 @@ export default function Register() {
 
           <CardFooter className="flex flex-col space-y-4 pt-2">
             <Button type="submit" className="w-full font-semibold h-11" loading={loading} disabled={!!success}>
-              Create Account
+              Create account
               {!loading && <ArrowRight className="ml-1 w-4 h-4" />}
             </Button>
 
             <p className="text-center text-sm text-muted-foreground">
-              Already registered?{' '}
+              Already have an account?{' '}
               <Link to="/login" className="text-primary hover:underline font-medium">
-                Sign in here
+                Sign in
               </Link>
             </p>
           </CardFooter>

@@ -50,9 +50,9 @@ export default function DocumentSidebar({
             <FolderOpen className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-foreground tracking-tight">Case Files Vault</h2>
+            <h2 className="text-sm font-semibold text-foreground tracking-tight">Documents</h2>
             <p className="text-xs text-muted-foreground">
-              {documents.length} {documents.length === 1 ? 'document' : 'documents'} indexed
+              {documents.length} {documents.length === 1 ? 'document' : 'documents'}
             </p>
           </div>
         </div>
@@ -70,7 +70,7 @@ export default function DocumentSidebar({
               <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Refresh Document List</TooltipContent>
+          <TooltipContent>Refresh the list</TooltipContent>
         </Tooltip>
       </div>
 
@@ -91,7 +91,7 @@ export default function DocumentSidebar({
             }`}
           >
             <Upload className={`w-4 h-4 ${uploading ? 'animate-bounce' : ''}`} />
-            <span>{uploading ? 'Uploading Document...' : 'Upload Legal Document'}</span>
+            <span>{uploading ? 'Uploading…' : 'Upload a document'}</span>
           </div>
           <input
             type="file"
@@ -106,8 +106,8 @@ export default function DocumentSidebar({
           />
         </label>
         <div className="flex justify-between items-center text-[10px] text-muted-foreground mt-1.5 px-1">
-          <span>Supported: PDF, TXT, OCR Images</span>
-          <span>Max 25MB</span>
+          <span>PDF, TXT or scanned images</span>
+          <span>Up to 25 MB</span>
         </div>
       </div>
       )}
@@ -116,7 +116,7 @@ export default function DocumentSidebar({
         <div className="relative">
           <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-muted-foreground" />
           <Input
-            placeholder="Filter indexed documents..."
+            placeholder="Filter documents"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             className="pl-8 h-8 text-xs bg-background/50"
@@ -125,7 +125,7 @@ export default function DocumentSidebar({
         {selected.length > 0 && (
           <div className="mt-2 flex items-center justify-between text-[11px] text-primary px-1">
             <span>
-              Answering from {selected.length} selected {selected.length === 1 ? 'document' : 'documents'}
+              Asking about {selected.length} selected {selected.length === 1 ? 'document' : 'documents'}
             </span>
             <button
               type="button"
@@ -186,7 +186,7 @@ export default function DocumentSidebar({
                     <Trash2 className="w-3.5 h-3.5" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Delete Document</TooltipContent>
+                <TooltipContent>Delete</TooltipContent>
               </Tooltip>
               )}
             </div>
@@ -195,21 +195,21 @@ export default function DocumentSidebar({
           {visible.length === 0 && !uploading && (
             <div className="text-center py-8 px-4 text-muted-foreground">
               <FileText className="w-8 h-8 mx-auto mb-2 opacity-30" />
-              <p className="text-xs font-medium">No documents found</p>
+              <p className="text-xs font-medium">{filter ? 'No documents match' : 'No documents yet'}</p>
               <p className="text-[11px] mt-0.5">
-                {filter
-                  ? 'No matching files for your query'
-                  : 'Upload contracts, briefs, or evidence files to get started'}
+                {filter ? 'Try part of the file name.' : 'Upload a contract to start asking questions.'}
               </p>
             </div>
           )}
         </div>
       </ScrollArea>
 
-      <div className="p-3 border-t border-border bg-background/50 flex items-center gap-2 text-[11px] text-muted-foreground">
-        <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
-        <span className="truncate">Client-Isolated Vector Store</span>
-      </div>
+      {!readOnly && (
+        <div className="p-3 border-t border-border bg-background/50 flex items-center gap-2 text-[11px] text-muted-foreground">
+          <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
+          <span className="truncate">Only your account can see these documents</span>
+        </div>
+      )}
     </aside>
   );
 }

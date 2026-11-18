@@ -27,7 +27,7 @@ export function useSemanticSearch() {
     try {
       setResults(await api.searchDocuments(q, documents));
     } catch (err: any) {
-      toast.error(err?.message || 'Search failed');
+      toast.error(err?.message || 'Search failed. Try again.');
       setResults([]);
     } finally {
       setIsSearching(false);

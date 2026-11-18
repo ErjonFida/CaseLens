@@ -27,8 +27,8 @@ export const ACCEPTED_FILES = ['.pdf', '.txt', ...IMAGE_EXTENSIONS.map((e) => `.
 export function DocumentIcon({ filename }: { filename: string }) {
   const ext = filename.split('.').pop()?.toLowerCase();
   if (ext === 'pdf') return <FileText className="w-4 h-4 text-red-400" />;
-  if (IMAGE_EXTENSIONS.includes(ext || '')) return <FileText className="w-4 h-4 text-emerald-400" />;
-  if (ext === 'txt') return <FileCode className="w-4 h-4 text-blue-400" />;
+  if (IMAGE_EXTENSIONS.includes(ext || '')) return <FileText className="w-4 h-4 text-amber-400" />;
+  if (ext === 'txt') return <FileCode className="w-4 h-4 text-muted-foreground" />;
   return <FileQuestion className="w-4 h-4 text-muted-foreground" />;
 }
 
@@ -36,7 +36,7 @@ export function DocumentStatusBadge({ status }: { status?: DocumentStatus }) {
   switch (status) {
     case 'completed':
       return (
-        <Badge variant="success" className="gap-1 text-[11px] py-0">
+        <Badge variant="outline" className="gap-1 text-[11px] py-0 font-medium text-muted-foreground">
           <FileCheck2 className="w-3 h-3" /> Indexed
         </Badge>
       );
@@ -49,7 +49,7 @@ export function DocumentStatusBadge({ status }: { status?: DocumentStatus }) {
     case 'extracting_text':
       return (
         <Badge variant="info" className="gap-1 text-[11px] py-0 animate-pulse">
-          <RefreshCw className="w-3 h-3 animate-spin" /> OCR/Text
+          <RefreshCw className="w-3 h-3 animate-spin" /> Reading text
         </Badge>
       );
     case 'queued':
@@ -62,7 +62,7 @@ export function DocumentStatusBadge({ status }: { status?: DocumentStatus }) {
       if (status?.startsWith('error')) {
         return (
           <Badge variant="destructive" className="gap-1 text-[11px] py-0">
-            <AlertCircle className="w-3 h-3" /> Error
+            <AlertCircle className="w-3 h-3" /> Failed
           </Badge>
         );
       }

@@ -30,18 +30,18 @@ export default function VaultPanel({
       <div className="max-w-4xl w-full mx-auto space-y-6">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-xl font-bold tracking-tight text-foreground">
-              Document Vault &amp; Status
-            </h2>
+            <h2 className="text-xl font-bold tracking-tight text-foreground">Documents</h2>
             <p className="text-xs text-muted-foreground mt-1">
-              Manage case files and verify proper document uploads
+              {readOnly
+                ? 'The demo contracts are read-only.'
+                : 'Upload documents and check that each one has finished indexing.'}
             </p>
           </div>
 
           {!readOnly && (
           <label className="cursor-pointer">
             <Button size="sm" className="gap-2 pointer-events-none">
-              <Upload className="w-4 h-4" /> Upload New File
+              <Upload className="w-4 h-4" /> Upload a document
             </Button>
             <input
               type="file"
@@ -85,7 +85,7 @@ export default function VaultPanel({
                       onClick={() => onFindSegments(doc)}
                       className="text-xs gap-1.5"
                     >
-                      <Search className="w-3.5 h-3.5" /> <span className="sr-only sm:not-sr-only">Find Segments</span>
+                      <Search className="w-3.5 h-3.5" /> <span className="sr-only sm:not-sr-only">Search this document</span>
                     </Button>
                     {!readOnly && (
                     <Button
@@ -105,8 +105,8 @@ export default function VaultPanel({
               {documents.length === 0 && (
                 <div className="text-center py-12 text-muted-foreground">
                   <FolderOpen className="w-10 h-10 mx-auto mb-2 opacity-30" />
-                  <p className="text-sm font-medium">Vault is currently empty</p>
-                  <p className="text-xs mt-1">Upload legal documents for processing.</p>
+                  <p className="text-sm font-medium">No documents yet</p>
+                  <p className="text-xs mt-1">Upload a contract to start asking questions.</p>
                 </div>
               )}
             </div>

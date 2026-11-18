@@ -11,7 +11,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import * as Sheet from '@radix-ui/react-dialog';
 
+import { DialogOverlay } from '@/components/ui/dialog';
 import * as api from '../api/client';
 import { removeStoredToken } from '../auth';
 import { useChat } from '../hooks/useChat';
@@ -33,6 +35,7 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<DashboardTab>('chat');
   const [docToDelete, setDocToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [docsOpen, setDocsOpen] = useState(false);
   // Documents the user chose to ask about; empty means all of them. Filtered
   // against the live list, so a document deleted anywhere drops out.
   const [selected, setSelected] = useState<string[]>([]);
@@ -117,21 +120,36 @@ export default function Dashboard() {
     [search]
   );
 
+  const sidebar = (
+    <DocumentSidebar
+      documents={docs.documents}
+      statuses={docs.statuses}
+      uploading={docs.uploading}
+      refreshing={docs.refreshing}
+      onUpload={docs.upload}
+      onRefresh={docs.refresh}
+      onRequestDelete={setDocToDelete}
+      selected={selection}
+      onToggleSelect={toggleSelected}
+      onClearSelection={() => setSelected([])}
+      readOnly={isDemo}
+    />
+  );
+
   return (
-    <div className="flex h-screen w-full bg-background overflow-hidden text-foreground antialiased select-none">
-      <DocumentSidebar
-        documents={docs.documents}
-        statuses={docs.statuses}
-        uploading={docs.uploading}
-        refreshing={docs.refreshing}
-        onUpload={docs.upload}
-        onRefresh={docs.refresh}
-        onRequestDelete={setDocToDelete}
-        selected={selection}
-        onToggleSelect={toggleSelected}
-        onClearSelection={() => setSelected([])}
-        readOnly={isDemo}
-      />
+    <div className="flex h-screen w-full bg-background overflow-hidden text-foreground antialiased">
+      <div className="hidden md:flex">{sidebar}</div>
+
+      {/* Below md the sidebar would leave the panels no room, so it is a drawer. */}
+      <Sheet.Root open={docsOpen} onOpenChange={setDocsOpen}>
+        <Sheet.Portal>
+          <DialogOverlay className="md:hidden" />
+          <Sheet.Content aria-describedby={undefined} className="fixed inset-y-0 left-0 z-50 flex md:hidden">
+            <Sheet.Title className="sr-only">Documents</Sheet.Title>
+            {sidebar}
+          </Sheet.Content>
+        </Sheet.Portal>
+      </Sheet.Root>
 
       <div className="flex-1 flex flex-col bg-background min-w-0">
         <DashboardHeader
@@ -139,6 +157,7 @@ export default function Dashboard() {
           activeTab={activeTab}
           onTabChange={setActiveTab}
           onSignOut={handleSignOut}
+          onOpenDocuments={() => setDocsOpen(true)}
         />
 
         {activeTab === 'chat' && (

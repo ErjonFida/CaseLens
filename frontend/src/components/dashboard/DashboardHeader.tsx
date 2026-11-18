@@ -1,4 +1,4 @@
-import { BookOpen, Copy, LogOut, MessageSquare, Scale, Search } from 'lucide-react';
+import { BookOpen, Copy, FolderOpen, LogOut, MessageSquare, Scale, Search } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -21,21 +21,32 @@ interface Props {
   activeTab: DashboardTab;
   onTabChange: (tab: DashboardTab) => void;
   onSignOut: () => void;
+  /** Opens the document list, which is a drawer below the md breakpoint. */
+  onOpenDocuments: () => void;
 }
 
-export default function DashboardHeader({ userEmail, activeTab, onTabChange, onSignOut }: Props) {
+export default function DashboardHeader({ userEmail, activeTab, onTabChange, onSignOut, onOpenDocuments }: Props) {
   return (
-    <header className="h-14 border-b border-border px-6 flex items-center justify-between bg-card/40 backdrop-blur-md">
+    <header className="h-14 border-b border-border px-3 sm:px-6 flex items-center justify-between gap-2 bg-card/40 backdrop-blur-md">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={onOpenDocuments}
+          aria-label="Show documents"
+          className="md:hidden text-muted-foreground hover:text-foreground"
+        >
+          <FolderOpen className="w-4 h-4" />
+        </Button>
+        <div className="hidden sm:flex w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
           <Scale className="w-4 h-4" />
         </div>
-        <div>
+        <div className="hidden sm:block">
           <div className="flex items-center gap-2">
             <h1 className="text-sm font-bold tracking-tight text-foreground">
               CaseLens
             </h1>
-            <Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal">
+            <Badge variant="outline" className="hidden xl:inline-flex text-[10px] py-0 px-1.5 font-normal">
               RAG Assistant
             </Badge>
           </div>
@@ -46,15 +57,15 @@ export default function DashboardHeader({ userEmail, activeTab, onTabChange, onS
         <TabsList className="h-8">
           <TabsTrigger value="chat" className="text-xs gap-1.5 h-7">
             <MessageSquare className="w-3.5 h-3.5" />
-            AI Assistant
+            <span className="sr-only xl:not-sr-only whitespace-nowrap">AI Assistant</span>
           </TabsTrigger>
           <TabsTrigger value="search" className="text-xs gap-1.5 h-7">
             <Search className="w-3.5 h-3.5" />
-            RAG Explorer
+            <span className="sr-only xl:not-sr-only whitespace-nowrap">RAG Explorer</span>
           </TabsTrigger>
           <TabsTrigger value="vault" className="text-xs gap-1.5 h-7">
             <BookOpen className="w-3.5 h-3.5" />
-            Document Vault
+            <span className="sr-only xl:not-sr-only whitespace-nowrap">Document Vault</span>
           </TabsTrigger>
         </TabsList>
       </Tabs>
@@ -62,7 +73,7 @@ export default function DashboardHeader({ userEmail, activeTab, onTabChange, onS
       <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 gap-2 pl-1 pr-2 text-xs font-normal">
+            <Button variant="ghost" aria-label="Account menu" className="h-8 gap-2 pl-1 pr-2 text-xs font-normal">
               <Avatar className="h-6 w-6">
                 <AvatarFallback className="text-[10px] bg-primary/20 text-primary font-bold">
                   {userEmail ? userEmail.slice(0, 2).toUpperCase() : 'LA'}

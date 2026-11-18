@@ -43,7 +43,7 @@ export default function DocumentSidebar({
   const visible = documents.filter((d) => d.toLowerCase().includes(filter.toLowerCase()));
 
   return (
-    <aside className="w-80 border-r border-border bg-card/60 flex flex-col shrink-0">
+    <aside className="w-80 max-w-[85vw] h-full border-r border-border bg-card/60 flex flex-col shrink-0">
       <div className="p-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-sm">
@@ -63,6 +63,7 @@ export default function DocumentSidebar({
               variant="ghost"
               size="icon-sm"
               onClick={onRefresh}
+              aria-label="Refresh document list"
               disabled={refreshing}
               className="text-muted-foreground hover:text-foreground"
             >
@@ -179,7 +180,8 @@ export default function DocumentSidebar({
                     variant="ghost"
                     size="icon-sm"
                     onClick={() => onRequestDelete(doc)}
-                    className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all shrink-0 h-7 w-7"
+                    aria-label={`Delete ${doc}`}
+                    className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all shrink-0 h-7 w-7"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </Button>

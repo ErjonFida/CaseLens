@@ -69,7 +69,7 @@ export default function ChatPanel({
 
   return (
     <main className="flex-1 flex flex-col min-h-0 relative">
-      <ScrollArea className="flex-1 px-6 py-6">
+      <ScrollArea className="flex-1 px-3 py-4 sm:px-6 sm:py-6">
         <div className="max-w-4xl mx-auto space-y-6">
           {messages.length === 0 ? (
             <div className="py-12 px-4 text-center max-w-xl mx-auto">
@@ -108,7 +108,7 @@ export default function ChatPanel({
               return (
                 <div
                   key={m.id}
-                  className={`flex gap-3.5 select-text ${isUser ? 'justify-end' : 'justify-start'}`}
+                  className={`flex gap-3.5 ${isUser ? 'justify-end' : 'justify-start'}`}
                 >
                   {!isUser && (
                     <Avatar className="h-8 w-8 mt-1 shrink-0 border border-primary/20">
@@ -129,7 +129,7 @@ export default function ChatPanel({
                       {isUser ? (
                         <p className="whitespace-pre-wrap">{m.content}</p>
                       ) : (
-                        <div className="prose prose-invert prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-background/80 prose-pre:border prose-pre:border-border">
+                        <div className="answer">
                           {m.content ? (
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
                           ) : (
@@ -145,11 +145,12 @@ export default function ChatPanel({
                     </div>
 
                     {!isUser && m.content && (
-                      <div className="flex items-center gap-2 px-1 pt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-2 px-1 pt-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100 transition-opacity">
                         <Button
                           variant="ghost"
                           size="icon-sm"
                           onClick={() => onCopy(m.id, m.content)}
+                          aria-label="Copy answer"
                           className="h-6 w-6 text-muted-foreground hover:text-foreground"
                         >
                           {copiedMessageId === m.id ? (
@@ -180,7 +181,7 @@ export default function ChatPanel({
         </div>
       </ScrollArea>
 
-      <div className="p-4 border-t border-border bg-card/40 backdrop-blur-md">
+      <div className="p-3 sm:p-4 border-t border-border bg-card/40 backdrop-blur-md">
         <div className="max-w-4xl mx-auto">
           <form
             onSubmit={(e) => {
@@ -216,7 +217,7 @@ export default function ChatPanel({
                   Stop
                 </Button>
               ) : (
-                <Button type="submit" disabled={!input.trim()} size="sm" className="h-8 w-9 p-0 font-medium">
+                <Button type="submit" aria-label="Send question" disabled={!input.trim()} size="sm" className="h-8 w-9 p-0 font-medium">
                   <Send className="w-4 h-4" />
                 </Button>
               )}

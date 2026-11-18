@@ -28,7 +28,7 @@ export default function SearchPanel({
   onAnalyse,
 }: Props) {
   return (
-    <main className="flex-1 flex flex-col min-h-0 p-6 overflow-y-auto">
+    <main className="flex-1 flex flex-col min-h-0 p-4 sm:p-6 overflow-y-auto">
       <div className="max-w-4xl w-full mx-auto space-y-6">
         <div>
           <h2 className="text-xl font-bold tracking-tight text-foreground">Document Explorer</h2>
@@ -66,16 +66,16 @@ export default function SearchPanel({
         <div className="space-y-4">
           {results.map((result, idx) => (
             <Card key={idx} className="border-border/80 bg-card/80 shadow-sm">
-              <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between space-y-0">
-                <div className="flex items-center gap-2">
-                  <Badge variant="info" className="text-xs">
+              <CardHeader className="p-4 pb-2 flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Badge variant="info" className="text-xs shrink-0">
                     Match #{idx + 1}
                   </Badge>
-                  <span className="text-xs font-semibold text-foreground">
+                  <span className="text-xs font-semibold text-foreground truncate">
                     {result.metadata?.filename || 'Document'}
                   </span>
                   {result.metadata?.page && (
-                    <Badge variant="outline" className="text-[10px]">
+                    <Badge variant="outline" className="text-[10px] shrink-0">
                       Page {result.metadata.page}
                     </Badge>
                   )}

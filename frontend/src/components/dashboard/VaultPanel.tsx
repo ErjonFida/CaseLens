@@ -26,9 +26,9 @@ export default function VaultPanel({
   readOnly,
 }: Props) {
   return (
-    <main className="flex-1 flex flex-col min-h-0 p-6 overflow-y-auto">
+    <main className="flex-1 flex flex-col min-h-0 p-4 sm:p-6 overflow-y-auto">
       <div className="max-w-4xl w-full mx-auto space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-foreground">
               Document Vault &amp; Status
@@ -64,37 +64,35 @@ export default function VaultPanel({
               {documents.map((doc) => (
                 <div
                   key={doc}
-                  className="p-4 flex items-center justify-between hover:bg-card/80 transition-colors"
+                  className="p-3 sm:p-4 flex items-center justify-between gap-2 hover:bg-card/80 transition-colors"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-secondary/80">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="shrink-0 p-2 rounded-lg bg-secondary/80">
                       <DocumentIcon filename={doc} />
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{doc}</p>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{doc}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <DocumentStatusBadge status={statuses[doc] || 'completed'} />
-                        <span className="text-xs text-muted-foreground">
-                          Upload and synchronisation successful
-                        </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => onFindSegments(doc)}
                       className="text-xs gap-1.5"
                     >
-                      <Search className="w-3.5 h-3.5" /> Find Segments
+                      <Search className="w-3.5 h-3.5" /> <span className="sr-only sm:not-sr-only">Find Segments</span>
                     </Button>
                     {!readOnly && (
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => onRequestDelete(doc)}
+                      aria-label={`Delete ${doc}`}
                       className="text-xs text-destructive hover:bg-destructive/10"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
